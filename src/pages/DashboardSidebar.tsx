@@ -1,4 +1,11 @@
 import React from 'react';
+import {
+  AwardPointsIcon,
+  CustomersIcon,
+  GridMenuIcon,
+  RedeemPointsIcon,
+  ShieldUserIcon,
+} from '../assets/icons/DashboardIcons';
 
 type DashboardSidebarProps = {
   activeMenu: string;
@@ -9,7 +16,6 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ activeMenu, setActi
   return (
     <>
       <style>{`
-        /* Base Fluid Styles for Sidebar */
         .sidebar {
           /* Padding scales fluidly between mobile and desktop sizes */
           padding: clamp(16px, 2.5vw, 24px) clamp(12px, 2vw, 20px);
@@ -138,18 +144,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ activeMenu, setActi
 
       <aside className="sidebar">
         <div className="brand">
-          <svg
-            className="brand-icon"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-            <circle cx="12" cy="10" r="3" />
-          </svg>
+          <ShieldUserIcon className="brand-icon" />
           <span className="brand-title">Admin Panel</span>
         </div>
 
@@ -160,12 +155,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ activeMenu, setActi
             className={`nav-item ${activeMenu === 'dashboard' ? 'active' : ''}`}
             onClick={() => setActiveMenu('dashboard')}
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <rect x="3" y="3" width="7" height="7" rx="1" />
-              <rect x="14" y="3" width="7" height="7" rx="1" />
-              <rect x="14" y="14" width="7" height="7" rx="1" />
-              <rect x="3" y="14" width="7" height="7" rx="1" />
-            </svg>
+            <GridMenuIcon />
             Dashboard
           </button>
 
@@ -173,12 +163,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ activeMenu, setActi
             className={`nav-item ${activeMenu === 'customers' ? 'active' : ''}`}
             onClick={() => setActiveMenu('customers')}
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-            </svg>
+            <CustomersIcon />
             Customers List
           </button>
 
@@ -186,10 +171,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ activeMenu, setActi
             className={`nav-item ${activeMenu === 'award' ? 'active' : ''}`}
             onClick={() => setActiveMenu('award')}
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <circle cx="12" cy="8" r="7" />
-              <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
-            </svg>
+            <AwardPointsIcon />
             Award Points
           </button>
 
@@ -197,10 +179,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ activeMenu, setActi
             className={`nav-item ${activeMenu === 'redeem' ? 'active' : ''}`}
             onClick={() => setActiveMenu('redeem')}
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
-              <line x1="7" y1="7" x2="7.01" y2="7" />
-            </svg>
+            <RedeemPointsIcon />
             Redeem Points
           </button>
         </nav>
