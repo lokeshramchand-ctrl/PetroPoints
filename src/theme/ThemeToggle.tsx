@@ -1,5 +1,9 @@
 import { useTheme } from './theme'
 
+type ThemeToggleProps = {
+  variant?: 'floating' | 'inline'
+}
+
 function SunIcon() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -24,13 +28,13 @@ function MoonIcon() {
   )
 }
 
-export function ThemeToggle() {
+export function ThemeToggle({ variant = 'floating' }: ThemeToggleProps) {
   const { mode, toggleTheme } = useTheme()
 
   return (
     <button
       type="button"
-      className="theme-toggle"
+      className={`theme-toggle ${variant === 'inline' ? 'theme-toggle-inline' : ''}`}
       onClick={toggleTheme}
       aria-label={`Switch to ${mode === 'light' ? 'dark' : 'light'} mode`}
       title={`Switch to ${mode === 'light' ? 'dark' : 'light'} mode`}

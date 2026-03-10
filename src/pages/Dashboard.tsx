@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import DashboardSidebar from './DashboardSidebar';
 import { PlusIcon, SearchIcon, TrendUpIcon, UpRightIcon } from '../assets/icons/DashboardIcons';
+import { ThemeToggle } from '../theme/ThemeToggle';
 
 const Dashboard: React.FC = () => {
   const [activeMenu, setActiveMenu] = useState('dashboard');
@@ -90,6 +91,7 @@ const Dashboard: React.FC = () => {
           padding: clamp(8px, 2vw, 16px);
           gap: clamp(8px, 2vw, 16px);
           flex-direction: row;
+          align-items: stretch;
         }
 
         /* --- Sidebar (Assuming DashboardSidebar uses these classes) --- */
@@ -104,8 +106,8 @@ const Dashboard: React.FC = () => {
           box-shadow: var(--shadow-soft);
           position: sticky;
           top: clamp(8px, 2vw, 16px);
-          height: calc(100vh - clamp(16px, 4vw, 32px));
-          overflow-y: auto;
+          align-self: stretch;
+          min-height: calc(100vh - clamp(16px, 4vw, 32px));
         }
 
         /* ... [Sidebar interior classes remain the same] ... */
@@ -160,6 +162,7 @@ const Dashboard: React.FC = () => {
           align-items: center;
           gap: clamp(12px, 2vw, 20px);
           flex-wrap: wrap;
+          margin-left: auto;
         }
 
         .icon-btn {
@@ -461,7 +464,7 @@ const Dashboard: React.FC = () => {
           /* Target sidebar styles directly for tablet/mobile */
           .sidebar {
             width: 100%;
-            height: auto;
+            min-height: auto;
             flex: none; /* Removes flex-basis constraint */
             position: relative;
             border-radius: 0;
@@ -502,7 +505,10 @@ const Dashboard: React.FC = () => {
               <input type="text" placeholder="Search tasks..." />
             </div>
 
-           </div>
+            <div className="top-nav-right">
+              <ThemeToggle variant="inline" />
+            </div>
+          </div>
 
           <div className="dashboard-body">
             <header className="dashboard-header">

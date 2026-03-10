@@ -116,11 +116,30 @@ body {
   font-weight: 600;
 }
 
+.theme-toggle-inline {
+  position: static;
+  right: auto;
+  bottom: auto;
+  z-index: auto;
+  box-shadow: none;
+  padding: 0.625rem 0.9rem;
+}
+
+.theme-toggle-inline:hover {
+  transform: none;
+}
+
 @media (max-width: 640px) {
   .theme-toggle {
     right: 0.7rem;
     bottom: 0.7rem;
     padding: 0.55rem;
+  }
+
+  .theme-toggle-inline {
+    right: auto;
+    bottom: auto;
+    padding: 0.625rem 0.9rem;
   }
 
   .theme-toggle-label {
