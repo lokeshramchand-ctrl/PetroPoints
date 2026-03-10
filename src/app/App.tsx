@@ -1,10 +1,10 @@
 import './App.css'
 import type { ReactElement } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
-import Dashboard from './Components/Dashboard/dash'
-import LoginScreen from './Components/LoginScreen/login'
-import ModernDashboard from './Components/Modern/dashboard'
-import ModernLogin from './Components/Modern/login'
+import Dashboard from '../Components/Dashboard/dash'
+import LoginScreen from '../Components/LoginScreen/login'
+import ModernDashboard from '../Components/Modern/dashboard'
+import ModernLogin from '../Components/Modern/login'
 
 type AppRoute = {
   path: string
@@ -27,6 +27,7 @@ function App() {
       ))}
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
+    
   )
 }
 
