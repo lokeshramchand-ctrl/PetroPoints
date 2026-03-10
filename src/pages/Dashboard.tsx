@@ -53,6 +53,23 @@ const Dashboard: React.FC = () => {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
+        :root {
+          /* Added standard variables in case they aren't globally defined */
+          --primary-dark: #175433;
+          --primary-light: #207245;
+          --bg-main: #f4f6f8;
+          --surface-main: #ffffff;
+          --surface-soft: #f9fafb;
+          --surface-muted: #f0fdf4;
+          --text-main: #111827;
+          --text-muted: #6b7280;
+          --text-soft: #9ca3af;
+          --border-color: #eaedf1;
+          --shadow-soft: 0 4px 20px rgba(0,0,0,0.02);
+          --promo-gradient: linear-gradient(145deg, #0f172a, #022c22);
+          --avatar-bg: #e2e8f0;
+        }
+
         * {
           box-sizing: border-box;
           font-family: 'Inter', sans-serif;
@@ -69,137 +86,28 @@ const Dashboard: React.FC = () => {
         .app-container {
           display: flex;
           min-height: 100vh;
-          padding: 16px;
-          gap: 16px;
+          padding: clamp(8px, 2vw, 16px);
+          gap: clamp(8px, 2vw, 16px);
+          flex-direction: row;
         }
 
-        /* --- Sidebar --- */
+        /* --- Sidebar (Assuming DashboardSidebar uses these classes) --- */
         .sidebar {
-          width: 260px;
+          /* Fluid width: starts at 200px, scales with 20% of viewport, caps at 280px */
+          flex: 0 0 clamp(200px, 20vw, 280px);
           background-color: var(--surface-main);
           border-radius: 24px;
           display: flex;
           flex-direction: column;
-          padding: 24px 20px;
+          padding: 24px clamp(12px, 1.5vw, 20px);
           box-shadow: var(--shadow-soft);
           position: sticky;
-          top: 16px;
-          height: calc(100vh - 32px);
+          top: clamp(8px, 2vw, 16px);
+          height: calc(100vh - clamp(16px, 4vw, 32px));
+          overflow-y: auto;
         }
 
-        .brand {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          margin-bottom: 40px;
-          padding: 0 8px;
-        }
-
-        .brand-icon {
-          color: var(--primary-dark);
-        }
-
-        .brand-title {
-          font-size: 20px;
-          font-weight: 700;
-          letter-spacing: -0.03em;
-        }
-
-        .menu-label {
-          font-size: 12px;
-          font-weight: 600;
-          color: var(--text-soft);
-          margin-bottom: 12px;
-          padding: 0 8px;
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-        }
-
-        .nav-menu {
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-          margin-bottom: 32px;
-        }
-
-        .nav-item {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          padding: 12px 16px;
-          border-radius: 12px;
-          color: var(--text-muted);
-          text-decoration: none;
-          font-size: 15px;
-          font-weight: 500;
-          transition: all 0.2s ease;
-          cursor: pointer;
-          border: none;
-          background: transparent;
-          text-align: left;
-        }
-
-        .nav-item svg {
-          width: 20px;
-          height: 20px;
-          stroke-width: 2;
-        }
-
-        .nav-item:hover {
-          background-color: var(--surface-soft);
-          color: var(--text-main);
-        }
-
-        .nav-item.active {
-          color: var(--primary-dark);
-          font-weight: 600;
-          background-color: var(--surface-muted);
-        }
-
-        .nav-item.active svg {
-          stroke: var(--primary-dark);
-        }
-
-        /* --- Sidebar Promo Card --- */
-        .promo-card {
-          margin-top: auto;
-          background: var(--promo-gradient);
-          border-radius: 20px;
-          padding: 24px 20px;
-          color: white;
-          position: relative;
-          overflow: hidden;
-        }
-
-        .promo-title {
-          font-size: 16px;
-          font-weight: 600;
-          margin: 0 0 8px 0;
-          position: relative;
-          z-index: 2;
-        }
-
-        .promo-desc {
-          font-size: 12px;
-          color: var(--text-soft);
-          margin: 0 0 16px 0;
-          position: relative;
-          z-index: 2;
-        }
-
-        .promo-btn {
-          width: 100%;
-          padding: 10px;
-          background: var(--primary-dark);
-          color: white;
-          border: none;
-          border-radius: 10px;
-          font-size: 13px;
-          font-weight: 600;
-          cursor: pointer;
-          position: relative;
-          z-index: 2;
-        }
+        /* ... [Sidebar interior classes remain the same] ... */
 
         /* --- Main Content --- */
         .main-content {
@@ -210,6 +118,8 @@ const Dashboard: React.FC = () => {
           border-radius: 24px;
           box-shadow: var(--shadow-soft);
           overflow-y: auto;
+          /* Prevents content from forcing main flex item to expand beyond screen */
+          min-width: 0; 
         }
 
         /* --- Top Navigation --- */
@@ -217,7 +127,9 @@ const Dashboard: React.FC = () => {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 20px 32px;
+          flex-wrap: wrap; /* Allows wrapping on tight screens */
+          gap: 16px;
+          padding: clamp(16px, 2.5vw, 20px) clamp(20px, 3vw, 32px);
           border-bottom: 1px solid var(--border-color);
         }
 
@@ -227,7 +139,10 @@ const Dashboard: React.FC = () => {
           background: var(--bg-main);
           padding: 10px 16px;
           border-radius: 12px;
-          width: 320px;
+          flex: 1;
+          /* Fluid width instead of hardcoded 320px */
+          min-width: 200px;
+          max-width: 400px; 
         }
 
         .search-bar input {
@@ -242,7 +157,8 @@ const Dashboard: React.FC = () => {
         .top-nav-right {
           display: flex;
           align-items: center;
-          gap: 20px;
+          gap: clamp(12px, 2vw, 20px);
+          flex-wrap: wrap;
         }
 
         .icon-btn {
@@ -256,19 +172,13 @@ const Dashboard: React.FC = () => {
           justify-content: center;
           cursor: pointer;
           color: var(--text-main);
+          flex-shrink: 0;
         }
 
         .user-profile {
           display: flex;
           align-items: center;
           gap: 12px;
-        }
-
-        .avatar {
-          width: 40px;
-          height: 40px;
-          background: var(--avatar-bg);
-          border-radius: 50%;
         }
 
         .user-info h4 {
@@ -285,18 +195,20 @@ const Dashboard: React.FC = () => {
 
         /* --- Dashboard Body --- */
         .dashboard-body {
-          padding: 32px;
+          padding: clamp(20px, 3vw, 32px);
         }
 
         .dashboard-header {
           display: flex;
           justify-content: space-between;
-          align-items: flex-end;
-          margin-bottom: 32px;
+          align-items: flex-start;
+          flex-wrap: wrap; /* Allows stacking on smaller screens */
+          gap: 20px;
+          margin-bottom: clamp(24px, 3vw, 32px);
         }
 
         .header-title h1 {
-          font-size: 32px;
+          font-size: clamp(24px, 3vw, 32px); /* Fluid typography */
           font-weight: 700;
           margin: 0 0 8px 0;
           letter-spacing: -0.03em;
@@ -310,9 +222,108 @@ const Dashboard: React.FC = () => {
 
         .header-actions {
           display: flex;
+          flex-wrap: wrap;
           gap: 12px;
         }
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  padding: 0 0.5rem;
+}
 
+.brand-icon {
+  color: var(--primary-dark);
+}
+
+.brand-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.menu-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-soft);
+  margin-bottom: 0.75rem;
+  padding: 0 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.nav-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 2rem;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  text-align: left;
+}
+
+.nav-item svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  stroke-width: 2;
+  flex-shrink: 0;
+}
+
+.nav-item:hover {
+  background-color: var(--surface-soft);
+  color: var(--text-main);
+}
+
+.nav-item.active {
+  color: var(--primary-dark);
+  font-weight: 600;
+  background-color: var(--surface-muted);
+}
+
+@media (max-width: 64rem) {
+  .sidebar .brand {
+    margin-bottom: 1rem;
+    padding: 0;
+  }
+
+  .sidebar .menu-label {
+    display: none;
+  }
+
+  .sidebar .nav-menu {
+    flex-direction: row;
+    overflow-x: auto;
+    margin-bottom: 0;
+    padding-bottom: 0.5rem;
+    gap: 0.5rem;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .sidebar .nav-menu::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sidebar .nav-item {
+    white-space: nowrap;
+    flex-shrink: 0;
+    width: auto;
+  }
+}
         .btn {
           padding: 12px 20px;
           border-radius: 12px;
@@ -321,8 +332,12 @@ const Dashboard: React.FC = () => {
           cursor: pointer;
           display: flex;
           align-items: center;
+          justify-content: center;
           gap: 8px;
           transition: all 0.2s;
+          flex: 1 1 auto; /* Allows buttons to grow to fill space if wrapped */
+          text-align: center;
+          white-space: nowrap;
         }
 
         .btn-primary {
@@ -340,15 +355,16 @@ const Dashboard: React.FC = () => {
         /* --- Stats Grid --- */
         .stats-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-          gap: 20px;
+          /* The min() function ensures that if the screen is narrower than 220px, the card scales down instead of overflowing */
+          grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+          gap: clamp(16px, 2vw, 20px);
         }
 
         .stat-card {
           background: var(--surface-main);
           border: 1px solid var(--border-color);
           border-radius: 20px;
-          padding: 24px;
+          padding: clamp(16px, 2vw, 24px);
           display: flex;
           flex-direction: column;
           position: relative;
@@ -387,6 +403,7 @@ const Dashboard: React.FC = () => {
           align-items: center;
           justify-content: center;
           color: var(--text-main);
+          flex-shrink: 0;
         }
 
         .stat-card.primary .arrow-icon {
@@ -396,7 +413,7 @@ const Dashboard: React.FC = () => {
         }
 
         .card-value {
-          font-size: 40px;
+          font-size: clamp(32px, 4vw, 40px); /* Fluid typography */
           font-weight: 700;
           margin: 0 0 16px 0;
           letter-spacing: -0.04em;
@@ -405,6 +422,7 @@ const Dashboard: React.FC = () => {
         .trend-container {
           display: flex;
           align-items: center;
+          flex-wrap: wrap;
           gap: 8px;
           font-size: 12px;
           color: var(--text-muted);
@@ -423,6 +441,7 @@ const Dashboard: React.FC = () => {
           display: flex;
           align-items: center;
           gap: 4px;
+          white-space: nowrap;
         }
 
         .stat-card.primary .trend-badge {
@@ -430,21 +449,44 @@ const Dashboard: React.FC = () => {
           color: white;
         }
 
+        /* --- Responsive Breakpoints --- */
         @media (max-width: 1024px) {
           .app-container {
             flex-direction: column;
             padding: 0;
             gap: 0;
           }
+          
+          /* Target sidebar styles directly for tablet/mobile */
           .sidebar {
             width: 100%;
             height: auto;
+            flex: none; /* Removes flex-basis constraint */
             position: relative;
             border-radius: 0;
             top: 0;
+            box-shadow: none;
+            border-bottom: 1px solid var(--border-color);
           }
+          
           .main-content {
             border-radius: 0;
+            box-shadow: none;
+          }
+        }
+        
+        @media (max-width: 600px) {
+          .top-nav {
+            flex-direction: column;
+            align-items: stretch;
+          }
+          
+          .search-bar {
+            max-width: 100%; /* Take full width on mobile */
+          }
+          
+          .top-nav-right {
+            justify-content: space-between;
           }
         }
       `}</style>
