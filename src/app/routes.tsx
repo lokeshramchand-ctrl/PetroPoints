@@ -1,9 +1,7 @@
 import type { ReactElement } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
-import DashboardPage from '../pages/dashboard/DashboardPage'
-import LoginPage from '../pages/login/LoginPage'
-import ModernDashboardPage from '../pages/modern/ModernDashboardPage'
-import ModernLoginPage from '../pages/modern/ModernLoginPage'
+import DashboardPage from '../pages/Dashboard'
+import LoginPage from '../pages/Login'
 
 type AppRoute = {
 	path: string
@@ -13,8 +11,6 @@ type AppRoute = {
 const appRoutes: AppRoute[] = [
 	{ path: '/login', element: <LoginPage /> },
 	{ path: '/dashboard', element: <DashboardPage /> },
-	{ path: '/modern/login', element: <ModernLoginPage /> },
-	{ path: '/modern/dashboard', element: <ModernDashboardPage /> },
 ]
 
 export function AppRoutes() {
