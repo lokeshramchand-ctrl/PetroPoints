@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-const Dashboard: React.FC = () => {
+    const Dashboard: React.FC = () => {
+  const [activeMenu, setActiveMenu] = useState('dashboard');
+
   // Mock data for the dashboard cards
   const stats = [
     {
@@ -85,14 +87,108 @@ const Dashboard: React.FC = () => {
         body, html {
           margin: 0;
           padding: 0;
-          background-color: #f9fafb; /* Matches the login screen background */
+          background-color: #f9fafb;
           color: #111827;
+        }
+
+        /* --- Layout Container --- */
+        .app-container {
+          display: flex;
+          min-height: 100vh;
+        }
+
+        /* --- Sidebar Styles --- */
+        .sidebar {
+          width: 260px;
+          background-color: #ffffff;
+          border-right: 1px solid #e5e7eb;
+          display: flex;
+          flex-direction: column;
+          position: sticky;
+          top: 0;
+          height: 100vh;
+        }
+
+        .sidebar-header {
+          height: 80px;
+          display: flex;
+          align-items: center;
+          padding: 0 24px;
+          border-bottom: 1px solid #f9fafb;
+        }
+
+        .brand-logo {
+          width: 32px;
+          height: 32px;
+          background-color: #111827;
+          border-radius: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-right: 12px;
+        }
+
+        .brand-title {
+          font-size: 18px;
+          font-weight: 700;
+          letter-spacing: -0.02em;
+        }
+
+        .nav-menu {
+          padding: 24px 16px;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .nav-item {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 12px 16px;
+          border-radius: 10px;
+          color: #6b7280;
+          text-decoration: none;
+          font-size: 14px;
+          font-weight: 500;
+          transition: all 0.2s ease;
+          cursor: pointer;
+          border: none;
+          background: transparent;
+          width: 100%;
+          text-align: left;
+        }
+
+        .nav-item svg {
+          width: 20px;
+          height: 20px;
+          stroke-width: 2;
+        }
+
+        .nav-item:hover {
+          background-color: #f3f4f6;
+          color: #111827;
+        }
+
+        .nav-item.active {
+          background-color: #111827;
+          color: #ffffff;
+        }
+
+        .nav-item.active svg {
+          stroke: #ffffff;
+        }
+
+        /* --- Main Content Styles --- */
+        .main-content {
+          flex: 1;
+          overflow-y: auto;
         }
 
         .dashboard-layout {
           max-width: 1200px;
           margin: 0 auto;
-          padding: 40px 24px;
+          padding: 40px 32px;
         }
 
         .dashboard-header {
@@ -114,11 +210,10 @@ const Dashboard: React.FC = () => {
 
         .dashboard-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
           gap: 24px;
         }
 
-        /* Make the "Today" cards span differently or just flow naturally */
         .stat-card {
           background: #ffffff;
           border: 1px solid #e5e7eb;
@@ -181,53 +276,133 @@ const Dashboard: React.FC = () => {
           gap: 4px;
         }
 
-        .trend-positive {
-          color: #059669; /* Elegant dark green */
-        }
+        .trend-positive { color: #059669; }
+        .trend-neutral { color: #9ca3af; }
 
-        .trend-neutral {
-          color: #9ca3af;
-        }
-
+        /* Responsive Design */
         @media (max-width: 768px) {
+          .app-container {
+            flex-direction: column;
+          }
+          .sidebar {
+            width: 100%;
+            height: auto;
+            position: relative;
+            border-right: none;
+            border-bottom: 1px solid #e5e7eb;
+          }
+          .nav-menu {
+            flex-direction: row;
+            overflow-x: auto;
+            padding: 16px;
+          }
+          .nav-item {
+            white-space: nowrap;
+            width: auto;
+          }
           .dashboard-layout {
             padding: 24px 16px;
-          }
-          .dashboard-grid {
-            grid-template-columns: 1fr;
           }
         }
       `}</style>
 
-      <div className="dashboard-layout">
-        <header className="dashboard-header">
-          <h1 className="dashboard-title">Overview</h1>
-          <p className="dashboard-subtitle">Monitor your key metrics and daily activity.</p>
-        </header>
-
-        <div className="dashboard-grid">
-          {stats.map((stat) => (
-            <div key={stat.id} className="stat-card">
-              <div className="card-header">
-                <h3 className="card-title">{stat.title}</h3>
-                <div className="icon-wrapper">
-                  {stat.icon}
-                </div>
-              </div>
-              <h2 className="card-value">{stat.value}</h2>
-              
-              <div className={`card-trend ${stat.trendUp === true ? 'trend-positive' : 'trend-neutral'}`}>
-                {stat.trendUp && (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
-                    <polyline points="17 6 23 6 23 12"></polyline>
-                  </svg>
-                )}
-                <span>{stat.trend}</span>
-              </div>
+      <div className="app-container">
+        {/* --- Sidebar --- */}
+        <aside className="sidebar">
+          <div className="sidebar-header">
+            <div className="brand-logo">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                <polyline points="10 17 15 12 10 7" />
+                <line x1="15" y1="12" x2="3" y2="12" />
+              </svg>
             </div>
-          ))}
-        </div>
+            <span className="brand-title">Admin Panel</span>
+          </div>
+
+          <nav className="nav-menu">
+            <button 
+              className={`nav-item ${activeMenu === 'dashboard' ? 'active' : ''}`}
+              onClick={() => setActiveMenu('dashboard')}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+              Dashboard
+            </button>
+
+            <button 
+              className={`nav-item ${activeMenu === 'customers' ? 'active' : ''}`}
+              onClick={() => setActiveMenu('customers')}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              Customers List
+            </button>
+
+            <button 
+              className={`nav-item ${activeMenu === 'award' ? 'active' : ''}`}
+              onClick={() => setActiveMenu('award')}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+              </svg>
+              Award Points
+            </button>
+
+            <button 
+              className={`nav-item ${activeMenu === 'redeem' ? 'active' : ''}`}
+              onClick={() => setActiveMenu('redeem')}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                <line x1="7" y1="7" x2="7.01" y2="7"></line>
+              </svg>
+              Redeem Points
+            </button>
+          </nav>
+        </aside>
+
+        {/* --- Main Content --- */}
+        <main className="main-content">
+          <div className="dashboard-layout">
+            <header className="dashboard-header">
+              <h1 className="dashboard-title">Overview</h1>
+              <p className="dashboard-subtitle">Monitor your key metrics and daily activity.</p>
+            </header>
+
+            <div className="dashboard-grid">
+              {stats.map((stat) => (
+                <div key={stat.id} className="stat-card">
+                  <div className="card-header">
+                    <h3 className="card-title">{stat.title}</h3>
+                    <div className="icon-wrapper">
+                      {stat.icon}
+                    </div>
+                  </div>
+                  <h2 className="card-value">{stat.value}</h2>
+                  
+                  <div className={`card-trend ${stat.trendUp === true ? 'trend-positive' : 'trend-neutral'}`}>
+                    {stat.trendUp && (
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                        <polyline points="17 6 23 6 23 12"></polyline>
+                      </svg>
+                    )}
+                    <span>{stat.trend}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </main>
       </div>
     </>
   );
