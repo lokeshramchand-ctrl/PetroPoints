@@ -2,6 +2,7 @@ import type { ReactElement } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import DashboardPage from '../pages/Dashboard'
 import LoginPage from '../pages/Login'
+import CustomerList from '../pages/CustomerList'
 
 type AppRoute = {
 	path: string
@@ -11,6 +12,7 @@ type AppRoute = {
 const appRoutes: AppRoute[] = [
 	{ path: '/login', element: <LoginPage /> },
 	{ path: '/dashboard', element: <DashboardPage /> },
+	{ path: '/customers', element: <CustomerList /> },
 ]
 
 export function AppRoutes() {

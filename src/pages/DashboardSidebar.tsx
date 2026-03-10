@@ -175,7 +175,7 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ activeMenu, setActi
       <aside className="sidebar">
         <div className="brand">
           <ShieldUserIcon className="brand-icon" />
-          <span className="brand-title">Admin Panel</span>
+          <span className="brand-title">PetroPoints</span>
         </div>
 
         <div className="sidebar-nav-container">
