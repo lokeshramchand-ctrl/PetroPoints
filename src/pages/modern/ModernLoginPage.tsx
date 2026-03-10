@@ -20,16 +20,6 @@ const LoginScreen: React.FC = () => {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-        :root {
-          --primary-dark: #175433; /* Matching the dashboard dark green */
-          --primary-hover: #124026;
-          --bg-main: #f4f6f8;
-          --bg-input: #f9fafb;
-          --text-main: #111827;
-          --text-muted: #6b7280;
-          --border-color: #eaedf1;
-        }
-
         * {
           box-sizing: border-box;
           font-family: 'Inter', sans-serif;
@@ -53,10 +43,10 @@ const LoginScreen: React.FC = () => {
         .login-card {
           width: 100%;
           max-width: 420px;
-          background: #ffffff;
+          background: var(--surface-main);
           border-radius: 32px; /* Super curvy */
           padding: 48px 40px;
-          box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.05), 0 10px 20px -5px rgba(0, 0, 0, 0.02);
+          box-shadow: var(--shadow-card);
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -65,7 +55,7 @@ const LoginScreen: React.FC = () => {
         .icon-container {
           width: 56px;
           height: 56px;
-          background: #f0fdf4; /* Light green tint */
+          background: var(--surface-muted);
           border-radius: 50%; /* Perfect circle */
           display: flex;
           align-items: center;
@@ -107,7 +97,7 @@ const LoginScreen: React.FC = () => {
           left: 18px;
           top: 50%;
           transform: translateY(-50%);
-          color: #9ca3af;
+          color: var(--text-soft);
           width: 20px;
           height: 20px;
           pointer-events: none;
@@ -128,12 +118,12 @@ const LoginScreen: React.FC = () => {
         }
 
         .input-field::placeholder {
-          color: #9ca3af;
+          color: var(--text-soft);
           font-weight: 400;
         }
 
         .input-field:focus {
-          background: #ffffff;
+          background: var(--surface-main);
           border-color: var(--primary-dark);
           box-shadow: 0 4px 12px rgba(23, 84, 51, 0.08);
         }
@@ -167,7 +157,7 @@ const LoginScreen: React.FC = () => {
 
         .btn-primary {
           background: var(--primary-dark);
-          color: #ffffff;
+          color: var(--surface-main);
           box-shadow: 0 8px 16px rgba(23, 84, 51, 0.15);
         }
 

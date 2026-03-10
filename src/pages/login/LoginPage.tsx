@@ -30,7 +30,7 @@ const LoginScreen: React.FC = () => {
           margin: 0;
           padding: 0;
           height: 100%;
-          background-color: #f9fafb; /* Very light, clean gray */
+          background-color: var(--bg-main);
         }
 
         .login-wrapper {
@@ -44,11 +44,11 @@ const LoginScreen: React.FC = () => {
         .login-card {
           width: 100%;
           max-width: 400px;
-          background: #ffffff;
-          border: 1px solid #e5e7eb;
+          background: var(--surface-main);
+          border: 1px solid var(--border-color);
           border-radius: 16px;
           padding: 40px 32px;
-          box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+          box-shadow: var(--shadow-card);
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -57,7 +57,8 @@ const LoginScreen: React.FC = () => {
         .icon-container {
           width: 48px;
           height: 48px;
-          background: #f3f4f6;
+          background: var(--surface-soft);
+          color: var(--text-main);
           border-radius: 12px;
           display: flex;
           align-items: center;
@@ -68,14 +69,14 @@ const LoginScreen: React.FC = () => {
         .title {
           font-size: 22px;
           font-weight: 600;
-          color: #111827;
+          color: var(--text-main);
           margin: 0 0 8px 0;
           letter-spacing: -0.02em;
         }
 
         .subtitle {
           font-size: 14px;
-          color: #6b7280;
+          color: var(--text-muted);
           text-align: center;
           margin: 0 0 32px 0;
           line-height: 1.5;
@@ -98,7 +99,7 @@ const LoginScreen: React.FC = () => {
           left: 14px;
           top: 50%;
           transform: translateY(-50%);
-          color: #9ca3af;
+          color: var(--text-soft);
           width: 18px;
           height: 18px;
           pointer-events: none;
@@ -107,22 +108,22 @@ const LoginScreen: React.FC = () => {
         .input-field {
           width: 100%;
           padding: 12px 16px 12px 42px;
-          border: 1px solid #d1d5db;
+          border: 1px solid var(--border-strong);
           border-radius: 10px;
-          background: #ffffff;
+          background: var(--surface-main);
           font-size: 14px;
-          color: #111827;
+          color: var(--text-main);
           outline: none;
           transition: all 0.2s ease;
         }
 
         .input-field::placeholder {
-          color: #9ca3af;
+          color: var(--text-soft);
         }
 
         .input-field:focus {
-          border-color: #111827;
-          box-shadow: 0 0 0 1px #111827;
+          border-color: var(--focus-ring);
+          box-shadow: 0 0 0 1px var(--focus-ring);
         }
 
         .button-group {
@@ -147,23 +148,23 @@ const LoginScreen: React.FC = () => {
         }
 
         .btn-primary {
-          background: #111827;
-          color: #ffffff;
+          background: var(--primary-dark);
+          color: var(--surface-main);
         }
 
         .btn-primary:hover {
-          background: #374151;
+          background: var(--primary-hover);
         }
 
         .btn-secondary {
-          background: #ffffff;
-          color: #374151;
-          border: 1px solid #d1d5db;
+          background: var(--surface-main);
+          color: var(--text-muted);
+          border: 1px solid var(--border-strong);
         }
 
         .btn-secondary:hover {
-          background: #f9fafb;
-          border-color: #9ca3af;
+          background: var(--surface-soft);
+          border-color: var(--text-soft);
         }
 
         @media (max-width: 480px) {
@@ -176,7 +177,7 @@ const LoginScreen: React.FC = () => {
       <div className="login-wrapper">
         <div className="login-card">
           <div className="icon-container">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111827" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
               <polyline points="10 17 15 12 10 7" />
               <line x1="15" y1="12" x2="3" y2="12" />

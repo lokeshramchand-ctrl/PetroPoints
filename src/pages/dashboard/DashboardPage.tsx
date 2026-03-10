@@ -87,8 +87,8 @@ import React, { useState } from 'react';
         body, html {
           margin: 0;
           padding: 0;
-          background-color: #f9fafb;
-          color: #111827;
+          background-color: var(--bg-main);
+          color: var(--text-main);
         }
 
         /* --- Layout Container --- */
@@ -100,8 +100,8 @@ import React, { useState } from 'react';
         /* --- Sidebar Styles --- */
         .sidebar {
           width: 260px;
-          background-color: #ffffff;
-          border-right: 1px solid #e5e7eb;
+          background-color: var(--surface-main);
+          border-right: 1px solid var(--border-color);
           display: flex;
           flex-direction: column;
           position: sticky;
@@ -114,13 +114,13 @@ import React, { useState } from 'react';
           display: flex;
           align-items: center;
           padding: 0 24px;
-          border-bottom: 1px solid #f9fafb;
+          border-bottom: 1px solid var(--surface-soft);
         }
 
         .brand-logo {
           width: 32px;
           height: 32px;
-          background-color: #111827;
+          background-color: var(--primary-dark);
           border-radius: 8px;
           display: flex;
           align-items: center;
@@ -147,7 +147,7 @@ import React, { useState } from 'react';
           gap: 12px;
           padding: 12px 16px;
           border-radius: 10px;
-          color: #6b7280;
+          color: var(--text-muted);
           text-decoration: none;
           font-size: 14px;
           font-weight: 500;
@@ -166,17 +166,17 @@ import React, { useState } from 'react';
         }
 
         .nav-item:hover {
-          background-color: #f3f4f6;
-          color: #111827;
+          background-color: var(--surface-soft);
+          color: var(--text-main);
         }
 
         .nav-item.active {
-          background-color: #111827;
-          color: #ffffff;
+          background-color: var(--primary-dark);
+          color: var(--surface-main);
         }
 
         .nav-item.active svg {
-          stroke: #ffffff;
+          stroke: var(--surface-main);
         }
 
         /* --- Main Content Styles --- */
@@ -204,7 +204,7 @@ import React, { useState } from 'react';
 
         .dashboard-subtitle {
           font-size: 15px;
-          color: #6b7280;
+          color: var(--text-muted);
           margin: 0;
         }
 
@@ -215,8 +215,8 @@ import React, { useState } from 'react';
         }
 
         .stat-card {
-          background: #ffffff;
-          border: 1px solid #e5e7eb;
+          background: var(--surface-main);
+          border: 1px solid var(--border-color);
           border-radius: 16px;
           padding: 24px;
           display: flex;
@@ -240,19 +240,19 @@ import React, { useState } from 'react';
         .card-title {
           font-size: 14px;
           font-weight: 500;
-          color: #6b7280;
+          color: var(--text-muted);
           margin: 0;
         }
 
         .icon-wrapper {
           width: 40px;
           height: 40px;
-          background: #f3f4f6;
+          background: var(--surface-soft);
           border-radius: 10px;
           display: flex;
           align-items: center;
           justify-content: center;
-          color: #374151;
+          color: var(--text-main);
         }
 
         .icon-wrapper svg {
@@ -263,7 +263,7 @@ import React, { useState } from 'react';
         .card-value {
           font-size: 32px;
           font-weight: 700;
-          color: #111827;
+          color: var(--text-main);
           margin: 0 0 8px 0;
           letter-spacing: -0.03em;
         }
@@ -276,8 +276,8 @@ import React, { useState } from 'react';
           gap: 4px;
         }
 
-        .trend-positive { color: #059669; }
-        .trend-neutral { color: #9ca3af; }
+        .trend-positive { color: var(--success-main); }
+        .trend-neutral { color: var(--text-soft); }
 
         /* Responsive Design */
         @media (max-width: 768px) {
@@ -289,7 +289,7 @@ import React, { useState } from 'react';
             height: auto;
             position: relative;
             border-right: none;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 1px solid var(--border-color);
           }
           .nav-menu {
             flex-direction: row;
@@ -311,7 +311,7 @@ import React, { useState } from 'react';
         <aside className="sidebar">
           <div className="sidebar-header">
             <div className="brand-logo">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
                 <polyline points="10 17 15 12 10 7" />
                 <line x1="15" y1="12" x2="3" y2="12" />

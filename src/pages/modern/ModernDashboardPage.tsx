@@ -11,7 +11,7 @@ const Dashboard: React.FC = () => {
       value: '12,480',
       trend: 'Increased from last month',
       trendValue: '+12%',
-      isPrimary: true, // This will trigger the dark green styling
+      isPrimary: true, 
     },
     {
       id: 2,
@@ -52,15 +52,6 @@ const Dashboard: React.FC = () => {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-        :root {
-          --primary-dark: #175433; /* Dark green from image */
-          --primary-light: #207245;
-          --bg-main: #f4f6f8;
-          --text-main: #111827;
-          --text-muted: #6b7280;
-          --border-color: #eaedf1;
-        }
-
         * {
           box-sizing: border-box;
           font-family: 'Inter', sans-serif;
@@ -84,12 +75,12 @@ const Dashboard: React.FC = () => {
         /* --- Sidebar --- */
         .sidebar {
           width: 260px;
-          background-color: #ffffff;
+          background-color: var(--surface-main);
           border-radius: 24px;
           display: flex;
           flex-direction: column;
           padding: 24px 20px;
-          box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+          box-shadow: var(--shadow-soft);
           position: sticky;
           top: 16px;
           height: calc(100vh - 32px);
@@ -116,7 +107,7 @@ const Dashboard: React.FC = () => {
         .menu-label {
           font-size: 12px;
           font-weight: 600;
-          color: #9ca3af;
+          color: var(--text-soft);
           margin-bottom: 12px;
           padding: 0 8px;
           text-transform: uppercase;
@@ -154,14 +145,14 @@ const Dashboard: React.FC = () => {
         }
 
         .nav-item:hover {
-          background-color: #f9fafb;
+          background-color: var(--surface-soft);
           color: var(--text-main);
         }
 
         .nav-item.active {
           color: var(--primary-dark);
           font-weight: 600;
-          background-color: #f0fdf4;
+          background-color: var(--surface-muted);
         }
 
         .nav-item.active svg {
@@ -171,7 +162,7 @@ const Dashboard: React.FC = () => {
         /* --- Sidebar Promo Card --- */
         .promo-card {
           margin-top: auto;
-          background: linear-gradient(145deg, #0f172a, #022c22);
+          background: var(--promo-gradient);
           border-radius: 20px;
           padding: 24px 20px;
           color: white;
@@ -189,7 +180,7 @@ const Dashboard: React.FC = () => {
 
         .promo-desc {
           font-size: 12px;
-          color: #94a3b8;
+          color: var(--text-soft);
           margin: 0 0 16px 0;
           position: relative;
           z-index: 2;
@@ -214,9 +205,9 @@ const Dashboard: React.FC = () => {
           flex: 1;
           display: flex;
           flex-direction: column;
-          background-color: #ffffff;
+          background-color: var(--surface-main);
           border-radius: 24px;
-          box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+          box-shadow: var(--shadow-soft);
           overflow-y: auto;
         }
 
@@ -275,7 +266,7 @@ const Dashboard: React.FC = () => {
         .avatar {
           width: 40px;
           height: 40px;
-          background: #e2e8f0;
+          background: var(--avatar-bg);
           border-radius: 50%;
         }
 
@@ -353,7 +344,7 @@ const Dashboard: React.FC = () => {
         }
 
         .stat-card {
-          background: #ffffff;
+          background: var(--surface-main);
           border: 1px solid var(--border-color);
           border-radius: 20px;
           padding: 24px;
@@ -423,7 +414,7 @@ const Dashboard: React.FC = () => {
         }
 
         .trend-badge {
-          background: #f0fdf4;
+          background: var(--surface-muted);
           color: var(--primary-dark);
           padding: 4px 8px;
           border-radius: 6px;
@@ -500,7 +491,7 @@ const Dashboard: React.FC = () => {
           {/* Top Navigation */}
           <div className="top-nav">
             <div className="search-bar">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-soft)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
               <input type="text" placeholder="Search tasks..." />
             </div>
             
