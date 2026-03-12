@@ -1,5 +1,5 @@
 import React from 'react';
-import DashboardSidebar from './DashboardSidebar';
+import DashboardSidebar from './Sidebar';
 import { EditIcon, DeleteIcon, AddIcon } from '../assets/icons/CustomerListIcons';
 
 const CustomersList: React.FC = () => {

@@ -10,11 +10,11 @@ import {
   ShieldUserIcon,
 } from '../assets/icons/DashboardIcons';
 
-type DashboardSidebarProps = {
+type SidebarProps = {
   className?: string;
 };
 
-const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ className }) => {
+const Sidebar: React.FC<SidebarProps> = ({ className }) => {
   return (
     <>
       <style>{`
@@ -226,4 +226,4 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ className }) => {
   );
 };
 
-export default DashboardSidebar;
+export default Sidebar;

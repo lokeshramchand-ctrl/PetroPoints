@@ -1,5 +1,5 @@
 import React from 'react'
-import DashboardSidebar from './DashboardSidebar'
+import DashboardSidebar from './Sidebar'
 
 type FeaturePlaceholderProps = {
   title: string

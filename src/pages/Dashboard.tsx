@@ -1,5 +1,5 @@
 import React from 'react';
-import DashboardSidebar from './DashboardSidebar';
+import DashboardSidebar from './Sidebar';
 import { PlusIcon, SearchIcon, TrendUpIcon, UpRightIcon } from '../assets/icons/DashboardIcons';
 import { ThemeToggle } from '../theme/ThemeToggle';
 
