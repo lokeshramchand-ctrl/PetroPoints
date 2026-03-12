@@ -1,11 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import DashboardSidebar from './DashboardSidebar';
 import { PlusIcon, SearchIcon, TrendUpIcon, UpRightIcon } from '../assets/icons/DashboardIcons';
 import { ThemeToggle } from '../theme/ThemeToggle';
 
 const Dashboard: React.FC = () => {
-  const [activeMenu, setActiveMenu] = useState('dashboard');
-
   // Mock data adapted for the new design
   const stats = [
     {
@@ -496,7 +494,7 @@ const Dashboard: React.FC = () => {
       `}</style>
 
       <div className="app-container">
-        <DashboardSidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
+        <DashboardSidebar />
 
         <main className="main-content">
           <div className="top-nav">

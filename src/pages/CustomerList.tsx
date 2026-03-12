@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import DashboardSidebar from './DashboardSidebar';
 
 const CustomersList: React.FC = () => {
-  const [activeMenu, setActiveMenu] = useState('customers');
-
   // Mock data utilizing the exact fields you requested
   const customers = [
     {
@@ -293,19 +291,13 @@ const CustomersList: React.FC = () => {
       `}</style>
 
       <div className="app-container">
-        <DashboardSidebar activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
+        <DashboardSidebar />
 
         <main className="main-content">
           <div className="page-container">
             <header className="page-header">
               <h1 className="page-title">Customers</h1>
-              <button className="btn-add">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="12" y1="5" x2="12" y2="19" />
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                </svg>
-                Add Customer
-              </button>
+        
             </header>
 
             <div className="table-wrapper">

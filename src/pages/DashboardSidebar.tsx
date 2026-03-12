@@ -1,18 +1,20 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import {
   AwardPointsIcon,
   CustomersIcon,
   GridMenuIcon,
+  LogOutIcon,
   RedeemPointsIcon,
+  SettingsIcon,
   ShieldUserIcon,
 } from '../assets/icons/DashboardIcons';
 
 type DashboardSidebarProps = {
-  activeMenu: string;
-  setActiveMenu: React.Dispatch<React.SetStateAction<string>>;
+  className?: string;
 };
 
-const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ activeMenu, setActiveMenu }) => {
+const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ className }) => {
   return (
     <>
       <style>{`
@@ -172,76 +174,50 @@ const DashboardSidebar: React.FC<DashboardSidebarProps> = ({ activeMenu, setActi
         }
       `}</style>
 
-      <aside className="sidebar">
+      <aside className={className ? `sidebar ${className}` : 'sidebar'}>
         <div className="brand">
           <ShieldUserIcon className="brand-icon" />
           <span className="brand-title">PetroPoints</span>
         </div>
 
         <div className="sidebar-nav-container">
-          {/* --- Main Menu Group --- */}
           <div className="menu-group">
             <div className="menu-label">Menu</div>
             <nav className="nav-menu">
-              <button
-                className={`nav-item ${activeMenu === 'dashboard' ? 'active' : ''}`}
-                onClick={() => setActiveMenu('dashboard')}
-              >
+              <NavLink to="/dashboard" end className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
                 <GridMenuIcon />
                 Dashboard
-              </button>
+              </NavLink>
 
-              <button
-                className={`nav-item ${activeMenu === 'customers' ? 'active' : ''}`}
-                onClick={() => setActiveMenu('customers')}
-              >
+              <NavLink to="/customers" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
                 <CustomersIcon />
                 Customers List
-              </button>
+              </NavLink>
 
-              <button
-                className={`nav-item ${activeMenu === 'award' ? 'active' : ''}`}
-                onClick={() => setActiveMenu('award')}
-              >
+              <NavLink to="/award-points" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
                 <AwardPointsIcon />
                 Award Points
-              </button>
+              </NavLink>
 
-              <button
-                className={`nav-item ${activeMenu === 'redeem' ? 'active' : ''}`}
-                onClick={() => setActiveMenu('redeem')}
-              >
+              <NavLink to="/redeem-points" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
                 <RedeemPointsIcon />
                 Redeem Points
-              </button>
+              </NavLink>
             </nav>
           </div>
 
           <div className="menu-group general">
             <div className="menu-label">General</div>
             <nav className="nav-menu">
-              <button
-                className={`nav-item ${activeMenu === 'settings' ? 'active' : ''}`}
-                onClick={() => setActiveMenu('settings')}
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="3" />
-                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-                </svg>
+              <NavLink to="/settings" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+                <SettingsIcon />
                 Settings
-              </button>
+              </NavLink>
 
-              <button
-                className={`nav-item logout ${activeMenu === 'logout' ? 'active' : ''}`}
-                onClick={() => setActiveMenu('logout')}
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                  <polyline points="16 17 21 12 16 7" />
-                  <line x1="21" y1="12" x2="9" y2="12" />
-                </svg>
+              <NavLink to="/login" className="nav-item logout">
+                <LogOutIcon />
                 Log out
-              </button>
+              </NavLink>
             </nav>
           </div>
         </div>
