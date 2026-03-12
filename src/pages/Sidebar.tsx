@@ -44,7 +44,6 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
           height: 44px;
           padding: 0;
           cursor: pointer;
-          display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
