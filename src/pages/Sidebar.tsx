@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   AwardPointsIcon,
@@ -15,9 +15,82 @@ type SidebarProps = {
 };
 
 const Sidebar: React.FC<SidebarProps> = ({ className }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const closeSidebar = () => {
+    setIsOpen(false);
+  };
   return (
     <>
       <style>{`
+        .sidebar-wrapper {
+          position: relative;
+        }
+
+        .hamburger-btn {
+          display: none;
+          position: fixed;
+          top: clamp(12px, 2vw, 16px);
+          left: clamp(12px, 2vw, 16px);
+          z-index: 1001;
+          background: var(--surface-main, #ffffff);
+          border: 1px solid var(--border-color, #eaedf1);
+          border-radius: 8px;
+          width: 44px;
+          height: 44px;
+          padding: 0;
+          cursor: pointer;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 5px;
+          transition: all 0.2s ease;
+        }
+
+        .hamburger-btn:hover {
+          background-color: var(--surface-soft, #f9fafb);
+        }
+
+        .hamburger-btn span {
+          width: 20px;
+          height: 2px;
+          background-color: var(--text-main, #111827);
+          border-radius: 1px;
+          transition: all 0.3s ease;
+        }
+
+        .hamburger-btn.open span:nth-child(1) {
+          transform: rotate(45deg) translate(7px, 7px);
+        }
+
+        .hamburger-btn.open span:nth-child(2) {
+          opacity: 0;
+        }
+
+        .hamburger-btn.open span:nth-child(3) {
+          transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        .sidebar-overlay {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 999;
+        }
+
+        .sidebar-overlay.open {
+          display: block;
+        }
+
         .sidebar {
           padding: clamp(16px, 2.5vw, 24px) clamp(12px, 2vw, 20px);
           display: flex;
@@ -133,6 +206,32 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
 
         /* Structural Axis Flip for Tablets/Mobile */
         @media (max-width: 1024px) {
+          .hamburger-btn {
+            display: flex;
+          }
+
+          .sidebar-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100vh;
+            background: var(--surface-main, #ffffff);
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            border-radius: 0;
+          }
+
+          .sidebar-wrapper.open {
+            transform: translateX(0);
+          }
+
+          .sidebar {
+            height: 100%;
+          }
+
           .sidebar .brand {
             margin-bottom: 16px;
             padding: 0;
@@ -142,86 +241,120 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
             display: none;
           }
 
-          /* Transform the container into a horizontal scrolling area */
+          /* Transform the container into a vertical menu on mobile */
           .sidebar-nav-container {
-            flex-direction: row;
-            overflow-x: auto;
-            gap: 8px;
-            padding-bottom: 8px;
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE/Edge */
-          }
-          
-          .sidebar-nav-container::-webkit-scrollbar {
-            display: none; /* Chrome/Safari/Opera */
+            flex-direction: column;
+            overflow-y: auto;
+            padding-bottom: 20px;
           }
 
           .sidebar .menu-group {
-            margin: 0 !important; /* Overrides the bottom pushing */
-            display: contents; /* Flattens DOM so both nav-menus flow together */
+            margin: 0 0 clamp(16px, 3vh, 24px) 0;
+          }
+
+          .sidebar .menu-group.general {
+            margin-top: auto;
           }
 
           .sidebar .nav-menu {
-            flex-direction: row;
-            gap: 8px;
+            flex-direction: column;
+            gap: 4px;
           }
 
           .sidebar .nav-item {
-            white-space: nowrap;
-            flex-shrink: 0;
-            width: auto;
+            padding: 12px 16px;
+            font-size: 15px;
           }
         }
       `}</style>
 
-      <aside className={className ? `sidebar ${className}` : 'sidebar'}>
-        <div className="brand">
-          <ShieldUserIcon className="brand-icon" />
-          <span className="brand-title">PetroPoints</span>
-        </div>
+      <button
+        className={`hamburger-btn ${isOpen ? 'open' : ''}`}
+        onClick={toggleSidebar}
+        aria-label="Toggle sidebar"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
 
-        <div className="sidebar-nav-container">
-          <div className="menu-group">
-            <div className="menu-label">Menu</div>
-            <nav className="nav-menu">
-              <NavLink to="/dashboard" end className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
-                <GridMenuIcon />
-                Dashboard
-              </NavLink>
+      <div className={`sidebar-overlay ${isOpen ? 'open' : ''}`} onClick={closeSidebar}></div>
 
-              <NavLink to="/customers" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
-                <CustomersIcon />
-                Customers List
-              </NavLink>
-
-              <NavLink to="/award-points" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
-                <AwardPointsIcon />
-                Award Points
-              </NavLink>
-
-              <NavLink to="/redeem-points" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
-                <RedeemPointsIcon />
-                Redeem Points
-              </NavLink>
-            </nav>
+      <div className={`sidebar-wrapper ${isOpen ? 'open' : ''}`}>
+        <aside className={className ? `sidebar ${className}` : 'sidebar'}>
+          <div className="brand">
+            <ShieldUserIcon className="brand-icon" />
+            <span className="brand-title">PetroPoints</span>
           </div>
 
-          <div className="menu-group general">
-            <div className="menu-label">General</div>
-            <nav className="nav-menu">
-              <NavLink to="/settings" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
-                <SettingsIcon />
-                Settings
-              </NavLink>
+          <div className="sidebar-nav-container">
+            <div className="menu-group">
+              <div className="menu-label">Menu</div>
+              <nav className="nav-menu">
+                <NavLink
+                  to="/dashboard"
+                  end
+                  className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+                  onClick={closeSidebar}
+                >
+                  <GridMenuIcon />
+                  Dashboard
+                </NavLink>
 
-              <NavLink to="/login" className="nav-item logout">
-                <LogOutIcon />
-                Log out
-              </NavLink>
-            </nav>
+                <NavLink
+                  to="/customers"
+                  className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+                  onClick={closeSidebar}
+                >
+                  <CustomersIcon />
+                  Customers List
+                </NavLink>
+
+                <NavLink
+                  to="/award-points"
+                  className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+                  onClick={closeSidebar}
+                >
+                  <AwardPointsIcon />
+                  Award Points
+                </NavLink>
+
+                <NavLink
+                  to="/redeem-points"
+                  className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+                  onClick={closeSidebar}
+                >
+                  <RedeemPointsIcon />
+                  Redeem Points
+                </NavLink>
+              </nav>
+            </div>
+
+            <div className="menu-group general">
+              <div className="menu-label">General</div>
+              <nav className="nav-menu">
+                <NavLink
+                  to="/settings"
+                  className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+                  onClick={closeSidebar}
+                >
+                  <SettingsIcon />
+                  Settings
+                </NavLink>
+
+                <NavLink
+                  to="/login"
+                  className="nav-item logout"
+                  onClick={closeSidebar}
+                >
+                  <LogOutIcon />
+                  Log out
+                </NavLink>
+              </nav>
+            </div>
           </div>
-        </div>
-      </aside>
+        </aside>
+      </div>
     </>
   );
 };
