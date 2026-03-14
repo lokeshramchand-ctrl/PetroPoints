@@ -44,7 +44,7 @@ const LoginScreen: React.FC = () => {
           width: 100%;
           max-width: 420px;
           background: var(--surface-main);
-          border-radius: 32px; /* Super curvy */
+          border-radius: 20px;
           padding: 48px 40px;
           box-shadow: var(--shadow-card);
           display: flex;
@@ -108,7 +108,7 @@ const LoginScreen: React.FC = () => {
           width: 100%;
           padding: 16px 20px 16px 48px;
           border: 2px solid transparent;
-          border-radius: 20px; /* Highly rounded inputs */
+          border-radius: 12px;
           background: var(--bg-input);
           font-size: 15px;
           color: var(--text-main);
@@ -125,7 +125,7 @@ const LoginScreen: React.FC = () => {
         .input-field:focus {
           background: var(--surface-main);
           border-color: var(--primary-dark);
-          box-shadow: 0 4px 12px rgba(23, 84, 51, 0.08);
+          box-shadow: 0 0 0 3px rgba(47, 52, 55, 0.14);
         }
 
         .input-field:focus + .input-icon,
@@ -143,7 +143,7 @@ const LoginScreen: React.FC = () => {
         .btn {
           width: 100%;
           padding: 16px;
-          border-radius: 20px; /* Highly rounded buttons */
+          border-radius: 12px;
           font-size: 15px;
           font-weight: 600;
           cursor: pointer;
@@ -158,13 +158,13 @@ const LoginScreen: React.FC = () => {
         .btn-primary {
           background: var(--primary-dark);
           color: var(--surface-main);
-          box-shadow: 0 8px 16px rgba(23, 84, 51, 0.15);
+          box-shadow: 0 8px 18px rgba(15, 15, 15, 0.14);
         }
 
         .btn-primary:hover {
           background: var(--primary-hover);
           transform: translateY(-1px);
-          box-shadow: 0 10px 20px rgba(23, 84, 51, 0.2);
+          box-shadow: 0 12px 22px rgba(15, 15, 15, 0.18);
         }
 
         .btn-primary:active {

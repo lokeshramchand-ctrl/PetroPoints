@@ -127,7 +127,7 @@ const CustomersList: React.FC = () => {
           align-items: center;
           gap: 8px;
           padding: 10px 20px;
-          background: var(--primary-dark, #175433);
+          background: var(--primary-dark, #2f3437);
           color: #ffffff;
           border: none;
           border-radius: 12px;
@@ -135,11 +135,11 @@ const CustomersList: React.FC = () => {
           font-weight: 600;
           cursor: pointer;
           transition: all 0.2s ease;
-          box-shadow: 0 4px 12px rgba(23, 84, 51, 0.15);
+          box-shadow: 0 4px 12px rgba(15, 15, 15, 0.12);
         }
 
         .btn-add:hover {
-          background: var(--primary-light, #207245);
+          background: var(--primary-light, #454b50);
           transform: translateY(-1px);
         }
 
@@ -228,16 +228,16 @@ const CustomersList: React.FC = () => {
         }
 
         .btn-edit {
-          background: linear-gradient(135deg, rgba(20, 184, 166, 0.16), rgba(45, 212, 191, 0.08));
-          color: #0f766e;
-          border-color: rgba(20, 184, 166, 0.3);
-          box-shadow: 0 6px 18px rgba(20, 184, 166, 0.15);
+          background: var(--surface-soft, #f9fafb);
+          color: var(--text-main, #111827);
+          border-color: var(--border-color, #eaedf1);
+          box-shadow: none;
         }
 
         .btn-edit:hover {
-          background: linear-gradient(135deg, rgba(20, 184, 166, 0.24), rgba(45, 212, 191, 0.14));
+          background: var(--surface-muted, #efefec);
           transform: translateY(-1px);
-          box-shadow: 0 10px 22px rgba(20, 184, 166, 0.24);
+          box-shadow: 0 8px 18px rgba(15, 15, 15, 0.08);
         }
 
         .btn-edit:hover svg {
@@ -245,16 +245,16 @@ const CustomersList: React.FC = () => {
         }
 
         .btn-delete {
-          background: linear-gradient(135deg, rgba(239, 68, 68, 0.14), rgba(248, 113, 113, 0.08));
-          color: #b91c1c;
-          border-color: rgba(239, 68, 68, 0.28);
-          box-shadow: 0 6px 18px rgba(239, 68, 68, 0.14);
+          background: var(--surface-soft, #f9fafb);
+          color: var(--text-muted, #6b7280);
+          border-color: var(--border-color, #eaedf1);
+          box-shadow: none;
         }
 
         .btn-delete:hover {
-          background: linear-gradient(135deg, rgba(239, 68, 68, 0.24), rgba(248, 113, 113, 0.14));
+          background: var(--surface-muted, #efefec);
           transform: translateY(-1px);
-          box-shadow: 0 10px 22px rgba(239, 68, 68, 0.22);
+          box-shadow: 0 8px 18px rgba(15, 15, 15, 0.08);
         }
 
         .btn-delete:hover svg {

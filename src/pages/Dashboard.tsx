@@ -53,23 +53,6 @@ const Dashboard: React.FC = () => {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-        :root {
-          /* Added standard variables in case they aren't globally defined */
-          --primary-dark: #175433;
-          --primary-light: #207245;
-          --bg-main: #f4f6f8;
-          --surface-main: #ffffff;
-          --surface-soft: #f9fafb;
-          --surface-muted: #f0fdf4;
-          --text-main: #111827;
-          --text-muted: #6b7280;
-          --text-soft: #9ca3af;
-          --border-color: #eaedf1;
-          --shadow-soft: 0 4px 20px rgba(0,0,0,0.02);
-          --promo-gradient: linear-gradient(145deg, #0f172a, #022c22);
-          --avatar-bg: #e2e8f0;
-        }
-
         * {
           box-sizing: border-box;
           font-family: 'Inter', sans-serif;
@@ -373,9 +356,9 @@ const Dashboard: React.FC = () => {
         }
 
         .stat-card.primary {
-          background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
-          border: none;
-          color: white;
+          background: var(--surface-muted);
+          border: 1px solid var(--border-color);
+          color: var(--text-main);
         }
 
         .card-header {
@@ -393,7 +376,7 @@ const Dashboard: React.FC = () => {
         }
 
         .stat-card.primary .card-title {
-          color: rgba(255, 255, 255, 0.9);
+          color: var(--text-main);
         }
 
         .arrow-icon {
@@ -409,9 +392,9 @@ const Dashboard: React.FC = () => {
         }
 
         .stat-card.primary .arrow-icon {
-          border-color: rgba(255, 255, 255, 0.3);
-          background: white;
-          color: var(--primary-dark);
+          border-color: var(--border-color);
+          background: var(--surface-main);
+          color: var(--text-main);
         }
 
         .card-value {
@@ -431,7 +414,7 @@ const Dashboard: React.FC = () => {
         }
 
         .stat-card.primary .trend-container {
-          color: rgba(255, 255, 255, 0.8);
+          color: var(--text-muted);
         }
 
         .trend-badge {
@@ -447,8 +430,8 @@ const Dashboard: React.FC = () => {
         }
 
         .stat-card.primary .trend-badge {
-          background: rgba(255, 255, 255, 0.2);
-          color: white;
+          background: var(--surface-main);
+          color: var(--text-main);
         }
 
         /* --- Responsive Breakpoints --- */
