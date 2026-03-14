@@ -4,6 +4,7 @@ import DashboardPage from '../pages/Dashboard'
 import LoginPage from '../pages/Login'
 import CustomerList from '../pages/CustomerList'
 import LoyaltyAdminForm from '../pages/Awards'
+import RedeemPointsPage from '../pages/RedeemPoints'
 
 type AppRoute = {
 	path: string
@@ -15,6 +16,7 @@ const appRoutes: AppRoute[] = [
 	{ path: '/dashboard', element: <DashboardPage /> },
 	{ path: '/customers', element: <CustomerList /> },
 	{ path: '/awards', element: <LoyaltyAdminForm /> },
+	{ path: '/redeem-points', element: <RedeemPointsPage /> },
 ]
 
 export function AppRoutes() {
