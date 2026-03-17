@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
 import {
   AwardPointsIcon,
   CustomersIcon,
@@ -14,32 +14,43 @@ type SidebarProps = {
   className?: string;
 };
 
-const Sidebar: React.FC<SidebarProps> = ({ className }) => {
+const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
 
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen);
-  };
+  const toggleSidebar = () => setIsOpen(!isOpen);
+  const closeSidebar = () => setIsOpen(false);
 
-  const closeSidebar = () => {
-    setIsOpen(false);
-  };
+  // Auto-close sidebar on mobile when navigating
+  useEffect(() => {
+    closeSidebar();
+  }, [location.pathname]);
+
+  // Prevent background scrolling when mobile menu is open
+  useEffect(() => {
+    if (isOpen && window.innerWidth <= 1024) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   return (
     <>
       <style>{`
-        .sidebar-wrapper {
-          position: relative;
-        }
-
+        /* --- Mobile Hamburger Button --- */
         .hamburger-btn {
           display: none;
           position: fixed;
-          top: clamp(12px, 2vw, 16px);
-          left: clamp(12px, 2vw, 16px);
+          top: 16px;
+          left: 16px;
           z-index: 1001;
-          background: var(--surface-main, #ffffff);
-          border: 1px solid var(--border-color, #eaedf1);
-          border-radius: 8px;
+          background: var(--surface-main);
+          border: 1px solid var(--border-color);
+          border-radius: 12px;
           width: 44px;
           height: 44px;
           padding: 0;
@@ -49,22 +60,23 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
           justify-content: center;
           gap: 5px;
           transition: all 0.2s ease;
+          box-shadow: var(--shadow-soft);
         }
 
         .hamburger-btn:hover {
-          background-color: var(--surface-soft, #f9fafb);
+          background-color: var(--surface-soft);
         }
 
         .hamburger-btn span {
           width: 20px;
           height: 2px;
-          background-color: var(--text-main, #111827);
-          border-radius: 1px;
-          transition: all 0.3s ease;
+          background-color: var(--text-main);
+          border-radius: 2px;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .hamburger-btn.open span:nth-child(1) {
-          transform: rotate(45deg) translate(7px, 7px);
+          transform: rotate(45deg) translate(5px, 5px);
         }
 
         .hamburger-btn.open span:nth-child(2) {
@@ -72,288 +84,283 @@ const Sidebar: React.FC<SidebarProps> = ({ className }) => {
         }
 
         .hamburger-btn.open span:nth-child(3) {
-          transform: rotate(-45deg) translate(7px, -7px);
+          transform: rotate(-45deg) translate(5px, -5px);
         }
 
+        /* --- Mobile Overlay --- */
         .sidebar-overlay {
           display: none;
           position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(0, 0, 0, 0.5);
+          top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(15, 23, 42, 0.4);
+          backdrop-filter: blur(4px);
+          -webkit-backdrop-filter: blur(4px);
           z-index: 999;
+          opacity: 0;
+          transition: opacity 0.3s ease;
         }
 
         .sidebar-overlay.open {
           display: block;
+          opacity: 1;
         }
 
-        .sidebar {
-          padding: clamp(16px, 2.5vw, 24px) clamp(12px, 2vw, 20px);
+        /* --- Sidebar Container (Desktop) --- */
+        .sidebar-drawer {
+          flex: 0 0 clamp(220px, 20vw, 280px);
+          background-color: var(--surface-main);
+          border-radius: 24px;
           display: flex;
           flex-direction: column;
-          min-height: 100%;
-          justify-content: flex-start;
+          padding: 24px 20px;
+          border: 1px solid var(--border-color);
+          box-shadow: var(--shadow-soft);
+          position: sticky;
+          top: clamp(12px, 2vw, 24px);
+          height: calc(100vh - clamp(24px, 4vw, 48px));
+          transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          z-index: 1000;
+          overflow-y: auto;
         }
 
-        .sidebar .brand {
+        /* Hide scrollbar for clean aesthetic */
+        .sidebar-drawer::-webkit-scrollbar {
+          display: none;
+        }
+        .sidebar-drawer {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+
+        /* --- Brand Header --- */
+        .brand {
           display: flex;
           align-items: center;
-          gap: clamp(8px, 1vw, 12px);
-          margin-bottom: clamp(24px, 4vh, 40px);
-          padding: 0 clamp(4px, 0.5vw, 8px);
+          gap: 12px;
+          margin-bottom: 40px;
+          padding: 0 8px;
         }
 
-        .sidebar .brand-icon {
-          color: var(--primary-dark, #175433);
-          width: clamp(24px, 2.5vw, 28px);
-          height: clamp(24px, 2.5vw, 28px);
+        .brand-icon {
+          color: var(--text-main);
+          width: 28px;
+          height: 28px;
           flex-shrink: 0;
         }
 
-        .sidebar .brand-title {
-          font-size: clamp(16px, 1.5vw + 8px, 20px);
+        .brand-title {
+          font-size: 20px;
           font-weight: 700;
+          color: var(--text-main);
           letter-spacing: -0.03em;
         }
 
-        /* Container for all menus to manage vertical spacing */
+        /* --- Navigation Layout --- */
         .sidebar-nav-container {
           display: flex;
           flex-direction: column;
-          flex: 1; /* Takes up remaining vertical space */
-          min-height: 0;
+          flex: 1;
         }
 
-        .sidebar .menu-group {
+        .menu-group {
           display: flex;
           flex-direction: column;
-          margin-bottom: clamp(16px, 3vh, 32px);
+          margin-bottom: 32px;
         }
 
-        /* Pushes the General menu to the bottom on desktop */
-        .sidebar .menu-group.general {
+        .menu-group.general {
           margin-top: auto;
           margin-bottom: 0;
         }
 
-        .sidebar .menu-label {
-          font-size: clamp(10px, 1vw + 2px, 12px);
+        .menu-label {
+          font-size: 12px;
           font-weight: 600;
-          color: var(--text-soft, #9ca3af);
-          margin-bottom: clamp(8px, 1.5vh, 12px);
-          padding: 0 clamp(4px, 0.5vw, 8px);
+          color: var(--text-soft);
+          margin-bottom: 12px;
+          padding: 0 12px;
           text-transform: uppercase;
           letter-spacing: 0.05em;
         }
 
-        .sidebar .nav-menu {
+        .nav-menu {
           display: flex;
           flex-direction: column;
-          gap: clamp(2px, 0.5vh, 4px);
+          gap: 4px;
         }
 
-        .sidebar .nav-item {
+        /* --- Navigation Items --- */
+        .nav-item {
           display: flex;
           align-items: center;
-          gap: clamp(8px, 1vw, 12px);
-          padding: clamp(10px, 1.2vh, 12px) clamp(12px, 1.5vw, 16px);
+          gap: 12px;
+          padding: 10px 14px;
           border-radius: 12px;
-          color: var(--text-muted, #6b7280);
+          color: var(--text-muted);
           text-decoration: none;
-          font-size: clamp(13px, 1vw + 4px, 15px);
+          font-size: 14px;
           font-weight: 500;
           transition: all 0.2s ease;
-          cursor: pointer;
           border: none;
           background: transparent;
-          text-align: left;
+          cursor: pointer;
         }
 
-        .sidebar .nav-item svg {
-          width: clamp(18px, 1.5vw, 20px);
-          height: clamp(18px, 1.5vw, 20px);
+        .nav-item svg {
+          width: 20px;
+          height: 20px;
           stroke-width: 2;
           flex-shrink: 0;
+          transition: color 0.2s ease;
         }
 
-        .sidebar .nav-item:hover {
-          background-color: var(--surface-soft, #f9fafb);
-          color: var(--text-main, #111827);
+        .nav-item:hover {
+          background-color: var(--surface-soft);
+          color: var(--text-main);
         }
 
-        .sidebar .nav-item.active {
-          color: var(--primary-dark, #175433);
+        .nav-item.active {
+          color: var(--text-main);
           font-weight: 600;
-          background-color: var(--surface-muted, #f0fdf4);
+          background-color: var(--surface-muted);
         }
 
-        .sidebar .nav-item.active svg {
-          stroke: var(--primary-dark, #175433);
+        .nav-item.active svg {
+          color: var(--text-main);
         }
 
-        /* Specific styling for the logout button hover state */
-        .sidebar .nav-item.logout:hover {
-          background-color: #fef2f2; /* Light red tint */
-          color: #dc2626; /* Red text */
-        }
-        .sidebar .nav-item.logout:hover svg {
-          stroke: #dc2626;
+        /* Distinct Logout Styling */
+        .nav-item.logout {
+          margin-top: 8px;
+          color: color-mix(in srgb, #dc2626 50%, var(--text-main));
+          background-color: transparent;
+          border: 1px solid transparent;
         }
 
-        /* Structural Axis Flip for Tablets/Mobile */
+        .nav-item.logout:hover {
+          background-color: color-mix(in srgb, #dc2626 10%, var(--surface-soft));
+          color: #dc2626;
+        }
+        .nav-item.logout:hover svg {
+          color: #dc2626;
+        }
+
+        /* --- Mobile Responsiveness --- */
         @media (max-width: 1024px) {
           .hamburger-btn {
             display: flex;
           }
 
-          .sidebar-wrapper {
+          .sidebar-drawer {
             position: fixed;
             top: 0;
             left: 0;
-            width: 280px;
             height: 100vh;
-            background: var(--surface-main, #ffffff);
-            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            transform: translateX(-100%);
-            transition: transform 0.3s ease;
+            width: 280px;
             border-radius: 0;
+            border: none;
+            border-right: 1px solid var(--border-color);
+            transform: translateX(-100%);
+            padding-top: 80px; /* Space for hamburger */
           }
 
-          .sidebar-wrapper.open {
+          .sidebar-drawer.open {
             transform: translateX(0);
+            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.1);
           }
-
-          .sidebar {
-            height: 100%;
-          }
-
-          .sidebar .brand {
-            margin-bottom: 16px;
-            padding: 0;
-          }
-
-          .sidebar .menu-label {
-            display: none;
-          }
-
-          /* Transform the container into a vertical menu on mobile */
-          .sidebar-nav-container {
-            flex-direction: column;
-            overflow-y: auto;
-            padding-bottom: 20px;
-          }
-
-          .sidebar .menu-group {
-            margin: 0 0 clamp(16px, 3vh, 24px) 0;
-          }
-
-          .sidebar .menu-group.general {
-            margin-top: auto;
-          }
-
-          .sidebar .nav-menu {
-            flex-direction: column;
-            gap: 4px;
-          }
-
-          .sidebar .nav-item {
-            padding: 12px 16px;
-            font-size: 15px;
+          
+          .brand {
+            padding-left: 12px;
           }
         }
       `}</style>
 
+      {/* Mobile Hamburger Trigger */}
       <button
         className={`hamburger-btn ${isOpen ? 'open' : ''}`}
         onClick={toggleSidebar}
-        aria-label="Toggle sidebar"
+        aria-label="Toggle navigation menu"
       >
         <span></span>
         <span></span>
         <span></span>
       </button>
 
-      <div className={`sidebar-overlay ${isOpen ? 'open' : ''}`} onClick={closeSidebar}></div>
+      {/* Mobile Backdrop Overlay */}
+      <div 
+        className={`sidebar-overlay ${isOpen ? 'open' : ''}`} 
+        onClick={closeSidebar} 
+        aria-hidden="true" 
+      />
 
-      <div className={`sidebar-wrapper ${isOpen ? 'open' : ''}`}>
-        <aside className={className ? `sidebar ${className}` : 'sidebar'}>
-          <div className="brand">
-            <ShieldUserIcon className="brand-icon" />
-            <span className="brand-title">PetroPoints</span>
+      {/* Main Sidebar Wrapper */}
+      <aside className={`sidebar-drawer ${isOpen ? 'open' : ''} ${className}`}>
+        <div className="brand">
+          <ShieldUserIcon className="brand-icon" />
+          <span className="brand-title">PetroPoints</span>
+        </div>
+
+        <div className="sidebar-nav-container">
+          <div className="menu-group">
+            <div className="menu-label">Overview</div>
+            <nav className="nav-menu">
+              <NavLink
+                to="/dashboard"
+                end
+                className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+              >
+                <GridMenuIcon />
+                Dashboard
+              </NavLink>
+
+              <NavLink
+                to="/customers"
+                className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+              >
+                <CustomersIcon />
+                Customers List
+              </NavLink>
+
+              <NavLink
+                to="/awards"
+                className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+              >
+                <AwardPointsIcon />
+                Award Points
+              </NavLink>
+
+              <NavLink
+                to="/redeem-points"
+                className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+              >
+                <RedeemPointsIcon />
+                Redeem Points
+              </NavLink>
+            </nav>
           </div>
 
-          <div className="sidebar-nav-container">
-            <div className="menu-group">
-              <div className="menu-label">Menu</div>
-              <nav className="nav-menu">
-                <NavLink
-                  to="/dashboard"
-                  end
-                  className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
-                  onClick={closeSidebar}
-                >
-                  <GridMenuIcon />
-                  Dashboard
-                </NavLink>
+          <div className="menu-group general">
+            <div className="menu-label">System</div>
+            <nav className="nav-menu">
+              <NavLink
+                to="/settings"
+                className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+              >
+                <SettingsIcon />
+                Settings
+              </NavLink>
 
-                <NavLink
-                  to="/customers"
-                  className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
-                  onClick={closeSidebar}
-                >
-                  <CustomersIcon />
-                  Customers List
-                </NavLink>
-
-                <NavLink
-                  to="/awards"
-                  className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
-                  onClick={closeSidebar}
-                >
-                  <AwardPointsIcon />
-                  Award Points
-                </NavLink>
-
-                <NavLink
-                  to="/redeem-points"
-                  className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
-                  onClick={closeSidebar}
-                >
-                  <RedeemPointsIcon />
-                  Redeem Points
-                </NavLink>
-              </nav>
-            </div>
-
-            <div className="menu-group general">
-              <div className="menu-label">General</div>
-              <nav className="nav-menu">
-                <NavLink
-                  to="/settings"
-                  className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
-                  onClick={closeSidebar}
-                >
-                  <SettingsIcon />
-                  Settings
-                </NavLink>
-
-                <NavLink
-                  to="/login"
-                  className="nav-item logout"
-                  onClick={closeSidebar}
-                >
-                  <LogOutIcon />
-                  Log out
-                </NavLink>
-              </nav>
-            </div>
+              <NavLink
+                to="/login"
+                className="nav-item logout"
+              >
+                <LogOutIcon />
+                Log out
+              </NavLink>
+            </nav>
           </div>
-        </aside>
-      </div>
+        </div>
+      </aside>
     </>
   );
 };

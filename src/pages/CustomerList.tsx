@@ -137,6 +137,19 @@ const CustomersList: React.FC = () => {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
+        :root {
+          /* Fluid Spacing Variables */
+          --space-xs: clamp(4px, 0.5vw, 8px);
+          --space-sm: clamp(8px, 1vw, 12px);
+          --space-md: clamp(12px, 2vw, 16px);
+          --space-lg: clamp(16px, 3vw, 24px);
+          --space-xl: clamp(24px, 4vw, 32px);
+          
+          /* Panel specific fluid padding for perfect edge bleeding */
+          --panel-pad-x: clamp(16px, 4vw, 24px);
+          --panel-pad-y: clamp(20px, 4vw, 24px);
+        }
+
         * {
           box-sizing: border-box;
           font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -154,25 +167,16 @@ const CustomersList: React.FC = () => {
         .app-container {
           display: flex;
           min-height: 100vh;
-          padding: clamp(12px, 2vw, 24px);
-          gap: clamp(12px, 2vw, 24px);
+          padding: var(--space-lg);
+          gap: var(--space-lg);
           align-items: flex-start;
           max-width: 1600px;
           margin: 0 auto;
         }
 
+        /* Sidebar container flex-basis is fluid */
         .sidebar {
           flex: 0 0 clamp(220px, 20vw, 280px);
-          background-color: var(--surface-main, #ffffff);
-          border-radius: 24px;
-          display: flex;
-          flex-direction: column;
-          padding: 24px;
-          border: 1px solid var(--border-color, #e2e8f0);
-          box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.02);
-          position: sticky;
-          top: clamp(12px, 2vw, 24px);
-          height: calc(100vh - clamp(24px, 4vw, 48px));
         }
 
         .main-content {
@@ -180,12 +184,13 @@ const CustomersList: React.FC = () => {
           display: flex;
           flex-direction: column;
           min-width: 0;
+          width: 100%;
         }
 
         .page-container {
           display: flex;
           flex-direction: column;
-          gap: 32px;
+          gap: var(--space-xl);
         }
 
         /* --- Header --- */
@@ -194,11 +199,11 @@ const CustomersList: React.FC = () => {
           justify-content: space-between;
           align-items: center;
           flex-wrap: wrap;
-          gap: 16px;
+          gap: var(--space-md);
         }
 
         .page-title {
-          font-size: clamp(24px, 3vw, 32px);
+          font-size: clamp(24px, 4vw, 32px);
           font-weight: 700;
           color: var(--text-main, #0f172a);
           margin: 0;
@@ -206,40 +211,49 @@ const CustomersList: React.FC = () => {
         }
 
         .btn-primary {
-          display: flex;
+          display: inline-flex;
           align-items: center;
-          gap: 8px;
-          padding: 10px 20px;
+          justify-content: center;
+          gap: var(--space-sm);
+          padding: clamp(10px, 1.5vw, 12px) clamp(16px, 2vw, 24px);
           background: var(--text-main, #0f172a);
           color: #ffffff;
           border: none;
           border-radius: 12px;
-          font-size: 14px;
+          font-size: clamp(13px, 2vw, 14px);
           font-weight: 600;
           cursor: pointer;
           transition: all 0.2s ease;
           box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+          white-space: nowrap;
         }
 
-        .btn-primary:hover {
+        .btn-primary:hover:not(:disabled) {
           background: #1e293b;
           transform: translateY(-1px);
           box-shadow: 0 6px 16px rgba(15, 23, 42, 0.2);
+        }
+
+        .btn-primary:disabled {
+          opacity: 0.7;
+          cursor: not-allowed;
         }
 
         /* --- Table Panel --- */
         .panel {
           background: var(--surface-main, #ffffff);
           border: 1px solid var(--border-color, #e2e8f0);
-          border-radius: 24px;
+          border-radius: clamp(16px, 2vw, 24px);
           box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.02);
-          padding: 24px;
+          padding: var(--panel-pad-y) var(--panel-pad-x);
           overflow: hidden;
         }
 
         .table-wrapper {
           overflow-x: auto;
-          margin: -24px; /* Bleed edges */
+          -webkit-overflow-scrolling: touch;
+          /* Dynamically bleed edges based on fluid padding */
+          margin: calc(-1 * var(--panel-pad-y)) calc(-1 * var(--panel-pad-x));
         }
 
         .customers-table {
@@ -251,8 +265,8 @@ const CustomersList: React.FC = () => {
         }
 
         .customers-table th {
-          padding: 16px 24px;
-          font-size: 12px;
+          padding: clamp(12px, 2vw, 16px) var(--panel-pad-x);
+          font-size: clamp(11px, 1.5vw, 12px);
           font-weight: 600;
           text-transform: uppercase;
           letter-spacing: 0.05em;
@@ -262,8 +276,8 @@ const CustomersList: React.FC = () => {
         }
 
         .customers-table td {
-          padding: 20px 24px;
-          font-size: 14px;
+          padding: clamp(16px, 2.5vw, 20px) var(--panel-pad-x);
+          font-size: clamp(13px, 2vw, 14px);
           font-weight: 500;
           color: var(--text-main, #334155);
           border-bottom: 1px solid var(--border-color, #f1f5f9);
@@ -281,7 +295,7 @@ const CustomersList: React.FC = () => {
         .cell-id, .cell-aadhaar {
           font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
           color: var(--text-soft, #64748b);
-          font-size: 13px;
+          font-size: clamp(12px, 1.5vw, 13px);
         }
 
         .cell-name {
@@ -293,7 +307,7 @@ const CustomersList: React.FC = () => {
         .actions-cell {
           display: flex;
           align-items: center;
-          gap: 8px;
+          gap: var(--space-sm);
         }
 
         .btn-action {
@@ -302,7 +316,7 @@ const CustomersList: React.FC = () => {
           gap: 6px;
           padding: 6px 12px;
           border-radius: 100px;
-          font-size: 13px;
+          font-size: clamp(12px, 1.5vw, 13px);
           font-weight: 600;
           cursor: pointer;
           border: 1px solid var(--border-color, #e2e8f0);
@@ -326,14 +340,14 @@ const CustomersList: React.FC = () => {
         .modal-overlay {
           position: fixed;
           top: 0; left: 0; right: 0; bottom: 0;
-          background: rgba(15, 23, 42, 0.3);
-          backdrop-filter: blur(8px);
-          -webkit-backdrop-filter: blur(8px);
+          background: rgba(15, 23, 42, 0.4);
+          backdrop-filter: blur(4px);
+          -webkit-backdrop-filter: blur(4px);
           display: flex;
           align-items: center;
           justify-content: center;
-          z-index: 100;
-          padding: 20px;
+          z-index: 1000;
+          padding: var(--space-md);
           animation: fadeIn 0.2s ease-out forwards;
         }
 
@@ -341,16 +355,17 @@ const CustomersList: React.FC = () => {
           background: #ffffff;
           width: 100%;
           max-width: 520px;
-          border-radius: 24px;
+          border-radius: clamp(16px, 3vw, 24px);
           box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
           display: flex;
           flex-direction: column;
           overflow: hidden;
+          max-height: 90vh; /* Prevent modal from exceeding viewport height */
           animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         .modal-header {
-          padding: 24px 32px 16px;
+          padding: var(--space-lg) var(--space-xl) var(--space-md);
           display: flex;
           justify-content: space-between;
           align-items: center;
@@ -359,7 +374,7 @@ const CustomersList: React.FC = () => {
 
         .modal-title {
           margin: 0;
-          font-size: 20px;
+          font-size: clamp(18px, 3vw, 20px);
           font-weight: 700;
           color: #0f172a;
           letter-spacing: -0.02em;
@@ -370,7 +385,7 @@ const CustomersList: React.FC = () => {
           border: none;
           color: #94a3b8;
           cursor: pointer;
-          padding: 4px;
+          padding: 6px;
           border-radius: 8px;
           display: flex;
           align-items: center;
@@ -384,39 +399,41 @@ const CustomersList: React.FC = () => {
         }
 
         .modal-body {
-          padding: 24px 32px;
+          padding: var(--space-lg) var(--space-xl);
           display: flex;
           flex-direction: column;
-          gap: 20px;
+          gap: var(--space-lg);
+          overflow-y: auto; /* Scrollable internal body if screen is too small */
         }
 
         .form-row {
           display: flex;
-          gap: 16px;
+          gap: var(--space-md);
         }
 
         .form-group {
           display: flex;
           flex-direction: column;
-          gap: 8px;
+          gap: var(--space-xs);
           flex: 1;
         }
 
         .form-label {
-          font-size: 13px;
+          font-size: clamp(12px, 1.5vw, 13px);
           font-weight: 600;
           color: #475569;
         }
 
         .form-input {
-          padding: 12px 16px;
+          padding: clamp(10px, 1.5vw, 12px) clamp(14px, 2vw, 16px);
           border: 1px solid #cbd5e1;
           border-radius: 12px;
-          font-size: 14px;
+          font-size: clamp(14px, 2vw, 15px); /* Prevents iOS input auto-zoom */
           color: #0f172a;
           outline: none;
           transition: all 0.2s ease;
           background: #ffffff;
+          width: 100%;
         }
 
         .form-input:focus {
@@ -431,21 +448,24 @@ const CustomersList: React.FC = () => {
         }
 
         .modal-footer {
-          padding: 16px 32px 24px;
+          padding: var(--space-lg) var(--space-xl) var(--space-xl);
           display: flex;
           justify-content: flex-end;
-          gap: 12px;
+          gap: var(--space-md);
           background: #f8fafc;
           border-top: 1px solid #f1f5f9;
         }
 
         .btn-secondary {
-          padding: 10px 20px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: clamp(10px, 1.5vw, 12px) clamp(16px, 2vw, 20px);
           background: #ffffff;
           color: #475569;
           border: 1px solid #cbd5e1;
           border-radius: 12px;
-          font-size: 14px;
+          font-size: clamp(13px, 2vw, 14px);
           font-weight: 600;
           cursor: pointer;
           transition: all 0.2s ease;
@@ -467,35 +487,37 @@ const CustomersList: React.FC = () => {
           to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        /* --- Responsiveness --- */
+        /* --- Global Responsiveness --- */
         @media (max-width: 1024px) {
           .app-container {
             flex-direction: column;
-            padding: 16px;
-          }
-
-          .sidebar {
-            width: 100%;
-            flex: none;
-            height: auto;
-            position: relative;
-            top: 0;
+            padding-top: 80px; /* Accounts for fixed mobile header in Sidebar */
           }
         }
 
         @media (max-width: 640px) {
+          .page-header {
+            flex-direction: column;
+            align-items: stretch;
+          }
+          
+          .btn-primary.page-header-btn {
+            width: 100%;
+            justify-content: center;
+            margin-top: 8px;
+          }
+
           .form-row {
             flex-direction: column;
-            gap: 20px;
+            gap: var(--space-lg);
           }
           
-          .modal-container {
-            border-radius: 20px;
+          .modal-footer {
+            flex-direction: column-reverse;
           }
           
-          .modal-body, .modal-header, .modal-footer {
-            padding-left: 20px;
-            padding-right: 20px;
+          .btn-secondary, .btn-primary {
+            width: 100%;
           }
         }
       `}</style>
@@ -508,8 +530,8 @@ const CustomersList: React.FC = () => {
             <header className="page-header">
               <h1 className="page-title">Customers</h1>
               
-              {/* Moved Add Customer button to top right */}
-              <button className="btn-primary" onClick={() => setIsModalOpen(true)}>
+              {/* Add Customer button flexes to full width on mobile via specific class */}
+              <button className="btn-primary page-header-btn" onClick={() => setIsModalOpen(true)}>
                 <AddIcon width={18} height={18} />
                 Add Customer
               </button>
@@ -565,9 +587,9 @@ const CustomersList: React.FC = () => {
             
             <div className="modal-header">
               <h2 className="modal-title">Add New Customer</h2>
-              <button className="btn-close" onClick={closeModal}>
+              <button className="btn-close" onClick={closeModal} aria-label="Close modal">
                 {/* Inline Close Icon */}
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="18" y1="6" x2="6" y2="18"></line>
                   <line x1="6" y1="6" x2="18" y2="18"></line>
                 </svg>

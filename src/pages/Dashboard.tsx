@@ -89,6 +89,18 @@ const Dashboard: React.FC = () => {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
+        :root {
+          /* Fluid Spacing Variables */
+          --space-sm: clamp(8px, 1vw, 12px);
+          --space-md: clamp(12px, 2vw, 16px);
+          --space-lg: clamp(16px, 3vw, 24px);
+          --space-xl: clamp(24px, 4vw, 32px);
+          
+          /* Panel specific fluid padding for perfect edge bleeding */
+          --panel-pad-x: clamp(16px, 4vw, 24px);
+          --panel-pad-y: clamp(20px, 4vw, 24px);
+        }
+
         * {
           box-sizing: border-box;
           font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -106,38 +118,31 @@ const Dashboard: React.FC = () => {
         .app-container {
           display: flex;
           min-height: 100vh;
-          padding: clamp(12px, 2vw, 24px);
-          gap: clamp(12px, 2vw, 24px);
+          padding: var(--space-lg);
+          gap: var(--space-lg);
           align-items: flex-start;
           max-width: 1600px;
           margin: 0 auto;
         }
 
+        /* Sidebar container styles handled by the imported Sidebar component's CSS, 
+           but we ensure the flex-basis is fluid here */
         .sidebar {
           flex: 0 0 clamp(220px, 20vw, 280px);
-          background-color: var(--surface-main, #ffffff);
-          border-radius: 24px;
-          display: flex;
-          flex-direction: column;
-          padding: 24px;
-          border: 1px solid var(--border-color, #e2e8f0);
-          box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.02);
-          position: sticky;
-          top: clamp(12px, 2vw, 24px);
-          height: calc(100vh - clamp(24px, 4vw, 48px));
         }
 
         .main-content {
           flex: 1;
           display: flex;
           flex-direction: column;
-          min-width: 0;
+          min-width: 0; /* Prevents flex children from blowing out container width */
+          width: 100%;
         }
 
         .page-container {
           display: flex;
           flex-direction: column;
-          gap: 32px;
+          gap: var(--space-xl);
         }
 
         /* --- Header --- */
@@ -146,11 +151,11 @@ const Dashboard: React.FC = () => {
           justify-content: space-between;
           align-items: flex-start;
           flex-wrap: wrap;
-          gap: 16px;
+          gap: var(--space-md);
         }
 
         .page-title {
-          font-size: clamp(24px, 3vw, 32px);
+          font-size: clamp(24px, 4vw, 32px);
           font-weight: 700;
           color: var(--text-main, #0f172a);
           margin: 0;
@@ -158,8 +163,8 @@ const Dashboard: React.FC = () => {
         }
 
         .page-subtitle {
-          margin: 8px 0 0;
-          font-size: 15px;
+          margin: clamp(4px, 1vw, 8px) 0 0;
+          font-size: clamp(13px, 2vw, 15px);
           color: var(--text-muted, #64748b);
           font-weight: 400;
         }
@@ -167,9 +172,9 @@ const Dashboard: React.FC = () => {
         .header-actions {
           display: flex;
           align-items: center;
-          gap: 12px;
+          gap: var(--space-sm);
           background: var(--surface-main, #ffffff);
-          padding: 8px 16px;
+          padding: var(--space-sm) var(--space-md);
           border-radius: 100px;
           border: 1px solid var(--border-color, #e2e8f0);
           box-shadow: 0 2px 8px rgba(0,0,0,0.02);
@@ -178,15 +183,16 @@ const Dashboard: React.FC = () => {
         /* --- Stats Grid --- */
         .stats-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-          gap: 20px;
+          /* min(100%, 220px) ensures cards don't break on ultra-small screens < 220px */
+          grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+          gap: var(--space-lg);
         }
 
         .stat-card {
           background: var(--surface-main, #ffffff);
           border: 1px solid var(--border-color, #e2e8f0);
-          border-radius: 20px;
-          padding: 24px;
+          border-radius: clamp(16px, 2vw, 20px);
+          padding: var(--panel-pad-x);
           box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.02);
           transition: transform 0.2s ease, box-shadow 0.2s ease;
           display: flex;
@@ -201,14 +207,14 @@ const Dashboard: React.FC = () => {
 
         .stat-label {
           margin: 0;
-          font-size: 13px;
+          font-size: clamp(12px, 1.5vw, 13px);
           font-weight: 600;
           color: var(--text-soft, #64748b);
         }
 
         .stat-value {
-          margin: 16px 0;
-          font-size: clamp(28px, 4vw, 36px);
+          margin: clamp(12px, 2vw, 16px) 0;
+          font-size: clamp(28px, 5vw, 36px);
           font-weight: 700;
           line-height: 1;
           letter-spacing: -0.04em;
@@ -219,7 +225,7 @@ const Dashboard: React.FC = () => {
           display: inline-flex;
           align-items: center;
           gap: 6px;
-          font-size: 13px;
+          font-size: clamp(11px, 1.5vw, 13px);
           font-weight: 600;
           padding: 4px 10px;
           border-radius: 100px;
@@ -237,9 +243,9 @@ const Dashboard: React.FC = () => {
         .panel {
           background: var(--surface-main, #ffffff);
           border: 1px solid var(--border-color, #e2e8f0);
-          border-radius: 24px;
+          border-radius: clamp(16px, 2vw, 24px);
           box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.02);
-          padding: 24px;
+          padding: var(--panel-pad-y) var(--panel-pad-x);
           overflow: hidden;
         }
 
@@ -247,12 +253,12 @@ const Dashboard: React.FC = () => {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 24px;
+          margin-bottom: var(--space-lg);
         }
 
         .panel-title {
           margin: 0;
-          font-size: 20px;
+          font-size: clamp(18px, 3vw, 20px);
           font-weight: 700;
           color: var(--text-main, #0f172a);
           letter-spacing: -0.03em;
@@ -260,20 +266,22 @@ const Dashboard: React.FC = () => {
 
         .activity-table-wrapper {
           overflow-x: auto;
-          margin: 0 -24px -24px -24px; /* Bleed edges */
+          -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+          /* Dynamically bleed edges based on the fluid padding variables */
+          margin: 0 calc(-1 * var(--panel-pad-x)) calc(-1 * var(--panel-pad-y)) calc(-1 * var(--panel-pad-x));
         }
 
         .activity-table {
           width: 100%;
-          min-width: 700px;
+          min-width: 650px; /* Forces scroll on mobile to protect layout */
           border-collapse: separate;
           border-spacing: 0;
           text-align: left;
         }
 
         .activity-table th {
-          padding: 16px 24px;
-          font-size: 12px;
+          padding: clamp(12px, 2vw, 16px) var(--panel-pad-x);
+          font-size: clamp(11px, 1.5vw, 12px);
           font-weight: 600;
           text-transform: uppercase;
           letter-spacing: 0.05em;
@@ -283,8 +291,8 @@ const Dashboard: React.FC = () => {
         }
 
         .activity-table td {
-          padding: 20px 24px;
-          font-size: 14px;
+          padding: clamp(16px, 2.5vw, 20px) var(--panel-pad-x);
+          font-size: clamp(13px, 2vw, 14px);
           font-weight: 500;
           color: var(--text-main, #334155);
           border-bottom: 1px solid var(--border-color, #f1f5f9);
@@ -306,7 +314,7 @@ const Dashboard: React.FC = () => {
           justify-content: center;
           padding: 4px 12px;
           border-radius: 100px;
-          font-size: 13px;
+          font-size: clamp(11px, 1.5vw, 13px);
           font-weight: 600;
         }
         
@@ -332,41 +340,26 @@ const Dashboard: React.FC = () => {
 
         .time-text {
           color: var(--text-soft, #94a3b8);
-          font-size: 13px;
+          font-size: clamp(12px, 1.5vw, 13px);
         }
 
-        /* --- Responsiveness --- */
+        /* --- Global Responsiveness --- */
         @media (max-width: 1024px) {
           .app-container {
             flex-direction: column;
-            padding: 16px;
-          }
-
-          .sidebar {
-            width: 100%;
-            flex: none;
-            height: auto;
-            position: relative;
-            top: 0;
+            /* Account for fixed mobile header from Sidebar */
+            padding-top: 80px; 
           }
         }
 
         @media (max-width: 640px) {
-          .stats-grid {
-            grid-template-columns: 1fr;
-          }
-          
           .page-header {
             flex-direction: column;
+            align-items: stretch;
           }
           
           .header-actions {
-            width: 100%;
             justify-content: space-between;
-          }
-          
-          .panel {
-            padding: 20px;
           }
         }
 
@@ -394,7 +387,7 @@ const Dashboard: React.FC = () => {
                 <p className="page-subtitle">Plan, monitor, and track customer loyalty activity.</p>
               </div>
               <div className="header-actions">
-                <span style={{ fontSize: '14px', fontWeight: 500 }}>Theme</span>
+                <span style={{ fontSize: 'clamp(13px, 2vw, 14px)', fontWeight: 500 }}>Theme</span>
                 <ThemeToggle variant="inline" />
               </div>
             </header>
@@ -436,7 +429,7 @@ const Dashboard: React.FC = () => {
                       <tr key={entry.id}>
                         <td style={{ fontWeight: 600 }}>{entry.action}</td>
                         <td className="customer-name">{entry.customer}</td>
-                        <td style={{ fontFamily: 'monospace', fontSize: '13px' }}>{entry.vehicle}</td>
+                        <td style={{ fontFamily: 'monospace', fontSize: 'clamp(12px, 1.5vw, 13px)' }}>{entry.vehicle}</td>
                         <td>
                           <span className={`badge ${getPointsClass(entry.points)}`}>
                             {entry.points}
