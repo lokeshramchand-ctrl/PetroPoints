@@ -10,30 +10,35 @@ const Dashboard: React.FC = () => {
       title: 'Total Customers',
       value: '12,480',
       trend: '+12% this month',
+      isPositive: true,
     },
     {
       id: 2,
       title: 'Total Vehicles',
       value: '8,234',
       trend: '+5% this month',
+      isPositive: true,
     },
     {
       id: 3,
       title: 'Total Points Awarded',
       value: '1.2M',
       trend: '+18% this month',
+      isPositive: true,
     },
     {
       id: 4,
       title: 'Today Customers',
       value: '142',
       trend: 'Updated just now',
+      isPositive: null,
     },
     {
       id: 5,
       title: 'Today Points',
       value: '4,550',
       trend: 'Updated just now',
+      isPositive: null,
     },
   ];
 
@@ -72,6 +77,13 @@ const Dashboard: React.FC = () => {
     },
   ];
 
+  // Helper function to style point badges dynamically
+  const getPointsClass = (points: string) => {
+    if (points.startsWith('+')) return 'badge-positive';
+    if (points.startsWith('-')) return 'badge-negative';
+    return 'badge-neutral';
+  };
+
   return (
     <>
       <style>{`
@@ -79,170 +91,204 @@ const Dashboard: React.FC = () => {
 
         * {
           box-sizing: border-box;
-          font-family: 'Inter', sans-serif;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
         body, html {
           margin: 0;
           padding: 0;
-          background-color: var(--bg-main, #f4f6f8);
-          color: var(--text-main, #111827);
+          background-color: var(--bg-main, #f8fafc);
+          color: var(--text-main, #0f172a);
+          -webkit-font-smoothing: antialiased;
         }
 
+        /* --- Layout --- */
         .app-container {
           display: flex;
           min-height: 100vh;
-          padding: clamp(8px, 2vw, 16px);
-          gap: clamp(8px, 2vw, 16px);
-          align-items: stretch;
+          padding: clamp(12px, 2vw, 24px);
+          gap: clamp(12px, 2vw, 24px);
+          align-items: flex-start;
+          max-width: 1600px;
+          margin: 0 auto;
         }
 
         .sidebar {
-          flex: 0 0 clamp(200px, 20vw, 280px);
+          flex: 0 0 clamp(220px, 20vw, 280px);
           background-color: var(--surface-main, #ffffff);
           border-radius: 24px;
           display: flex;
           flex-direction: column;
-          padding: 24px clamp(12px, 1.5vw, 20px);
-          box-shadow: var(--shadow-soft, 0 4px 20px rgba(0,0,0,0.02));
+          padding: 24px;
+          border: 1px solid var(--border-color, #e2e8f0);
+          box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.02);
           position: sticky;
-          top: clamp(8px, 2vw, 16px);
-          align-self: stretch;
-          min-height: calc(100vh - clamp(16px, 4vw, 32px));
+          top: clamp(12px, 2vw, 24px);
+          height: calc(100vh - clamp(24px, 4vw, 48px));
         }
 
         .main-content {
           flex: 1;
           display: flex;
           flex-direction: column;
-          background: var(--surface-main, #ffffff);
-          border-radius: 24px;
-          box-shadow: var(--shadow-soft, 0 4px 20px rgba(0,0,0,0.02));
           min-width: 0;
         }
 
         .page-container {
-          padding: clamp(20px, 3vw, 32px);
           display: flex;
           flex-direction: column;
-          gap: 24px;
+          gap: 32px;
         }
 
+        /* --- Header --- */
         .page-header {
           display: flex;
           justify-content: space-between;
-          align-items: center;
+          align-items: flex-start;
           flex-wrap: wrap;
           gap: 16px;
         }
 
         .page-title {
-          font-size: clamp(24px, 3vw, 28px);
+          font-size: clamp(24px, 3vw, 32px);
           font-weight: 700;
-          color: var(--text-main, #111827);
+          color: var(--text-main, #0f172a);
           margin: 0;
-          letter-spacing: -0.03em;
+          letter-spacing: -0.04em;
         }
 
         .page-subtitle {
-          margin: 6px 0 0;
-          font-size: 14px;
-          color: var(--text-muted, #6b7280);
+          margin: 8px 0 0;
+          font-size: 15px;
+          color: var(--text-muted, #64748b);
+          font-weight: 400;
         }
 
         .header-actions {
           display: flex;
           align-items: center;
-          gap: 10px;
+          gap: 12px;
+          background: var(--surface-main, #ffffff);
+          padding: 8px 16px;
+          border-radius: 100px;
+          border: 1px solid var(--border-color, #e2e8f0);
+          box-shadow: 0 2px 8px rgba(0,0,0,0.02);
         }
 
+        /* --- Stats Grid --- */
         .stats-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
-          gap: clamp(14px, 2vw, 18px);
+          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          gap: 20px;
         }
 
         .stat-card {
           background: var(--surface-main, #ffffff);
-          border: 1px solid var(--border-color, #eaedf1);
-          border-radius: 16px;
-          padding: 18px;
-          box-shadow: var(--shadow-soft, 0 4px 20px rgba(0,0,0,0.02));
+          border: 1px solid var(--border-color, #e2e8f0);
+          border-radius: 20px;
+          padding: 24px;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.02);
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+        }
+
+        .stat-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 6px rgba(0,0,0,0.02), 0 10px 24px rgba(0,0,0,0.04);
         }
 
         .stat-label {
           margin: 0;
-          font-size: 12px;
+          font-size: 13px;
           font-weight: 600;
-          color: var(--text-soft, #9ca3af);
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
+          color: var(--text-soft, #64748b);
         }
 
         .stat-value {
-          margin: 10px 0;
-          font-size: clamp(24px, 3vw, 32px);
-          line-height: 1.1;
-          letter-spacing: -0.03em;
-          color: var(--text-main, #111827);
+          margin: 16px 0;
+          font-size: clamp(28px, 4vw, 36px);
+          font-weight: 700;
+          line-height: 1;
+          letter-spacing: -0.04em;
+          color: var(--text-main, #0f172a);
         }
 
         .stat-trend {
           display: inline-flex;
           align-items: center;
           gap: 6px;
-          color: var(--text-muted, #6b7280);
           font-size: 13px;
-          font-weight: 500;
+          font-weight: 600;
+          padding: 4px 10px;
+          border-radius: 100px;
+          background: var(--surface-soft, #f1f5f9);
+          color: var(--text-muted, #475569);
+          width: fit-content;
         }
 
+        .trend-positive {
+          background: #ecfdf5;
+          color: #059669;
+        }
+
+        /* --- Table Panel --- */
         .panel {
           background: var(--surface-main, #ffffff);
-          border: 1px solid var(--border-color, #eaedf1);
-          border-radius: 20px;
-          box-shadow: var(--shadow-soft, 0 4px 20px rgba(0,0,0,0.02));
-          padding: clamp(16px, 2.2vw, 24px);
+          border: 1px solid var(--border-color, #e2e8f0);
+          border-radius: 24px;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.02);
+          padding: 24px;
+          overflow: hidden;
+        }
+
+        .panel-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 24px;
         }
 
         .panel-title {
-          margin: 0 0 16px;
-          font-size: 18px;
+          margin: 0;
+          font-size: 20px;
           font-weight: 700;
-          color: var(--text-main, #111827);
-          letter-spacing: -0.02em;
+          color: var(--text-main, #0f172a);
+          letter-spacing: -0.03em;
         }
 
         .activity-table-wrapper {
           overflow-x: auto;
-          border-radius: 14px;
-          border: 1px solid var(--border-color, #eaedf1);
+          margin: 0 -24px -24px -24px; /* Bleed edges */
         }
 
         .activity-table {
           width: 100%;
-          min-width: 720px;
-          border-collapse: collapse;
+          min-width: 700px;
+          border-collapse: separate;
+          border-spacing: 0;
           text-align: left;
-          background: var(--surface-main, #ffffff);
         }
 
         .activity-table th {
-          padding: 14px 16px;
+          padding: 16px 24px;
           font-size: 12px;
           font-weight: 600;
           text-transform: uppercase;
           letter-spacing: 0.05em;
-          color: var(--text-soft, #9ca3af);
-          border-bottom: 1px solid var(--border-color, #eaedf1);
-          background: var(--surface-soft, #f9fafb);
+          color: var(--text-soft, #64748b);
+          border-bottom: 1px solid var(--border-color, #e2e8f0);
+          background: var(--bg-main, #f8fafc);
         }
 
         .activity-table td {
-          padding: 14px 16px;
+          padding: 20px 24px;
           font-size: 14px;
           font-weight: 500;
-          color: var(--text-main, #111827);
-          border-bottom: 1px solid var(--border-color, #eaedf1);
+          color: var(--text-main, #334155);
+          border-bottom: 1px solid var(--border-color, #f1f5f9);
+          transition: background 0.15s ease;
         }
 
         .activity-table tbody tr:last-child td {
@@ -250,46 +296,77 @@ const Dashboard: React.FC = () => {
         }
 
         .activity-table tbody tr:hover td {
-          background: var(--surface-soft, #f9fafb);
+          background: var(--bg-main, #f8fafc);
         }
 
-        .points {
-          color: var(--text-muted, #6b7280);
+        /* --- Badges --- */
+        .badge {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 4px 12px;
+          border-radius: 100px;
+          font-size: 13px;
           font-weight: 600;
         }
+        
+        .badge-positive {
+          background-color: rgba(16, 185, 129, 0.1);
+          color: #059669;
+        }
+        
+        .badge-negative {
+          background-color: rgba(239, 68, 68, 0.1);
+          color: #dc2626;
+        }
 
-        @media (max-width: 64rem) {
+        .badge-neutral {
+          background-color: var(--surface-soft, #f1f5f9);
+          color: var(--text-muted, #64748b);
+        }
+
+        .customer-name {
+          font-weight: 600;
+          color: var(--text-main, #0f172a);
+        }
+
+        .time-text {
+          color: var(--text-soft, #94a3b8);
+          font-size: 13px;
+        }
+
+        /* --- Responsiveness --- */
+        @media (max-width: 1024px) {
           .app-container {
             flex-direction: column;
-            padding: 0;
-            gap: 0;
+            padding: 16px;
           }
 
           .sidebar {
             width: 100%;
             flex: none;
-            min-height: auto;
+            height: auto;
             position: relative;
             top: 0;
-            border-radius: 0;
-            box-shadow: none;
-            border-bottom: 1px solid var(--border-color, #eaedf1);
-          }
-
-          .main-content {
-            border-radius: 0;
-            box-shadow: none;
-          }
-
-          .panel {
-            border-radius: 16px;
           }
         }
 
         @media (max-width: 640px) {
+          .stats-grid {
+            grid-template-columns: 1fr;
+          }
+          
+          .page-header {
+            flex-direction: column;
+          }
+          
           .header-actions {
             width: 100%;
-            justify-content: flex-start;
+            justify-content: space-between;
+          }
+          
+          .panel {
+            padding: 20px;
           }
         }
 
@@ -310,31 +387,37 @@ const Dashboard: React.FC = () => {
 
         <main className="main-content">
           <div className="page-container">
+            {/* Header section */}
             <header className="page-header">
               <div>
                 <h1 className="page-title">Dashboard</h1>
                 <p className="page-subtitle">Plan, monitor, and track customer loyalty activity.</p>
               </div>
               <div className="header-actions">
+                <span style={{ fontSize: '14px', fontWeight: 500 }}>Theme</span>
                 <ThemeToggle variant="inline" />
               </div>
             </header>
 
+            {/* Stats Grid */}
             <div className="stats-grid">
               {stats.map((stat) => (
                 <article key={stat.id} className="stat-card">
                   <p className="stat-label">{stat.title}</p>
                   <h2 className="stat-value">{stat.value}</h2>
-                  <div className="stat-trend">
-                    <TrendUpIcon width="14" height="14" aria-hidden="true" />
+                  <div className={`stat-trend ${stat.isPositive ? 'trend-positive' : ''}`}>
+                    {stat.isPositive && <TrendUpIcon width="14" height="14" aria-hidden="true" />}
                     <span>{stat.trend}</span>
                   </div>
                 </article>
               ))}
             </div>
 
+            {/* Recent Activity Table */}
             <section className="panel" aria-labelledby="recent-activity-title">
-              <h2 id="recent-activity-title" className="panel-title">Recent Activity</h2>
+              <div className="panel-header">
+                <h2 id="recent-activity-title" className="panel-title">Recent Activity</h2>
+              </div>
 
               <div className="activity-table-wrapper">
                 <table className="activity-table">
@@ -351,11 +434,15 @@ const Dashboard: React.FC = () => {
                   <tbody>
                     {activity.map((entry) => (
                       <tr key={entry.id}>
-                        <td>{entry.action}</td>
-                        <td>{entry.customer}</td>
-                        <td>{entry.vehicle}</td>
-                        <td className="points">{entry.points}</td>
-                        <td>{entry.time}</td>
+                        <td style={{ fontWeight: 600 }}>{entry.action}</td>
+                        <td className="customer-name">{entry.customer}</td>
+                        <td style={{ fontFamily: 'monospace', fontSize: '13px' }}>{entry.vehicle}</td>
+                        <td>
+                          <span className={`badge ${getPointsClass(entry.points)}`}>
+                            {entry.points}
+                          </span>
+                        </td>
+                        <td className="time-text">{entry.time}</td>
                       </tr>
                     ))}
                   </tbody>

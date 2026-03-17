@@ -62,55 +62,56 @@ export default function LoyaltyAdminDashboard() {
 
         * {
           box-sizing: border-box;
-          font-family: 'Inter', sans-serif;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
         body, html {
           margin: 0;
           padding: 0;
-          background-color: var(--bg-main, #f4f6f8);
-          color: var(--text-main, #111827);
+          background-color: var(--bg-main);
+          color: var(--text-main);
+          -webkit-font-smoothing: antialiased;
         }
 
+        /* --- Layout --- */
         .app-container {
           display: flex;
           min-height: 100vh;
-          padding: clamp(8px, 2vw, 16px);
-          gap: clamp(8px, 2vw, 16px);
-          align-items: stretch;
+          padding: clamp(12px, 2vw, 24px);
+          gap: clamp(12px, 2vw, 24px);
+          align-items: flex-start;
+          max-width: 1600px;
+          margin: 0 auto;
         }
 
         .sidebar {
-          flex: 0 0 clamp(200px, 20vw, 280px);
-          background-color: var(--surface-main, #ffffff);
+          flex: 0 0 clamp(220px, 20vw, 280px);
+          background-color: var(--surface-main);
           border-radius: 24px;
           display: flex;
           flex-direction: column;
-          padding: 24px clamp(12px, 1.5vw, 20px);
-          box-shadow: var(--shadow-soft, 0 4px 20px rgba(0,0,0,0.02));
+          padding: 24px;
+          border: 1px solid var(--border-color);
+          box-shadow: var(--shadow-soft);
           position: sticky;
-          top: clamp(8px, 2vw, 16px);
-          align-self: stretch;
-          min-height: calc(100vh - clamp(16px, 4vw, 32px));
+          top: clamp(12px, 2vw, 24px);
+          height: calc(100vh - clamp(24px, 4vw, 48px));
         }
 
         .main-content {
           flex: 1;
           display: flex;
           flex-direction: column;
-          background: var(--surface-main, #ffffff);
-          border-radius: 24px;
-          box-shadow: var(--shadow-soft, 0 4px 20px rgba(0,0,0,0.02));
           min-width: 0;
         }
 
         .page-container {
-          padding: clamp(20px, 3vw, 32px);
           display: flex;
           flex-direction: column;
-          gap: 24px;
+          gap: 32px;
         }
 
+        /* --- Header --- */
         .page-header {
           display: flex;
           justify-content: space-between;
@@ -120,44 +121,48 @@ export default function LoyaltyAdminDashboard() {
         }
 
         .page-title {
-          font-size: clamp(24px, 3vw, 28px);
+          font-size: clamp(24px, 3vw, 32px);
           font-weight: 700;
-          color: var(--text-main, #111827);
+          color: var(--text-main);
           margin: 0;
-          letter-spacing: -0.03em;
+          letter-spacing: -0.04em;
         }
 
-        .form-wrapper {
-          background: var(--surface-main, #ffffff);
-          border-radius: 20px;
-          border: 1px solid var(--border-color, #eaedf1);
-          box-shadow: var(--shadow-soft, 0 4px 20px rgba(0,0,0,0.02));
-          padding: clamp(20px, 3vw, 32px);
-          max-width: 620px;
+        /* --- Form Panel --- */
+        .form-panel {
+          background: var(--surface-main);
+          border: 1px solid var(--border-color);
+          border-radius: 24px;
+          box-shadow: var(--shadow-soft);
+          padding: clamp(24px, 4vw, 40px);
+          max-width: 640px;
         }
 
         .form-header {
-          margin-bottom: 24px;
+          margin-bottom: 32px;
+          padding-bottom: 24px;
+          border-bottom: 1px solid var(--border-color);
         }
 
         .form-title {
           margin: 0 0 8px;
-          font-size: clamp(22px, 2.5vw, 26px);
+          font-size: 20px;
           font-weight: 700;
-          color: var(--text-main, #111827);
+          color: var(--text-main);
           letter-spacing: -0.02em;
         }
 
         .form-subtitle {
           margin: 0;
           font-size: 14px;
-          color: var(--text-muted, #6b7280);
+          color: var(--text-muted);
+          line-height: 1.5;
         }
 
         .form-grid {
           display: flex;
           flex-direction: column;
-          gap: 18px;
+          gap: 24px;
         }
 
         .form-group {
@@ -169,105 +174,104 @@ export default function LoyaltyAdminDashboard() {
         .form-label {
           font-size: 13px;
           font-weight: 600;
-          color: var(--text-muted, #6b7280);
-          letter-spacing: 0.01em;
+          color: var(--text-muted);
         }
 
         .form-input,
         .form-select {
           width: 100%;
-          padding: 12px 14px;
-          border: 1px solid var(--border-color, #eaedf1);
+          padding: 12px 16px;
+          border: 1px solid var(--border-color);
           border-radius: 12px;
-          background: var(--surface-soft, #f9fafb);
-          color: var(--text-main, #111827);
           font-size: 14px;
+          color: var(--text-main);
+          background: var(--bg-input);
           transition: all 0.2s ease;
-          appearance: none;
         }
 
         .form-select {
-          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
-          background-repeat: no-repeat;
-          background-position: right 14px center;
-          background-size: 16px;
-          padding-right: 40px;
+          cursor: pointer;
         }
 
         .form-input::placeholder {
-          color: var(--text-soft, #9ca3af);
+          color: var(--text-soft);
         }
 
         .form-input:focus,
         .form-select:focus {
-          outline: none;
-          border-color: var(--primary-dark, #2f3437);
-          background: #ffffff;
-          box-shadow: 0 0 0 3px rgba(47, 52, 55, 0.14);
+          outline: 2px solid var(--focus-ring);
+          outline-offset: 1px;
+          border-color: var(--border-strong);
+          box-shadow: none;
+          background: var(--surface-main);
         }
 
-        .form-select:disabled {
+        .form-select:disabled,
+        .form-input:disabled {
           cursor: not-allowed;
-          color: var(--text-soft, #9ca3af);
-          background-color: var(--surface-soft, #f3f4f6);
+          color: var(--text-soft);
+          background-color: var(--surface-soft);
+          border-color: var(--border-color);
         }
 
-        .page-footer {
+        .form-footer {
+          margin-top: 16px;
           display: flex;
           justify-content: flex-start;
-          margin-top: 4px;
         }
 
-        .btn-award {
+        .btn-primary {
           display: inline-flex;
           align-items: center;
           gap: 8px;
-          padding: 10px 20px;
-          background: var(--primary-dark, #2f3437);
-          color: #ffffff;
+          padding: 12px 24px;
+          background: var(--primary-dark);
+          color: var(--surface-main);
           border: none;
           border-radius: 12px;
           font-size: 14px;
           font-weight: 600;
           cursor: pointer;
           transition: all 0.2s ease;
-          box-shadow: 0 4px 12px rgba(15, 15, 15, 0.12);
+          box-shadow: var(--shadow-soft);
         }
 
-        .btn-award:hover {
-          background: var(--primary-light, #454b50);
+        .btn-primary:hover {
+          background: var(--primary-hover);
           transform: translateY(-1px);
+          box-shadow: var(--shadow-card);
         }
 
-        .btn-award:active {
+        .btn-primary:active {
           transform: translateY(0);
+          box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1);
         }
 
-        @media (max-width: 64rem) {
+        /* --- Responsiveness --- */
+        @media (max-width: 1024px) {
           .app-container {
             flex-direction: column;
-            padding: 0;
-            gap: 0;
+            padding: 16px;
           }
 
           .sidebar {
             width: 100%;
             flex: none;
-            min-height: auto;
+            height: auto;
             position: relative;
             top: 0;
-            border-radius: 0;
-            box-shadow: none;
-            border-bottom: 1px solid var(--border-color, #eaedf1);
           }
+        }
 
-          .main-content {
-            border-radius: 0;
-            box-shadow: none;
+        @media (max-width: 640px) {
+          .form-panel {
+            padding: 24px;
+            border-radius: 20px;
           }
-
-          .form-wrapper {
-            max-width: 100%;
+          
+          .btn-primary {
+            width: 100%;
+            justify-content: center;
           }
         }
       `}</style>
@@ -281,27 +285,30 @@ export default function LoyaltyAdminDashboard() {
               <h1 className="page-title">Awards</h1>
             </header>
 
-            <section className="form-wrapper">
+            <section className="form-panel">
               <div className="form-header">
-                <h2 className="form-title">Award Loyalty Points</h2>
-                <p className="form-subtitle">Select a registered vehicle to grant customer rewards.</p>
+                <h2 className="form-title">Grant Loyalty Points</h2>
+                <p className="form-subtitle">Search for a customer by mobile number and select their registered vehicle to apply reward points.</p>
               </div>
 
               <form onSubmit={handleSubmit} className="form-grid">
+                
+                {/* Mobile Number Input */}
                 <div className="form-group">
                   <label className="form-label" htmlFor="mobile">Customer Mobile Number</label>
-                <input
-                  id="mobile"
-                  className="form-input"
-                  type="tel"
-                  placeholder="e.g. 9876543210"
-                  value={mobileNumber}
-                  onChange={(e) => setMobileNumber(e.target.value.replace(/\D/g, ''))}
-                  maxLength={10}
-                  required
-                />
+                  <input
+                    id="mobile"
+                    className="form-input"
+                    type="tel"
+                    placeholder="e.g. 9876543210"
+                    value={mobileNumber}
+                    onChange={(e) => setMobileNumber(e.target.value.replace(/\D/g, ''))}
+                    maxLength={10}
+                    required
+                  />
                 </div>
 
+                {/* Vehicle Selection Dropdown */}
                 <div className="form-group">
                   <label className="form-label" htmlFor="vehicle">Registered Vehicle</label>
                   <select
@@ -316,7 +323,9 @@ export default function LoyaltyAdminDashboard() {
                       <option value="">Searching registry...</option>
                     ) : availableVehicles.length === 0 ? (
                       <option value="">
-                        {mobileNumber.length < 10 ? 'Enter full mobile number first' : 'No vehicles found for this number'}
+                        {mobileNumber.length < 10 
+                          ? 'Enter 10-digit mobile number first' 
+                          : 'No vehicles found for this number'}
                       </option>
                     ) : (
                       <>
@@ -331,13 +340,14 @@ export default function LoyaltyAdminDashboard() {
                   </select>
                 </div>
 
+                {/* Points Input */}
                 <div className="form-group">
                   <label className="form-label" htmlFor="points">Points to Award</label>
                   <input
                     id="points"
                     className="form-input"
                     type="number"
-                    placeholder="0"
+                    placeholder="e.g. 150"
                     min="1"
                     value={points}
                     onChange={(e) => setPoints(e.target.value ? Number(e.target.value) : '')}
@@ -345,11 +355,16 @@ export default function LoyaltyAdminDashboard() {
                   />
                 </div>
 
-                <footer className="page-footer">
-                  <button type="submit" className="btn-award">
+                {/* Submit Action */}
+                <div className="form-footer">
+                  <button type="submit" className="btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
                     Award Points
                   </button>
-                </footer>
+                </div>
+
               </form>
             </section>
           </div>
