@@ -22,11 +22,11 @@ const appRoutes: AppRoute[] = [
 export function AppRoutes() {
 	return (
 		<Routes>
-			<Route path="/" element={<Navigate to="/login" replace />} />
+			<Route path="/" element={<Navigate to="/dashboard" replace />} />
 			{appRoutes.map((route) => (
 				<Route key={route.path} path={route.path} element={route.element} />
 			))}
-			<Route path="*" element={<Navigate to="/login" replace />} />
+			<Route path="*" element={<Navigate to="/dashboard" replace />} />
 		</Routes>
 	)
 }
