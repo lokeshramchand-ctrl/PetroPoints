@@ -355,7 +355,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
                 className="nav-item logout"
               >
                 <LogOutIcon />
-                Log out
+                LogIn
               </NavLink>
             </nav>
           </div>
