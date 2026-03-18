@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const LoginScreen: React.FC = () => {
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Logging in with:', { userId, password });
-    // Trigger your secure authentication flow here
+    navigate('/dashboard'); // Navigate to /dashboard directly
   };
 
   const handleClear = () => {

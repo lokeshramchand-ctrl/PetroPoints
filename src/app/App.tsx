@@ -1,12 +1,12 @@
 import './App.css'
 import { AppRoutes } from './routes'
-import { ThemeToggle } from '../theme/ThemeToggle'
+// import { ThemeToggle } from '../theme/ThemeToggle'
 
 function App() {
   return (
     <>
       <AppRoutes />
-      <ThemeToggle />
+      {/* <ThemeToggle /> */}
     </>
   )
 }
