@@ -1,5 +1,5 @@
 import './App.css'
-import { AppRoutes } from './routes'
+import { AppRoutes } from './Routes'
 // import { ThemeToggle } from '../theme/ThemeToggle'
 
 function App() {
