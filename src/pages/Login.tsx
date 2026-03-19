@@ -1,14 +1,28 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Snackbar, { type SnackbarType } from '../theme/Snackbar';
 
 const LoginScreen: React.FC = () => {
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
+  const [snackbar, setSnackbar] = useState<{ message: string; type: SnackbarType } | null>(null);
   const navigate = useNavigate();
+
+  const showSnackbar = (message: string, type: SnackbarType) => {
+    setSnackbar({ message, type });
+  };
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate('/dashboard'); // Navigate to /dashboard directly
+
+    if (!userId.trim() || !password.trim()) {
+      showSnackbar('Please fill in all fields.', 'error');
+      return;
+    }
+
+    console.log('Logging in with:', { userId, password });
+    navigate('/dashboard');
+    showSnackbar('Login successful!', 'success');
   };
 
   const handleClear = () => {
@@ -247,6 +261,15 @@ const LoginScreen: React.FC = () => {
               </button>
             </div>
           </form>
+
+          {/* Render the Snackbar */}
+          {snackbar && (
+            <Snackbar
+              message={snackbar.message}
+              type={snackbar.type}
+              onClose={() => setSnackbar(null)}
+            />
+          )}
         </div>
       </div>
     </>
