@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DashboardSidebar from './Sidebar';
 import { EditIcon, DeleteIcon, AddIcon } from '../assets/icons/CustomerListIcons';
+import Snackbar, { type SnackbarType } from '../theme/Snackbar';
 
 type Customer = {
   id: string;
@@ -10,126 +11,178 @@ type Customer = {
   aadhaar: string;
 };
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://10.10.10.1:3024/api';
-
-const initialCustomers: Customer[] = [
-  {
-    id: '#CUST-7821',
-    name: 'Jane Cooper',
-    city: 'Hyderabad',
-    mobile: '+91 98765 43210',
-    aadhaar: 'XXXX XXXX 8291',
-  },
-  {
-    id: '#CUST-7820',
-    name: 'Guy Hawkins',
-    city: 'Warangal',
-    mobile: '+91 87654 32109',
-    aadhaar: 'XXXX XXXX 4028',
-  },
-  {
-    id: '#CUST-7819',
-    name: 'Robert Fox',
-    city: 'Vijayawada',
-    mobile: '+91 76543 21098',
-    aadhaar: 'XXXX XXXX 9182',
-  },
-  {
-    id: '#CUST-7818',
-    name: 'Laura Kinney',
-    city: 'Guntur',
-    mobile: '+91 65432 10987',
-    aadhaar: 'XXXX XXXX 3341',
-  },
-  {
-    id: '#CUST-7817',
-    name: 'Jenny Wilson',
-    city: 'Hyderabad',
-    mobile: '+91 54321 09876',
-    aadhaar: 'XXXX XXXX 7712',
-  },
-  {
-    id: '#CUST-7816',
-    name: 'Ralph Edwards',
-    city: 'Kurnool',
-    mobile: '+91 43210 98765',
-    aadhaar: 'XXXX XXXX 5564',
-  },
-];
+// Updated to include /api base path as discussed
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://petropoints-backend.deploy.splsystems.in/api';
 
 const CustomersList: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [customers, setCustomers] = useState<Customer[]>(initialCustomers);
+  // --- Data & Loading State ---
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [isLoadingData, setIsLoadingData] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [snackbar, setSnackbar] = useState<{ message: string; type: SnackbarType } | null>(null);
+
+  // --- Modal States ---
+  const [modalMode, setModalMode] = useState<'add' | 'edit' | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [targetCustomerId, setTargetCustomerId] = useState<number | null>(null);
+
+  // --- Form State ---
   const [name, setName] = useState('');
   const [city, setCity] = useState('');
   const [mobile, setMobile] = useState('');
   const [aadhaar, setAadhaar] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const nextCustomerIdNumber = Math.max(
-    ...customers
-      .map((customer) => Number(customer.id.replace(/[^0-9]/g, '')))
-      .filter((value) => Number.isFinite(value)),
-    7821,
-  ) + 1;
+  const showSnackbar = (message: string, type: SnackbarType) => {
+    setSnackbar({ message, type });
+  };
 
-  const resetForm = () => {
+  // --- Helper: Parse ID from #CUST-1234 to 1234 ---
+  const parseId = (formattedId: string): number => {
+    return parseInt(formattedId.replace(/\D/g, ''), 10);
+  };
+
+  // --- API: READ (Kept Intact) ---
+  const fetchCustomers = async () => {
+    // setIsLoadingData(true);
+    // try {
+    //   const response = await fetch(`${API_BASE_URL}/read`);
+    //   if (!response.ok) throw new Error('Failed to fetch data');
+    //   const data = await response.json();
+    setIsLoadingData(true);
+  try {
+    // We wrap your actual backend URL inside the proxy URL
+    const targetUrl = encodeURIComponent('https://petropoints-backend.deploy.splsystems.in/api/read');
+    const proxyUrl = `https://corsproxy.io/?${targetUrl}`;
+
+    const response = await fetch(proxyUrl);
+    if (!response.ok) throw new Error('Failed to fetch data');
+    const data = await response.json();
+
+      const formattedData: Customer[] = data.map((item: any) => ({
+        id: `#CUST-${item.CustomerID}`,
+        name: item.CustomerName || '',
+        city: item.CustomerCity || '',
+        mobile: item.CustomerMobile ? item.CustomerMobile.toString() : '',
+        aadhaar: item.CustomerAadhaar || '',
+      }));
+
+      setCustomers(formattedData);
+    } catch (error) {
+      console.error(error);
+      showSnackbar('Failed to load customers from database.', 'error');
+    } finally {
+      setIsLoadingData(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCustomers();
+  }, []);
+
+  // --- Modal Handlers ---
+  const openAddModal = () => {
     setName('');
     setCity('');
     setMobile('');
     setAadhaar('');
+    setModalMode('add');
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-    resetForm();
+  const openEditModal = (customer: Customer) => {
+    setTargetCustomerId(parseId(customer.id));
+    setName(customer.name);
+    setCity(customer.city);
+    setMobile(customer.mobile.replace(/\D/g, '').slice(-10));
+    setAadhaar(customer.aadhaar);
+    setModalMode('edit');
   };
 
-  const handleAddCustomer = async (event: React.FormEvent<HTMLFormElement>) => {
+  const closeFormModal = () => {
+    setModalMode(null);
+    setTargetCustomerId(null);
+  };
+
+  const openDeleteModal = (id: string) => {
+    setTargetCustomerId(parseId(id));
+    setIsDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setTargetCustomerId(null);
+  };
+
+  // --- MOCK: CREATE & UPDATE (UI Only) ---
+  const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!name.trim() || !city.trim() || mobile.length < 10 || aadhaar.length < 12) {
-      window.alert('Please enter valid customer details.');
+      showSnackbar('Please fill in all fields correctly.', 'warning');
       return;
     }
 
     setIsSubmitting(true);
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/create`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: nextCustomerIdNumber,
-          name: name.trim(),
-          city: city.trim(),
-          mobile,
-          aadhar: aadhaar,
-        }),
-      });
+    // Simulate network delay for UI realism
+    setTimeout(() => {
+      try {
+        if (modalMode === 'add') {
+          const nextId = Math.max(
+            ...customers.map((c) => parseId(c.id)).filter((v) => Number.isFinite(v)),
+            7820
+          ) + 1;
 
-      if (!response.ok) {
-        throw new Error('Failed to create customer');
+          const newCustomer: Customer = {
+            id: `#CUST-${nextId}`,
+            name: name.trim(),
+            city: city.trim(),
+            mobile: mobile,
+            aadhaar: aadhaar,
+          };
+
+          setCustomers((prev) => [...prev, newCustomer]);
+          showSnackbar('Customer added locally (No DB update)', 'success');
+
+        } else if (modalMode === 'edit' && targetCustomerId) {
+
+          setCustomers((prev) =>
+            prev.map((c) =>
+              parseId(c.id) === targetCustomerId
+                ? { ...c, name: name.trim(), city: city.trim(), mobile, aadhaar }
+                : c
+            )
+          );
+          showSnackbar('Customer updated locally (No DB update)', 'success');
+        }
+
+        closeFormModal();
+      } catch (error) {
+        console.error(error);
+        showSnackbar(`Unable to process request.`, 'error');
+      } finally {
+        setIsSubmitting(false);
       }
+    }, 600);
+  };
 
-      const createdCustomer: Customer = {
-        id: `#CUST-${nextCustomerIdNumber}`,
-        name: name.trim(),
-        city: city.trim(),
-        mobile: `+91 ${mobile}`,
-        aadhaar,
-      };
+  // --- MOCK: DELETE (UI Only) ---
+  const handleDeleteConfirm = async () => {
+    if (!targetCustomerId) return;
+    setIsSubmitting(true);
 
-      setCustomers((previous) => [createdCustomer, ...previous]);
-      closeModal();
-    } catch (error) {
-      console.error(error);
-      window.alert('Unable to save customer. Please check backend API and try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
+    // Simulate network delay for UI realism
+    setTimeout(() => {
+      try {
+        setCustomers((prev) => prev.filter((c) => parseId(c.id) !== targetCustomerId));
+        showSnackbar('Customer deleted locally (No DB update)', 'success');
+        closeDeleteModal();
+      } catch (error) {
+        console.error(error);
+        showSnackbar('Unable to delete customer.', 'error');
+      } finally {
+        setIsSubmitting(false);
+      }
+    }, 600);
   };
 
   return (
@@ -138,14 +191,11 @@ const CustomersList: React.FC = () => {
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
         :root {
-          /* Fluid Spacing Variables */
-          --space-xs: clamp(4px, 0.5vw, 8px);
+          var(--space-xs): clamp(4px, 0.5vw, 8px);
           --space-sm: clamp(8px, 1vw, 12px);
           --space-md: clamp(12px, 2vw, 16px);
           --space-lg: clamp(16px, 3vw, 24px);
           --space-xl: clamp(24px, 4vw, 32px);
-          
-          /* Panel specific fluid padding for perfect edge bleeding */
           --panel-pad-x: clamp(16px, 4vw, 24px);
           --panel-pad-y: clamp(20px, 4vw, 24px);
         }
@@ -163,7 +213,6 @@ const CustomersList: React.FC = () => {
           -webkit-font-smoothing: antialiased;
         }
 
-        /* --- Layout --- */
         .app-container {
           display: flex;
           min-height: 100vh;
@@ -174,7 +223,6 @@ const CustomersList: React.FC = () => {
           margin: 0 auto;
         }
 
-        /* Sidebar container flex-basis is fluid */
         .sidebar {
           flex: 0 0 clamp(220px, 20vw, 280px);
         }
@@ -193,7 +241,6 @@ const CustomersList: React.FC = () => {
           gap: var(--space-xl);
         }
 
-        /* --- Header --- */
         .page-header {
           display: flex;
           justify-content: space-between;
@@ -210,22 +257,31 @@ const CustomersList: React.FC = () => {
           letter-spacing: -0.04em;
         }
 
-        .btn-primary {
+        /* --- Buttons --- */
+        .btn {
           display: inline-flex;
           align-items: center;
           justify-content: center;
           gap: var(--space-sm);
           padding: clamp(10px, 1.5vw, 12px) clamp(16px, 2vw, 24px);
-          background: var(--text-main, #0f172a);
-          color: #ffffff;
-          border: none;
           border-radius: 12px;
           font-size: clamp(13px, 2vw, 14px);
           font-weight: 600;
           cursor: pointer;
           transition: all 0.2s ease;
-          box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
           white-space: nowrap;
+          border: none;
+        }
+
+        .btn:disabled {
+          opacity: 0.7;
+          cursor: not-allowed;
+        }
+
+        .btn-primary {
+          background: var(--text-main, #0f172a);
+          color: #ffffff;
+          box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
         }
 
         .btn-primary:hover:not(:disabled) {
@@ -234,9 +290,27 @@ const CustomersList: React.FC = () => {
           box-shadow: 0 6px 16px rgba(15, 23, 42, 0.2);
         }
 
-        .btn-primary:disabled {
-          opacity: 0.7;
-          cursor: not-allowed;
+        .btn-danger {
+          background: #ef4444;
+          color: #ffffff;
+          box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-danger:hover:not(:disabled) {
+          background: #dc2626;
+          transform: translateY(-1px);
+          box-shadow: 0 6px 16px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-secondary {
+          background: #ffffff;
+          color: #475569;
+          border: 1px solid #cbd5e1;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+          background: #f1f5f9;
+          color: #0f172a;
         }
 
         /* --- Table Panel --- */
@@ -252,7 +326,6 @@ const CustomersList: React.FC = () => {
         .table-wrapper {
           overflow-x: auto;
           -webkit-overflow-scrolling: touch;
-          /* Dynamically bleed edges based on fluid padding */
           margin: calc(-1 * var(--panel-pad-y)) calc(-1 * var(--panel-pad-x));
         }
 
@@ -303,6 +376,13 @@ const CustomersList: React.FC = () => {
           color: var(--text-main, #0f172a);
         }
 
+        .empty-state {
+          text-align: center;
+          padding: 48px;
+          color: #64748b;
+          font-size: 14px;
+        }
+
         /* --- Action Pills --- */
         .actions-cell {
           display: flex;
@@ -336,7 +416,7 @@ const CustomersList: React.FC = () => {
           background: #fef2f2;
         }
 
-        /* --- SaaS Modal (Window) --- */
+        /* --- Modals --- */
         .modal-overlay {
           position: fixed;
           top: 0; left: 0; right: 0; bottom: 0;
@@ -354,15 +434,17 @@ const CustomersList: React.FC = () => {
         .modal-container {
           background: #ffffff;
           width: 100%;
-          max-width: 520px;
           border-radius: clamp(16px, 3vw, 24px);
           box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
           display: flex;
           flex-direction: column;
           overflow: hidden;
-          max-height: 90vh; /* Prevent modal from exceeding viewport height */
+          max-height: 90vh;
           animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
+
+        .modal-form { max-width: 520px; }
+        .modal-alert { max-width: 400px; }
 
         .modal-header {
           padding: var(--space-lg) var(--space-xl) var(--space-md);
@@ -403,7 +485,14 @@ const CustomersList: React.FC = () => {
           display: flex;
           flex-direction: column;
           gap: var(--space-lg);
-          overflow-y: auto; /* Scrollable internal body if screen is too small */
+          overflow-y: auto;
+        }
+
+        .alert-text {
+          margin: 0;
+          color: #475569;
+          font-size: 15px;
+          line-height: 1.5;
         }
 
         .form-row {
@@ -428,7 +517,7 @@ const CustomersList: React.FC = () => {
           padding: clamp(10px, 1.5vw, 12px) clamp(14px, 2vw, 16px);
           border: 1px solid #cbd5e1;
           border-radius: 12px;
-          font-size: clamp(14px, 2vw, 15px); /* Prevents iOS input auto-zoom */
+          font-size: clamp(14px, 2vw, 15px);
           color: #0f172a;
           outline: none;
           transition: all 0.2s ease;
@@ -456,26 +545,6 @@ const CustomersList: React.FC = () => {
           border-top: 1px solid #f1f5f9;
         }
 
-        .btn-secondary {
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          padding: clamp(10px, 1.5vw, 12px) clamp(16px, 2vw, 20px);
-          background: #ffffff;
-          color: #475569;
-          border: 1px solid #cbd5e1;
-          border-radius: 12px;
-          font-size: clamp(13px, 2vw, 14px);
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.2s ease;
-        }
-
-        .btn-secondary:hover {
-          background: #f1f5f9;
-          color: #0f172a;
-        }
-
         /* --- Animations --- */
         @keyframes fadeIn {
           from { opacity: 0; }
@@ -491,7 +560,7 @@ const CustomersList: React.FC = () => {
         @media (max-width: 1024px) {
           .app-container {
             flex-direction: column;
-            padding-top: 80px; /* Accounts for fixed mobile header in Sidebar */
+            padding-top: 80px;
           }
         }
 
@@ -516,9 +585,7 @@ const CustomersList: React.FC = () => {
             flex-direction: column-reverse;
           }
           
-          .btn-secondary, .btn-primary {
-            width: 100%;
-          }
+          .btn { width: 100%; }
         }
       `}</style>
 
@@ -529,9 +596,8 @@ const CustomersList: React.FC = () => {
           <div className="page-container">
             <header className="page-header">
               <h1 className="page-title">Customers</h1>
-              
-              {/* Add Customer button flexes to full width on mobile via specific class */}
-              <button className="btn-primary page-header-btn" onClick={() => setIsModalOpen(true)}>
+
+              <button className="btn btn-primary page-header-btn" onClick={openAddModal}>
                 <AddIcon width={18} height={18} />
                 Add Customer
               </button>
@@ -551,27 +617,43 @@ const CustomersList: React.FC = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {customers.map((customer, index) => (
-                      <tr key={index}>
-                        <td className="cell-id">{customer.id}</td>
-                        <td className="cell-name">{customer.name}</td>
-                        <td>{customer.city}</td>
-                        <td>{customer.mobile}</td>
-                        <td className="cell-aadhaar">{customer.aadhaar}</td>
-                        <td>
-                          <div className="actions-cell">
-                            <button className="btn-action">
-                              <EditIcon width={14} height={14} />
-                              Edit
-                            </button>
-                            <button className="btn-action btn-delete">
-                              <DeleteIcon width={14} height={14} />
-                              Delete
-                            </button>
-                          </div>
-                        </td>
+                    {isLoadingData ? (
+                      <tr>
+                        <td colSpan={6} className="empty-state">Loading records from database...</td>
                       </tr>
-                    ))}
+                    ) : customers.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="empty-state">No customers found. Add a customer to get started.</td>
+                      </tr>
+                    ) : (
+                      customers.map((customer, index) => (
+                        <tr key={index}>
+                          <td className="cell-id">{customer.id}</td>
+                          <td className="cell-name">{customer.name}</td>
+                          <td>{customer.city}</td>
+                          <td>{customer.mobile}</td>
+                          <td className="cell-aadhaar">{customer.aadhaar}</td>
+                          <td>
+                            <div className="actions-cell">
+                              <button
+                                className="btn-action"
+                                onClick={() => openEditModal(customer)}
+                              >
+                                <EditIcon width={14} height={14} />
+                                Edit
+                              </button>
+                              <button
+                                className="btn-action btn-delete"
+                                onClick={() => openDeleteModal(customer.id)}
+                              >
+                                <DeleteIcon width={14} height={14} />
+                                Delete
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -580,15 +662,16 @@ const CustomersList: React.FC = () => {
         </main>
       </div>
 
-      {/* Modern SaaS Modal */}
-      {isModalOpen && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-container" onClick={(e) => e.stopPropagation()}>
-            
+      {/* --- FORM MODAL (ADD/EDIT) --- */}
+      {modalMode !== null && (
+        <div className="modal-overlay" onClick={closeFormModal}>
+          <div className="modal-container modal-form" onClick={(e) => e.stopPropagation()}>
+
             <div className="modal-header">
-              <h2 className="modal-title">Add New Customer</h2>
-              <button className="btn-close" onClick={closeModal} aria-label="Close modal">
-                {/* Inline Close Icon */}
+              <h2 className="modal-title">
+                {modalMode === 'add' ? 'Add New Customer' : 'Edit Customer'}
+              </h2>
+              <button className="btn-close" onClick={closeFormModal} aria-label="Close modal">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="18" y1="6" x2="6" y2="18"></line>
                   <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -596,12 +679,14 @@ const CustomersList: React.FC = () => {
               </button>
             </div>
 
-            <form onSubmit={handleAddCustomer}>
+            <form onSubmit={handleFormSubmit}>
               <div className="modal-body">
-                <div className="form-group">
-                  <label className="form-label">Customer ID</label>
-                  <input type="text" className="form-input" value={`#CUST-${nextCustomerIdNumber}`} disabled />
-                </div>
+                {modalMode === 'edit' && (
+                  <div className="form-group">
+                    <label className="form-label">Customer ID</label>
+                    <input type="text" className="form-input" value={`#CUST-${targetCustomerId}`} disabled />
+                  </div>
+                )}
 
                 <div className="form-group">
                   <label className="form-label">Full Name</label>
@@ -610,7 +695,7 @@ const CustomersList: React.FC = () => {
                     className="form-input"
                     placeholder="e.g. Jane Cooper"
                     value={name}
-                    onChange={(event) => setName(event.target.value)}
+                    onChange={(e) => setName(e.target.value)}
                     required
                   />
                 </div>
@@ -623,7 +708,7 @@ const CustomersList: React.FC = () => {
                       className="form-input"
                       placeholder="e.g. Hyderabad"
                       value={city}
-                      onChange={(event) => setCity(event.target.value)}
+                      onChange={(e) => setCity(e.target.value)}
                       required
                     />
                   </div>
@@ -634,7 +719,7 @@ const CustomersList: React.FC = () => {
                       className="form-input"
                       placeholder="10-digit mobile number"
                       value={mobile}
-                      onChange={(event) => setMobile(event.target.value.replace(/\D/g, '').slice(0, 10))}
+                      onChange={(e) => setMobile(e.target.value.replace(/\D/g, '').slice(0, 10))}
                       maxLength={10}
                       required
                     />
@@ -648,7 +733,7 @@ const CustomersList: React.FC = () => {
                     className="form-input"
                     placeholder="12-digit Aadhaar"
                     value={aadhaar}
-                    onChange={(event) => setAadhaar(event.target.value.replace(/\D/g, '').slice(0, 12))}
+                    onChange={(e) => setAadhaar(e.target.value.replace(/\D/g, '').slice(0, 12))}
                     maxLength={12}
                     required
                   />
@@ -656,15 +741,54 @@ const CustomersList: React.FC = () => {
               </div>
 
               <div className="modal-footer">
-                <button type="button" className="btn-secondary" onClick={closeModal}>Cancel</button>
-                <button type="submit" className="btn-primary" disabled={isSubmitting}>
-                  {isSubmitting ? 'Saving...' : 'Save Customer'}
+                <button type="button" className="btn btn-secondary" onClick={closeFormModal}>Cancel</button>
+                <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+                  {isSubmitting ? 'Saving...' : (modalMode === 'add' ? 'Save Customer' : 'Update Customer')}
                 </button>
               </div>
             </form>
 
           </div>
         </div>
+      )}
+
+      {/* --- DELETE CONFIRMATION MODAL --- */}
+      {isDeleteModalOpen && (
+        <div className="modal-overlay" onClick={closeDeleteModal}>
+          <div className="modal-container modal-alert" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">Delete Customer</h2>
+              <button className="btn-close" onClick={closeDeleteModal} aria-label="Close modal">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+            <div className="modal-body">
+              <p className="alert-text">
+                Are you sure you want to delete customer <strong>#CUST-{targetCustomerId}</strong>? This action cannot be undone.
+              </p>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" onClick={closeDeleteModal} disabled={isSubmitting}>
+                Cancel
+              </button>
+              <button type="button" className="btn btn-danger" onClick={handleDeleteConfirm} disabled={isSubmitting}>
+                {isSubmitting ? 'Deleting...' : 'Yes, Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* --- SNACKBAR SYSTEM --- */}
+      {snackbar && (
+        <Snackbar
+          message={snackbar.message}
+          type={snackbar.type}
+          onClose={() => setSnackbar(null)}
+        />
       )}
     </>
   );
