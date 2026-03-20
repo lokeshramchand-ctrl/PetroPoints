@@ -11,7 +11,6 @@ type Customer = {
   aadhaar: string;
 };
 
-// Updated to include /api base path as discussed
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://petropoints-backend.deploy.splsystems.in/api';
 
 const CustomersList: React.FC = () => {
@@ -41,22 +40,17 @@ const CustomersList: React.FC = () => {
     return parseInt(formattedId.replace(/\D/g, ''), 10);
   };
 
-  // --- API: READ (Kept Intact) ---
+  // --- API: READ ---
   const fetchCustomers = async () => {
-    // setIsLoadingData(true);
-    // try {
-    //   const response = await fetch(`${API_BASE_URL}/read`);
-    //   if (!response.ok) throw new Error('Failed to fetch data');
-    //   const data = await response.json();
     setIsLoadingData(true);
-  try {
-    // We wrap your actual backend URL inside the proxy URL
-    const targetUrl = encodeURIComponent('https://petropoints-backend.deploy.splsystems.in/api/read');
-    const proxyUrl = `https://corsproxy.io/?${targetUrl}`;
+    try {
+      // Kept your proxy implementation for READ as requested
+      const targetUrl = encodeURIComponent(`${API_BASE_URL}/read`);
+      const proxyUrl = `https://corsproxy.io/?${targetUrl}`;
 
-    const response = await fetch(proxyUrl);
-    if (!response.ok) throw new Error('Failed to fetch data');
-    const data = await response.json();
+      const response = await fetch(proxyUrl);
+      if (!response.ok) throw new Error('Failed to fetch data');
+      const data = await response.json();
 
       const formattedData: Customer[] = data.map((item: any) => ({
         id: `#CUST-${item.CustomerID}`,
@@ -112,7 +106,7 @@ const CustomersList: React.FC = () => {
     setTargetCustomerId(null);
   };
 
-  // --- MOCK: CREATE & UPDATE (UI Only) ---
+  // --- API: CREATE & UPDATE ---
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -123,66 +117,89 @@ const CustomersList: React.FC = () => {
 
     setIsSubmitting(true);
 
-    // Simulate network delay for UI realism
-    setTimeout(() => {
-      try {
-        if (modalMode === 'add') {
-          const nextId = Math.max(
-            ...customers.map((c) => parseId(c.id)).filter((v) => Number.isFinite(v)),
-            7820
-          ) + 1;
+    try {
+      if (modalMode === 'add') {
+        // Find the next available ID for the backend insertion
+        const nextId = Math.max(
+          ...customers.map((c) => parseId(c.id)).filter((v) => Number.isFinite(v)),
+          7820
+        ) + 1;
 
-          const newCustomer: Customer = {
-            id: `#CUST-${nextId}`,
+        const response = await fetch(`${API_BASE_URL}/create`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: nextId,
+            name: name.trim(),
+            mobile: Number(mobile), 
+            aadhar: aadhaar,
+            city: city.trim(),
+          }),
+        });
+
+        if (!response.ok) throw new Error('Failed to create record in database');
+        
+        showSnackbar('Customer added successfully', 'success');
+
+      } else if (modalMode === 'edit' && targetCustomerId) {
+        
+        const response = await fetch(`${API_BASE_URL}/update/${targetCustomerId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          // Note: Based on your backend code, only CustomerName is updated in the SQL query,
+          // but we pass all fields so it's ready if you expand your backend query later.
+          body: JSON.stringify({
             name: name.trim(),
             city: city.trim(),
-            mobile: mobile,
-            aadhaar: aadhaar,
-          };
+            mobile: Number(mobile),
+            aadhar: aadhaar,
+          }),
+        });
 
-          setCustomers((prev) => [...prev, newCustomer]);
-          showSnackbar('Customer added locally (No DB update)', 'success');
+        if (!response.ok) throw new Error('Failed to update record in database');
 
-        } else if (modalMode === 'edit' && targetCustomerId) {
-
-          setCustomers((prev) =>
-            prev.map((c) =>
-              parseId(c.id) === targetCustomerId
-                ? { ...c, name: name.trim(), city: city.trim(), mobile, aadhaar }
-                : c
-            )
-          );
-          showSnackbar('Customer updated locally (No DB update)', 'success');
-        }
-
-        closeFormModal();
-      } catch (error) {
-        console.error(error);
-        showSnackbar(`Unable to process request.`, 'error');
-      } finally {
-        setIsSubmitting(false);
+        showSnackbar('Customer updated successfully', 'success');
       }
-    }, 600);
+
+      closeFormModal();
+      // Refetch from database to ensure UI is completely synchronized
+      await fetchCustomers();
+
+    } catch (error) {
+      console.error(error);
+      showSnackbar(`Unable to process request.`, 'error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  // --- MOCK: DELETE (UI Only) ---
+  // --- API: DELETE ---
   const handleDeleteConfirm = async () => {
     if (!targetCustomerId) return;
     setIsSubmitting(true);
 
-    // Simulate network delay for UI realism
-    setTimeout(() => {
-      try {
-        setCustomers((prev) => prev.filter((c) => parseId(c.id) !== targetCustomerId));
-        showSnackbar('Customer deleted locally (No DB update)', 'success');
-        closeDeleteModal();
-      } catch (error) {
-        console.error(error);
-        showSnackbar('Unable to delete customer.', 'error');
-      } finally {
-        setIsSubmitting(false);
-      }
-    }, 600);
+    try {
+      const response = await fetch(`${API_BASE_URL}/delete/${targetCustomerId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) throw new Error('Failed to delete record from database');
+
+      showSnackbar('Customer deleted successfully', 'success');
+      closeDeleteModal();
+      // Refetch to sync UI with database state
+      await fetchCustomers();
+      
+    } catch (error) {
+      console.error(error);
+      showSnackbar('Unable to delete customer.', 'error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
