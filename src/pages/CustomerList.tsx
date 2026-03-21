@@ -230,6 +230,7 @@ const CustomersList: React.FC = () => {
           -webkit-font-smoothing: antialiased;
         }
 
+        /* --- App Container --- */
         .app-container {
           display: flex;
           min-height: 100vh;
@@ -240,10 +241,12 @@ const CustomersList: React.FC = () => {
           margin: 0 auto;
         }
 
+        /* --- Sidebar --- */
         .sidebar {
           flex: 0 0 clamp(220px, 20vw, 280px);
         }
 
+        /* --- Main Content --- */
         .main-content {
           flex: 1;
           display: flex;
@@ -252,12 +255,14 @@ const CustomersList: React.FC = () => {
           width: 100%;
         }
 
+        /* --- Page Container --- */
         .page-container {
           display: flex;
           flex-direction: column;
           gap: var(--space-xl);
         }
 
+        /* --- Page Header --- */
         .page-header {
           display: flex;
           justify-content: space-between;
@@ -449,7 +454,8 @@ const CustomersList: React.FC = () => {
         }
 
         .modal-container {
-          background: #ffffff;
+          background: var(--surface-main, #1e293b);
+          color: var(--text-main, #ffffff);
           width: 100%;
           border-radius: clamp(16px, 3vw, 24px);
           box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
@@ -475,7 +481,7 @@ const CustomersList: React.FC = () => {
           margin: 0;
           font-size: clamp(18px, 3vw, 20px);
           font-weight: 700;
-          color: #0f172a;
+          color: var(--text-main, #0f172a);
           letter-spacing: -0.02em;
         }
 
@@ -527,24 +533,24 @@ const CustomersList: React.FC = () => {
         .form-label {
           font-size: clamp(12px, 1.5vw, 13px);
           font-weight: 600;
-          color: #475569;
+          color: var(--text-main, #ffffff);
         }
 
         .form-input {
           padding: clamp(10px, 1.5vw, 12px) clamp(14px, 2vw, 16px);
-          border: 1px solid #cbd5e1;
+          border: 1px solid #475569;
           border-radius: 12px;
           font-size: clamp(14px, 2vw, 15px);
-          color: #0f172a;
+          color: var(--text-main, #ffffff);
           outline: none;
           transition: all 0.2s ease;
-          background: #ffffff;
+          background: #1e1e1e;
           width: 100%;
         }
 
         .form-input:focus {
           border-color: #3b82f6;
-          box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+          box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.5);
         }
 
         .form-input:disabled {
@@ -558,8 +564,8 @@ const CustomersList: React.FC = () => {
           display: flex;
           justify-content: flex-end;
           gap: var(--space-md);
-          background: #f8fafc;
-          border-top: 1px solid #f1f5f9;
+          background: #1e1e1e;
+          border-top: 1px solid #151515;
         }
 
         /* --- Animations --- */
