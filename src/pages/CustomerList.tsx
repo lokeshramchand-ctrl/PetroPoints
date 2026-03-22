@@ -133,18 +133,18 @@ const CustomersList: React.FC = () => {
           body: JSON.stringify({
             id: nextId,
             name: name.trim(),
-            mobile: Number(mobile), 
+            mobile: Number(mobile),
             aadhar: aadhaar,
             city: city.trim(),
           }),
         });
 
         if (!response.ok) throw new Error('Failed to create record in database');
-        
+
         showSnackbar('Customer added successfully', 'success');
 
       } else if (modalMode === 'edit' && targetCustomerId) {
-        
+
         const response = await fetch(`${API_BASE_URL}/update/${targetCustomerId}`, {
           method: 'PUT',
           headers: {
@@ -193,7 +193,7 @@ const CustomersList: React.FC = () => {
       closeDeleteModal();
       // Refetch to sync UI with database state
       await fetchCustomers();
-      
+
     } catch (error) {
       console.error(error);
       showSnackbar('Unable to delete customer.', 'error');
@@ -205,7 +205,7 @@ const CustomersList: React.FC = () => {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
         :root {
           var(--space-xs): clamp(4px, 0.5vw, 8px);
@@ -230,7 +230,6 @@ const CustomersList: React.FC = () => {
           -webkit-font-smoothing: antialiased;
         }
 
-        /* --- App Container --- */
         .app-container {
           display: flex;
           min-height: 100vh;
@@ -241,12 +240,10 @@ const CustomersList: React.FC = () => {
           margin: 0 auto;
         }
 
-        /* --- Sidebar --- */
         .sidebar {
           flex: 0 0 clamp(220px, 20vw, 280px);
         }
 
-        /* --- Main Content --- */
         .main-content {
           flex: 1;
           display: flex;
@@ -255,14 +252,12 @@ const CustomersList: React.FC = () => {
           width: 100%;
         }
 
-        /* --- Page Container --- */
         .page-container {
           display: flex;
           flex-direction: column;
           gap: var(--space-xl);
         }
 
-        /* --- Page Header --- */
         .page-header {
           display: flex;
           justify-content: space-between;
@@ -454,8 +449,7 @@ const CustomersList: React.FC = () => {
         }
 
         .modal-container {
-          background: var(--surface-main, #1e293b);
-          color: var(--text-main, #ffffff);
+          background: #ffffff;
           width: 100%;
           border-radius: clamp(16px, 3vw, 24px);
           box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
@@ -481,7 +475,7 @@ const CustomersList: React.FC = () => {
           margin: 0;
           font-size: clamp(18px, 3vw, 20px);
           font-weight: 700;
-          color: var(--text-main, #0f172a);
+          color: #0f172a;
           letter-spacing: -0.02em;
         }
 
@@ -533,24 +527,24 @@ const CustomersList: React.FC = () => {
         .form-label {
           font-size: clamp(12px, 1.5vw, 13px);
           font-weight: 600;
-          color: var(--text-main, #ffffff);
+          color: #475569;
         }
 
         .form-input {
           padding: clamp(10px, 1.5vw, 12px) clamp(14px, 2vw, 16px);
-          border: 1px solid #475569;
+          border: 1px solid #cbd5e1;
           border-radius: 12px;
           font-size: clamp(14px, 2vw, 15px);
-          color: var(--text-main, #ffffff);
+          color: #0f172a;
           outline: none;
           transition: all 0.2s ease;
-          background: #1e1e1e;
+          background: #ffffff;
           width: 100%;
         }
 
         .form-input:focus {
           border-color: #3b82f6;
-          box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.5);
+          box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
         }
 
         .form-input:disabled {
@@ -564,8 +558,8 @@ const CustomersList: React.FC = () => {
           display: flex;
           justify-content: flex-end;
           gap: var(--space-md);
-          background: #1e1e1e;
-          border-top: 1px solid #151515;
+          background: #f8fafc;
+          border-top: 1px solid #f1f5f9;
         }
 
         /* --- Animations --- */
