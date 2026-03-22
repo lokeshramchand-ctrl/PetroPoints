@@ -44,11 +44,7 @@ const CustomersList: React.FC = () => {
   const fetchCustomers = async () => {
     setIsLoadingData(true);
     try {
-      // Kept your proxy implementation for READ as requested
-      const targetUrl = encodeURIComponent(`${API_BASE_URL}/read`);
-      const proxyUrl = `https://corsproxy.io/?${targetUrl}`;
-
-      const response = await fetch(proxyUrl);
+      const response = await fetch(`${API_BASE_URL}/read`);
       if (!response.ok) throw new Error('Failed to fetch data');
       const data = await response.json();
 
