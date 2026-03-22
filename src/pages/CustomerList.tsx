@@ -133,7 +133,7 @@ const CustomersList: React.FC = () => {
           body: JSON.stringify({
             id: nextId,
             name: name.trim(),
-            mobile: Number(mobile),
+            mobile: mobile,
             aadhar: aadhaar,
             city: city.trim(),
           }),
@@ -155,7 +155,7 @@ const CustomersList: React.FC = () => {
           body: JSON.stringify({
             name: name.trim(),
             city: city.trim(),
-            mobile: Number(mobile),
+            mobile: mobile,
             aadhar: aadhaar,
           }),
         });
