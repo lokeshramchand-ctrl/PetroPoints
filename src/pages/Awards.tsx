@@ -1,4 +1,4 @@
-import { useState, useEffect, type FormEvent } from 'react';
+import { useState, type FormEvent } from 'react';
 import DashboardSidebar from './Sidebar';
 
 // --- MOCK API DATA ---
@@ -14,45 +14,71 @@ const mockVehicleDatabase: Record<string, { id: string; name: string; plate: str
 };
 
 export default function LoyaltyAdminDashboard() {
+  // 1. STATE
   const [mobileNumber, setMobileNumber] = useState('');
   const [availableVehicles, setAvailableVehicles] = useState<{ id: string; name: string; plate: string }[]>([]);
   const [selectedVehicle, setSelectedVehicle] = useState('');
   const [points, setPoints] = useState<number | ''>('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isValidUser, setIsValidUser] = useState(false);
+  const [error, setError] = useState('');
 
-  // Simulating fetching vehicles when a 10-digit mobile number is entered
-  useEffect(() => {
-    if (mobileNumber.length >= 10) {
-      setIsLoading(true);
-      // Simulate network latency
-      const timer = setTimeout(() => {
-        const vehicles = mockVehicleDatabase[mobileNumber] || [];
-        setAvailableVehicles(vehicles);
-        if (vehicles.length === 1) {
-          setSelectedVehicle(vehicles[0].id); // Auto-select if only one vehicle exists
-        } else {
-          setSelectedVehicle('');
-        }
-        setIsLoading(false);
-      }, 400);
-      return () => clearTimeout(timer);
-    } else {
-      setAvailableVehicles([]);
-      setSelectedVehicle('');
+  // 2. HANDLERS
+  const handleValidateUser = () => {
+    if (mobileNumber.length !== 10) {
+      setError('Enter valid 10-digit mobile number');
+      return;
     }
-  }, [mobileNumber]);
+
+    setError('');
+    setIsLoading(true);
+
+    setTimeout(() => {
+      const vehicles = mockVehicleDatabase[mobileNumber] || [];
+
+      if (vehicles.length === 0) {
+        setError('No customer found');
+        setIsValidUser(false);
+      } else {
+        setAvailableVehicles(vehicles);
+        setIsValidUser(true);
+      }
+
+      setIsLoading(false);
+    }, 400);
+  };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (!mobileNumber || !selectedVehicle || !points) {
-      alert('Please fill out all fields.');
+
+    if (isLoading) return;
+
+    if (!isValidUser) {
+      setError('Please validate customer first');
       return;
     }
+
+    if (!selectedVehicle) {
+      setError('Select a vehicle');
+      return;
+    }
+
+    if (!points || points <= 0) {
+      setError('Enter valid points');
+      return;
+    }
+
+    setError('');
     alert(`Successfully awarded ${points} points to vehicle ${selectedVehicle} (User: ${mobileNumber})`);
-    // Reset form after submission
+    resetForm();
+  };
+
+  const resetForm = () => {
     setMobileNumber('');
     setPoints('');
     setSelectedVehicle('');
+    setAvailableVehicles([]);
+    setIsValidUser(false);
   };
 
   return (
@@ -291,8 +317,11 @@ export default function LoyaltyAdminDashboard() {
                 <p className="form-subtitle">Search for a customer by mobile number and select their registered vehicle to apply reward points.</p>
               </div>
 
+              {error && (
+                <p style={{ color: 'red', fontSize: '13px' }}>{error}</p>
+              )}
+
               <form onSubmit={handleSubmit} className="form-grid">
-                
                 {/* Mobile Number Input */}
                 <div className="form-group">
                   <label className="form-label" htmlFor="mobile">Customer Mobile Number</label>
@@ -302,11 +331,29 @@ export default function LoyaltyAdminDashboard() {
                     type="tel"
                     placeholder="e.g. 9876543210"
                     value={mobileNumber}
-                    onChange={(e) => setMobileNumber(e.target.value.replace(/\D/g, ''))}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, '');
+                      setMobileNumber(value);
+                      setIsValidUser(false);
+                      setAvailableVehicles([]);
+                      setSelectedVehicle('');
+                    }}
                     maxLength={10}
                     required
                   />
                 </div>
+
+                <button type="button" onClick={handleValidateUser} className="btn-primary">
+                  Validate Customer
+                </button>
+
+                {isValidUser && (
+                  <div className="form-group">
+                    <p style={{ fontSize: '13px', color: 'green' }}>
+                      Customer found. Select vehicle and proceed.
+                    </p>
+                  </div>
+                )}
 
                 {/* Vehicle Selection Dropdown */}
                 <div className="form-group">
@@ -316,15 +363,15 @@ export default function LoyaltyAdminDashboard() {
                     className="form-select"
                     value={selectedVehicle}
                     onChange={(e) => setSelectedVehicle(e.target.value)}
-                    disabled={availableVehicles.length === 0 || isLoading}
+                    disabled={!isValidUser || isLoading}
                     required
                   >
                     {isLoading ? (
                       <option value="">Searching registry...</option>
                     ) : availableVehicles.length === 0 ? (
                       <option value="">
-                        {mobileNumber.length < 10 
-                          ? 'Enter 10-digit mobile number first' 
+                        {mobileNumber.length < 10
+                          ? 'Enter 10-digit mobile number first'
                           : 'No vehicles found for this number'}
                       </option>
                     ) : (
@@ -350,21 +397,27 @@ export default function LoyaltyAdminDashboard() {
                     placeholder="e.g. 150"
                     min="1"
                     value={points}
-                    onChange={(e) => setPoints(e.target.value ? Number(e.target.value) : '')}
+                    onChange={(e) => {
+                      const value = Number(e.target.value);
+                      if (value >= 0) setPoints(value);
+                    }}
                     required
                   />
                 </div>
 
                 {/* Submit Action */}
                 <div className="form-footer">
-                  <button type="submit" className="btn-primary">
+                  <button
+                    type="submit"
+                    className="btn-primary"
+                    disabled={!isValidUser || !points || isLoading}
+                  >
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="20 6 9 17 4 12"></polyline>
                     </svg>
                     Award Points
                   </button>
                 </div>
-
               </form>
             </section>
           </div>
