@@ -1,33 +1,15 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Snackbar, { type SnackbarType } from '../theme/Snackbar';
+import React, { useState, useEffect } from 'react';
 
-const LoginScreen: React.FC = () => {
-  const [userId, setUserId] = useState('');
-  const [password, setPassword] = useState('');
-  const [snackbar, setSnackbar] = useState<{ message: string; type: SnackbarType } | null>(null);
-  const navigate = useNavigate();
+export default function UberLandingPage() {
+  const [isMounted, setIsMounted] = useState(false);
 
-  const showSnackbar = (message: string, type: SnackbarType) => {
-    setSnackbar({ message, type });
-  };
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!userId.trim() || !password.trim()) {
-      showSnackbar('Please fill in all fields.', 'error');
-      return;
-    }
-
-    console.log('Logging in with:', { userId, password });
-    navigate('/dashboard');
-    showSnackbar('Login successful!', 'success');
-  };
-
-  const handleClear = () => {
-    setUserId('');
-    setPassword('');
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    // Add your form submission logic here
   };
 
   return (
@@ -35,245 +17,402 @@ const LoginScreen: React.FC = () => {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
+        :root {
+          --bg-main: #f8fafc;
+          --surface-main: #ffffff;
+          --text-main: #0f172a;
+          --text-muted: #64748b;
+          --text-placeholder: #94a3b8;
+          --border-color: #e2e8f0;
+          --border-focus: #cbd5e1;
+          --accent: #2563eb;
+          --accent-hover: #1d4ed8;
+          --accent-ring: rgba(37, 99, 235, 0.15);
+          --error: #ef4444;
+          --error-bg: #fef2f2;
+          --success: #10b981;
+          --success-bg: #ecfdf5;
+          --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+          --shadow-card: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+        }
+
+        [data-theme='dark'] {
+          --bg-main: #0f172a;
+          --surface-main: #1e293b;
+          --text-main: #f8fafc;
+          --text-muted: #94a3b8;
+          --text-placeholder: #64748b;
+          --border-color: #334155;
+          --border-focus: #475569;
+          --accent: #3b82f6;
+          --accent-hover: #60a5fa;
+          --accent-ring: rgba(59, 130, 246, 0.15);
+          --error: #f87171;
+          --error-bg: #fef2f2;
+          --success: #34d399;
+          --success-bg: #ecfdf5;
+          --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.1);
+          --shadow-card: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
         * {
           box-sizing: border-box;
-          font-family: 'Inter', sans-serif;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
         body, html {
           margin: 0;
           padding: 0;
-          height: 100%;
           background-color: var(--bg-main);
-        }
-
-        .login-wrapper {
-          min-height: 100vh;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 24px;
-        }
-
-        .login-card {
-          width: 100%;
-          max-width: 420px;
-          background: var(--surface-main);
-          border-radius: 20px;
-          padding: 48px 40px;
-          box-shadow: var(--shadow-card);
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-        }
-
-        .icon-container {
-          width: 56px;
-          height: 56px;
-          background: var(--surface-muted);
-          border-radius: 50%; /* Perfect circle */
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin-bottom: 24px;
-          color: var(--primary-dark);
-        }
-
-        .title {
-          font-size: 26px;
-          font-weight: 700;
           color: var(--text-main);
-          margin: 0 0 10px 0;
-          letter-spacing: -0.03em;
+          -webkit-font-smoothing: antialiased;
         }
 
-        .subtitle {
-          font-size: 15px;
-          color: var(--text-muted);
-          text-align: center;
-          margin: 0 0 36px 0;
-          line-height: 1.5;
-        }
-
-        .login-form {
-          width: 100%;
+        /* Layout */
+        .page-wrapper {
+          min-height: 100vh;
+          padding: 1.5rem;
           display: flex;
           flex-direction: column;
-          gap: 20px;
+          gap: 1.5rem;
+          overflow: hidden;
+        }
+        @media (min-width: 1024px) {
+          .page-wrapper {
+            flex-direction: row;
+          }
+        }
+
+        /* Left Side */
+        .left-section {
+          flex: 1;
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          padding: 3rem 1.5rem;
+        }
+        @media (min-width: 768px) {
+          .left-section { padding: 0 4rem; }
+        }
+        @media (min-width: 1280px) {
+          .left-section { padding: 0 6rem; }
+        }
+
+        .logo {
+          position: absolute;
+          top: 1rem;
+          left: 1.5rem;
+          font-size: 1.5rem;
+          font-weight: 500;
+          letter-spacing: -0.025em;
+        }
+        @media (min-width: 768px) {
+          .logo { left: 4rem; }
+        }
+        @media (min-width: 1280px) {
+          .logo { left: 6rem; }
+        }
+
+        /* Animations */
+        .anim-fade-up {
+          opacity: 0;
+          transform: translateY(3rem);
+          transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .anim-fade-up.visible {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        .anim-slide-right {
+          opacity: 0;
+          transform: translateX(2rem) scale(0.95);
+          transition: opacity 1s ease-out 0.3s, transform 1s ease-out 0.3s;
+        }
+        .anim-slide-right.visible {
+          opacity: 1;
+          transform: translateX(0) scale(1);
+        }
+
+        .anim-delay-card {
+          opacity: 0;
+          transform: translateY(3rem);
+          transition: opacity 1s ease-out 0.7s, transform 1s ease-out 0.7s, box-shadow 0.3s ease;
+        }
+        .anim-delay-card.visible {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        /* Typography & Content */
+        .headline {
+          font-size: 3.5rem;
+          font-weight: 700;
+          letter-spacing: -0.025em;
+          line-height: 1.1;
+          margin-bottom: 1.5rem;
+        }
+        @media (min-width: 768px) {
+          .headline { font-size: 4.5rem; }
+        }
+        .text-black { color: #000; display: block; }
+        .text-gray { color: #828282; display: block; }
+        
+        .subheadline {
+          color: #374151;
+          font-weight: 500;
+          margin-bottom: 2rem;
+          font-size: 15px;
+        }
+
+        /* Form Elements */
+        .form-container {
+          max-width: 28rem;
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
         }
 
         .input-group {
           position: relative;
-          width: 100%;
         }
-
-        .input-icon {
+        
+        .input-icon-left {
           position: absolute;
-          left: 18px;
-          top: 50%;
-          transform: translateY(-50%);
-          color: var(--text-soft);
-          width: 20px;
-          height: 20px;
-          pointer-events: none;
-          transition: color 0.2s ease;
-        }
-
-        .input-field {
-          width: 100%;
-          padding: 16px 20px 16px 48px;
-          border: 2px solid transparent;
-          border-radius: 12px;
-          background: var(--bg-input);
-          font-size: 15px;
-          color: var(--text-main);
-          font-weight: 500;
-          outline: none;
-          transition: all 0.3s ease;
-        }
-
-        .input-field::placeholder {
-          color: var(--text-soft);
-          font-weight: 400;
-        }
-
-        .input-field:focus {
-          background: var(--surface-main);
-          border-color: var(--primary-dark);
-          box-shadow: 0 0 0 3px rgba(47, 52, 55, 0.14);
-        }
-
-        .input-field:focus + .input-icon,
-        .input-group:focus-within .input-icon {
-          color: var(--primary-dark);
-        }
-
-        .button-group {
+          top: 0; bottom: 0; left: 1rem;
           display: flex;
-          flex-direction: column;
-          gap: 12px;
-          margin-top: 12px;
-        }
-
-        .btn {
-          width: 100%;
-          padding: 16px;
-          border-radius: 12px;
-          font-size: 15px;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          border: none;
-          outline: none;
-          display: flex;
-          justify-content: center;
           align-items: center;
+          color: #9CA3AF;
+          pointer-events: none;
+          transition: color 0.2s;
+        }
+        .input-group:focus-within .input-icon-left {
+          color: #000;
+        }
+
+        .input-icon-right {
+          position: absolute;
+          top: 0; bottom: 0; right: 1rem;
+          display: flex;
+          align-items: center;
+          color: #9CA3AF;
+          background: none;
+          border: none;
+          cursor: pointer;
+          transition: color 0.2s;
+        }
+        .input-icon-right:hover { color: #000; }
+
+        .custom-input {
+          width: 100%;
+          background: #fff;
+          border: 1px solid #E5E7EB;
+          border-radius: 0.5rem;
+          padding: 1rem 3rem;
+          font-size: 1rem;
+          outline: none;
+          transition: all 0.2s;
+          box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        .custom-input:focus {
+          border-color: #000;
+          box-shadow: 0 0 0 2px #000;
         }
 
         .btn-primary {
-          background: var(--primary-dark);
-          color: var(--surface-main);
-          box-shadow: 0 8px 18px rgba(15, 15, 15, 0.14);
+          width: 100%;
+          background: #1A1A1A;
+          color: #fff;
+          border: none;
+          border-radius: 0.5rem;
+          padding: 1rem;
+          margin-top: 0.5rem;
+          font-size: 1rem;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          cursor: pointer;
+          transition: all 0.2s;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary:hover {
+          background: #000;
+          transform: scale(1.02);
+        }
+        .btn-primary:active {
+          transform: scale(0.98);
+        }
+        .btn-primary svg {
+          transition: transform 0.2s;
+        }
+        .btn-primary:hover svg {
+          transform: translateX(4px);
+        }
+
+        /* Right Side (Visuals) */
+        .right-section {
+          flex: 1;
+          position: relative;
+          border-radius: 2.5rem;
+          overflow: hidden;
+          background-color: #2D5A3C;
+          display: none;
+        }
+
+        @media (min-width: 768px) {
+          .right-section {
+            display: flex;
+            flex: 0 0 50%; /* Half of the page */
+          }
+        }
+
+        .bg-graphic {
+          position: absolute;
+          inset: 0;
+          background-size: cover;
+          background-position: center;
+          mix-blend-mode: overlay;
+          opacity: 0.8;
+        }
+
+        .bg-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(to bottom, rgba(45, 90, 60, 0.4), transparent, rgba(45, 90, 60, 0.9));
+        }
+
+        .form-container {
+          max-width: 28rem;
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .custom-input {
+          width: 100%;
+          background: #fff;
+          border: 1px solid #E5E7EB;
+          border-radius: 0.5rem;
+          padding: 1rem 3rem;
+          font-size: 1rem;
+          outline: none;
+          transition: all 0.2s;
+          box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .custom-input:focus {
+          border-color: #000;
+          box-shadow: 0 0 0 2px #000;
+        }
+
+        .btn-primary {
+          width: 100%;
+          background: #1A1A1A;
+          color: #fff;
+          border: none;
+          border-radius: 0.5rem;
+          padding: 1rem;
+          margin-top: 0.5rem;
+          font-size: 1rem;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          cursor: pointer;
+          transition: all 0.2s;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
         .btn-primary:hover {
-          background: var(--primary-hover);
-          transform: translateY(-1px);
-          box-shadow: 0 12px 22px rgba(15, 15, 15, 0.18);
+          background: #000;
+          transform: scale(1.02);
         }
 
         .btn-primary:active {
-          transform: translateY(1px);
-        }
-
-        .btn-secondary {
-          background: transparent;
-          color: var(--text-muted);
-        }
-
-        .btn-secondary:hover {
-          background: var(--bg-input);
-          color: var(--text-main);
-        }
-
-        @media (max-width: 480px) {
-          .login-card {
-            padding: 40px 24px;
-            border-radius: 28px;
-          }
+          transform: scale(0.98);
         }
       `}</style>
 
-      <div className="login-wrapper">
-        <div className="login-card">
-          <div className="icon-container">
-            {/* Swapped to a slightly rounder, bolder icon */}
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            </svg>
+      <div className="page-wrapper">
+        
+        {/* ================= LEFT SIDE: Content & Form ================= */}
+        <div className="left-section">
+          
+          <div className="logo">Uber</div>
+
+          <div className={`anim-fade-up ${isMounted ? 'visible' : ''}`}>
+            <h1 className="headline">
+              <span className="text-black">Go Anywhere</span>
+              <span className="text-gray">With Uber</span>
+            </h1>
+            
+            <p className="subheadline">
+              Request A Ride, Hop In, And Go.
+            </p>
+
+            <form className="form-container" onSubmit={handleSubmit}>
+              {/* Location Input */}
+              <div className="input-group">
+                <div className="input-icon-left">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 21s-8-4.5-8-11a8 8 0 1116 0c0 6.5-8 11-8 11z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                </div>
+                <input 
+                  type="text" 
+                  placeholder="Enter Location" 
+                  className="custom-input"
+                />
+                <button type="button" className="input-icon-right">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20" style={{transform: 'rotate(-45deg)'}}>
+                    <line x1="22" y1="2" x2="11" y2="13" />
+                    <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Destination Input */}
+              <div className="input-group">
+                <div className="input-icon-left">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 21s-8-4.5-8-11a8 8 0 1116 0c0 6.5-8 11-8 11z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                </div>
+                <input 
+                  type="text" 
+                  placeholder="Enter Destination" 
+                  className="custom-input"
+                />
+              </div>
+
+              {/* Submit Button */}
+              <button type="submit" className="btn-primary">
+                <span>See Prices</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </button>
+            </form>
           </div>
+        </div>
 
-          <h1 className="title">Welcome Back</h1>
-          <p className="subtitle">Please enter your credentials to access the admin dashboard.</p>
-
-          <form className="login-form" onSubmit={handleLogin}>
-            <div className="input-group">
-              <input
-                type="text"
-                className="input-field"
-                placeholder="User ID"
-                value={userId}
-                onChange={(e) => setUserId(e.target.value)}
-              />
-              <svg className="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
-            </div>
-
-            <div className="input-group">
-              <input
-                type="password"
-                className="input-field"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <svg className="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-              </svg>
-            </div>
-
-            <div className="button-group">
-              <button 
-                type="submit" 
-                className="btn btn-primary"
-              >
-                Log In
-              </button>
-              <button 
-                type="button" 
-                className="btn btn-secondary" 
-                onClick={handleClear}
-              >
-                Clear Fields
-              </button>
-            </div>
-          </form>
-
-          {/* Render the Snackbar */}
-          {snackbar && (
-            <Snackbar
-              message={snackbar.message}
-              type={snackbar.type}
-              onClose={() => setSnackbar(null)}
-            />
-          )}
+        {/* ================= RIGHT SIDE: Visuals & Nav ================= */}
+        <div className={`right-section anim-slide-right ${isMounted ? 'visible' : ''}`}>
+          
+          <div 
+            className="bg-graphic"
+            style={{ backgroundImage: "url('https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?q=80&w=2000&auto=format&fit=crop')" }}
+          />
+          
         </div>
       </div>
     </>
   );
-};
-
-export default LoginScreen;
+}
