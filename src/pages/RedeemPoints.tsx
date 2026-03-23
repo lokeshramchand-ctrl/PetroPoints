@@ -19,42 +19,89 @@ export default function RedeemPoints() {
   const [selectedVehicle, setSelectedVehicle] = useState('');
   const [pointsToRedeem, setPointsToRedeem] = useState<number | ''>('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isValidUser, setIsValidUser] = useState(false);
+  const [, setError] = useState('');
+  const [customerPoints, setCustomerPoints] = useState<number | null>(null);
 
   useEffect(() => {
-    if (mobileNumber.length >= 10) {
-      setIsLoading(true);
-
-      const timer = setTimeout(() => {
-        const vehicles = mockVehicleDatabase[mobileNumber] || [];
-        setAvailableVehicles(vehicles);
-        if (vehicles.length === 1) {
-          setSelectedVehicle(vehicles[0].id);
-        } else {
-          setSelectedVehicle('');
-        }
-        setIsLoading(false);
-      }, 400);
-
-      return () => clearTimeout(timer);
+    if (mobileNumber.length !== 10) {
+      setIsValidUser(false);
+      setAvailableVehicles([]);
+      setSelectedVehicle('');
+      setCustomerPoints(null);
+      return;
     }
 
-    setAvailableVehicles([]);
-    setSelectedVehicle('');
+    setIsLoading(true);
+    setError('');
+
+    const timer = setTimeout(() => {
+      const vehicles = mockVehicleDatabase[mobileNumber] || [];
+
+      if (vehicles.length === 0) {
+        setError('No customer found');
+        setIsValidUser(false);
+        setCustomerPoints(null);
+      } else {
+        setAvailableVehicles(vehicles);
+        setIsValidUser(true);
+
+        const mockPoints = Math.floor(Math.random() * 200);
+        setCustomerPoints(mockPoints);
+
+        if (vehicles.length === 1) {
+          setSelectedVehicle(vehicles[0].id);
+        }
+      }
+
+      setIsLoading(false);
+    }, 500);
+
+    return () => clearTimeout(timer);
   }, [mobileNumber]);
+
+  const resetForm = () => {
+    setMobileNumber('');
+    setPointsToRedeem('');
+    setSelectedVehicle('');
+    setAvailableVehicles([]);
+    setIsValidUser(false);
+    setCustomerPoints(null);
+  };
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
 
-    if (!mobileNumber || !selectedVehicle || !pointsToRedeem) {
-      alert('Please fill out all fields.');
+    if (isLoading) return;
+
+    if (!isValidUser) {
+      setError('Invalid customer');
       return;
     }
 
-    alert(`Successfully redeemed ${pointsToRedeem} points for vehicle ${selectedVehicle} (User: ${mobileNumber})`);
+    if (!selectedVehicle) {
+      setError('Select a vehicle');
+      return;
+    }
 
-    setMobileNumber('');
-    setPointsToRedeem('');
-    setSelectedVehicle('');
+    if (!pointsToRedeem || pointsToRedeem <= 0) {
+      setError('Enter valid points');
+      return;
+    }
+
+    if (customerPoints !== null && pointsToRedeem > customerPoints) {
+      setError('Insufficient points');
+      return;
+    }
+
+    setError('');
+    console.log('Redeem success', {
+      mobileNumber,
+      selectedVehicle,
+      pointsToRedeem,
+    });
+
+    resetForm();
   };
 
   return (
