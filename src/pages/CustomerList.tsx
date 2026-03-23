@@ -127,7 +127,7 @@ export default function CustomersList() {
   const isValidMobile = (mobile: string) => /^[6-9]\d{9}$/.test(mobile);
   const isValidAadhaar = (aadhaar: string) => /^\d{12}$/.test(aadhaar);
   const maskAadhaar = (aadhaar: string) => aadhaar.replace(/\d(?=\d{4})/g, '•').replace(/•/g, '• ');
-  
+
   const filteredCustomers = customers.filter(
     (c) => c.name.toLowerCase().includes(search.toLowerCase()) || c.mobile.includes(search)
   );
@@ -420,7 +420,7 @@ export default function CustomersList() {
               <h1>Customers</h1>
               <p>Manage directory and client records</p>
             </div>
-            
+
             <div className="header-controls">
               <div className="search-pill">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -442,12 +442,12 @@ export default function CustomersList() {
                   <th>Location</th>
                   <th>Mobile</th>
                   <th>Aadhaar</th>
-                  <th style={{width: '100px'}}></th>
+                  <th style={{ width: '100px' }}></th>
                 </tr>
               </thead>
               <tbody>
                 {isLoadingData ? (
-                  Array.from({length: 5}).map((_, i) => <tr key={i}><td colSpan={6} style={{padding:0}}><div className="skel-row" /></td></tr>)
+                  Array.from({ length: 5 }).map((_, i) => <tr key={i}><td colSpan={6} style={{ padding: 0 }}><div className="skel-row" /></td></tr>)
                 ) : filteredCustomers.length === 0 ? (
                   <tr>
                     <td colSpan={6}>
@@ -502,7 +502,7 @@ export default function CustomersList() {
                   <input className="sleek-input" value={`#CUST-${targetCustomerId}`} disabled />
                 </div>
               )}
-              
+
               <div className="form-block">
                 <label>Full Legal Name</label>
                 <input className="sleek-input" placeholder="e.g. Jane Doe" value={name} onChange={(e) => setName(e.target.value)} required />
