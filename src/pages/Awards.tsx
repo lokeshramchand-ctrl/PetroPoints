@@ -94,14 +94,6 @@ export default function LoyaltyAdminDashboard() {
     // setTimeout(() => resetForm(), 3000);
   };
 
-  const resetForm = () => {
-    setMobileNumber('');
-    setPoints('');
-    setSelectedVehicle('');
-    setAvailableVehicles([]);
-    setIsValidUser(false);
-    setSuccessMessage('');
-  };
 
   return (
     <>
@@ -151,8 +143,8 @@ export default function LoyaltyAdminDashboard() {
         .app-container {
           display: flex;
           min-height: 100vh;
-          padding: clamp(16px, 3vw, 32px);
-          gap: clamp(16px, 3vw, 32px);
+          padding: clamp(12px, 2vw, 24px);
+          gap: clamp(12px, 2vw, 24px);
           align-items: flex-start;
           max-width: 1600px;
           margin: 0 auto;
