@@ -8,6 +8,7 @@ type Customer = {
   city: string;
   mobile: string;
   aadhaar: string;
+  points: number; // Added points
 };
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://petropoints-backend.deploy.splsystems.in/api';
@@ -42,8 +43,9 @@ export default function CustomersList() {
         id: `#CUST-${item.CustomerID}`,
         name: item.CustomerName || '',
         city: item.CustomerCity || '',
-        mobile: item.CustomerMobile ? item.CustomerMobile.toString() : '',
+        mobile: item.CustomerMobile?.toString().padStart(10, '0') || '', // Pad invalid mobile numbers
         aadhaar: item.CustomerAadhaar || '',
+        points: Number(item.CustomerPoints || 0), // Added points mapping
       }));
       setCustomers(formattedData);
     } catch (error) {
@@ -59,14 +61,7 @@ export default function CustomersList() {
     setName(''); setCity(''); setMobile(''); setAadhaar(''); setModalMode('add');
   };
 
-  const openEditModal = (customer: Customer) => {
-    setTargetCustomerId(parseId(customer.id));
-    setName(customer.name); setCity(customer.city); setMobile(customer.mobile.replace(/\D/g, '').slice(-10)); setAadhaar(customer.aadhaar);
-    setModalMode('edit');
-  };
-
   const closeFormModal = () => { setModalMode(null); setTargetCustomerId(null); };
-  const openDeleteModal = (id: string) => { setTargetCustomerId(parseId(id)); setIsDeleteModalOpen(true); };
   const closeDeleteModal = () => { setIsDeleteModalOpen(false); setTargetCustomerId(null); };
 
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -89,7 +84,7 @@ export default function CustomersList() {
           body: JSON.stringify({ id: nextId, name: name.trim(), mobile, aadhar: aadhaar, city: city.trim() }),
         });
         if (!response.ok) throw new Error('Failed');
-        setCustomers((prev) => [...prev, { id: `#CUST-${nextId}`, name: name.trim(), city: city.trim(), mobile, aadhaar }]);
+        setCustomers((prev) => [...prev, { id: `#CUST-${nextId}`, name: name.trim(), city: city.trim(), mobile, aadhaar, points: 0 }]);
         showSnackbar('Customer added', 'success');
       } else if (modalMode === 'edit' && targetCustomerId) {
         const response = await fetch(`${API_BASE_URL}/update/${targetCustomerId}`, {
@@ -131,6 +126,8 @@ export default function CustomersList() {
   const filteredCustomers = customers.filter(
     (c) => c.name.toLowerCase().includes(search.toLowerCase()) || c.mobile.includes(search)
   );
+
+  const sortedCustomers = [...filteredCustomers].sort((a, b) => b.points - a.points);
 
   return (
     <>
@@ -437,12 +434,12 @@ export default function CustomersList() {
             <table className="data-table">
               <thead>
                 <tr>
-                  <th>Customer ID</th>
-                  <th>Full Name</th>
-                  <th>Location</th>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>City</th>
                   <th>Mobile</th>
                   <th>Aadhaar</th>
-                  <th style={{ width: '100px' }}></th>
+                  <th>Points</th> {/* Added Points header */}
                 </tr>
               </thead>
               <tbody>
@@ -458,22 +455,18 @@ export default function CustomersList() {
                     </td>
                   </tr>
                 ) : (
-                  filteredCustomers.map((customer) => (
+                  sortedCustomers.map((customer) => (
                     <tr key={customer.id}>
-                      <td className="cell-id">{customer.id}</td>
-                      <td className="cell-name">{customer.name}</td>
-                      <td className="cell-secondary">{customer.city}</td>
-                      <td className="cell-secondary">+91 {customer.mobile}</td>
-                      <td className="cell-secondary">{maskAadhaar(customer.aadhaar)}</td>
+                      <td>{customer.id}</td>
+                      <td>{customer.name}</td>
+                      <td>{customer.city}</td>
+                      <td>{customer.mobile}</td>
+                      <td>{maskAadhaar(customer.aadhaar)}</td>
                       <td>
-                        <div className="action-links">
-                          <button className="link-btn" onClick={() => openEditModal(customer)}>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-                          </button>
-                          <button className="link-btn danger" onClick={() => openDeleteModal(customer.id)}>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-                          </button>
-                        </div>
+                        <span className="badge">{customer.points}</span> {/* Styled points */}
+                        {customer.points > 100 && (
+                          <span style={{ color: 'green', fontSize: '12px' }}>⭐ Top</span>
+                        )}
                       </td>
                     </tr>
                   ))
