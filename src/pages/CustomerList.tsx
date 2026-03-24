@@ -80,30 +80,18 @@ export default function CustomersList() {
       if (modalMode === 'add') {
         const nextId = Math.max(...customers.map((c) => parseId(c.id)).filter((v) => Number.isFinite(v)), 7820) + 1;
         const response = await fetch(`${API_BASE_URL}/create`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            CustomerName: name.trim(),
-            CustomerCity: city.trim(),
-            CustomerMobile: mobile,
-            CustomerAadhaar: aadhaar,
-          }),
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: nextId, name: name.trim(), mobile, aadhar: aadhaar, city: city.trim() }),
         });
-        if (!response.ok) throw new Error('Failed to add customer');
+        if (!response.ok) throw new Error('Failed');
         setCustomers((prev) => [...prev, { id: `#CUST-${nextId}`, name: name.trim(), city: city.trim(), mobile, aadhaar, points: 0 }]);
         showSnackbar('Customer added', 'success');
       } else if (modalMode === 'edit' && targetCustomerId) {
         const response = await fetch(`${API_BASE_URL}/update/${targetCustomerId}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            CustomerName: name.trim(),
-            CustomerCity: city.trim(),
-            CustomerMobile: mobile,
-            CustomerAadhaar: aadhaar,
-          }),
+          method: 'PUT', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: name.trim(), city: city.trim(), mobile, aadhar: aadhaar }),
         });
-        if (!response.ok) throw new Error('Failed to update customer');
+        if (!response.ok) throw new Error('Failed');
         setCustomers((prev) => prev.map((c) => (c.id === `#CUST-${targetCustomerId}` ? { ...c, name: name.trim(), city: city.trim(), mobile, aadhaar } : c)));
         showSnackbar('Customer updated', 'success');
       }
