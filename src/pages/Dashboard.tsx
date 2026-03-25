@@ -1,88 +1,91 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import DashboardSidebar from './Sidebar';
 import { TrendUpIcon } from '../assets/icons/DashboardIcons';
 import { ThemeToggle } from '../theme/ThemeToggle';
 
 const Dashboard: React.FC = () => {
+  const [customers, setCustomers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://petropoints-backend.deploy.splsystems.in/api';
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+
+        const res = await fetch(`${API_BASE_URL}/read`);
+        const data = await res.json();
+
+        setCustomers(data);
+      } catch (err) {
+        console.error("Failed to fetch dashboard data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const totalCustomers = customers.length;
+  const totalPoints = customers.reduce(
+    (sum, c) => sum + Number(c.CustomerPoints || 0),
+    0
+  );
+  const activeCustomers = customers.filter(
+    (c) => Number(c.CustomerPoints || 0) > 0
+  ).length;
+  const zeroCustomers = customers.filter(
+    (c) => Number(c.CustomerPoints || 0) === 0
+  ).length;
+
   const stats = [
     {
       id: 1,
       title: 'Total Customers',
-      value: '12,480',
-      trend: '+12% this month',
+      value: totalCustomers.toLocaleString(),
+      trend: 'Live data',
       isPositive: true,
     },
     {
       id: 2,
-      title: 'Total Vehicles',
-      value: '8,234',
-      trend: '+5% this month',
+      title: 'Active Customers',
+      value: activeCustomers,
+      trend: 'Have points',
       isPositive: true,
     },
     {
       id: 3,
-      title: 'Total Points Awarded',
-      value: '1.2M',
-      trend: '+18% this month',
+      title: 'Total Points',
+      value: totalPoints.toLocaleString(),
+      trend: 'Accumulated',
       isPositive: true,
     },
     {
       id: 4,
-      title: 'Today Customers',
-      value: '142',
-      trend: 'Updated just now',
-      isPositive: null,
-    },
-    {
-      id: 5,
-      title: 'Today Points',
-      value: '4,550',
-      trend: 'Updated just now',
+      title: 'Zero Points',
+      value: zeroCustomers,
+      trend: 'No activity',
       isPositive: null,
     },
   ];
 
-  const activity = [
-    {
-      id: 1,
-      action: 'Awarded Points',
-      customer: 'Jane Cooper',
-      vehicle: 'TS 09 EU 1234',
-      points: '+120',
-      time: '2 min ago',
-    },
-    {
-      id: 2,
-      action: 'Redeemed Points',
-      customer: 'Guy Hawkins',
-      vehicle: 'MH 01 ZA 5555',
-      points: '-80',
-      time: '14 min ago',
-    },
-    {
-      id: 3,
-      action: 'New Customer Added',
-      customer: 'Laura Kinney',
-      vehicle: 'TS 10 AQ 7281',
-      points: '--',
-      time: '36 min ago',
-    },
-    {
-      id: 4,
-      action: 'Awarded Points',
-      customer: 'Robert Fox',
-      vehicle: 'AP 16 DK 9932',
-      points: '+60',
-      time: '1 hr ago',
-    },
-  ];
+  const dynamicActivity = customers.slice(0, 5).map((c) => ({
+    id: c.CustomerID,
+    action: Number(c.CustomerPoints || 0) > 0
+      ? 'Points Updated'
+      : 'New Customer Added',
+    customer: c.CustomerName,
+    vehicle: '--',
+    points: Number(c.CustomerPoints || 0) > 0
+      ? `+${c.CustomerPoints}`
+      : '--',
+    time: 'Recently',
+  }));
 
-  // Helper function to style point badges dynamically
-  const getPointsClass = (points: string) => {
-    if (points.startsWith('+')) return 'badge-positive';
-    if (points.startsWith('-')) return 'badge-negative';
-    return 'badge-neutral';
-  };
+  if (loading) {
+    return <p style={{ padding: "40px" }}>Loading dashboard...</p>;
+  }
 
   return (
     <>
@@ -393,7 +396,7 @@ const Dashboard: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {activity.map((entry) => (
+                  {dynamicActivity.map((entry) => (
                     <tr key={entry.id}>
                       <td className="cell-action">{entry.action}</td>
                       <td>{entry.customer}</td>
@@ -410,11 +413,17 @@ const Dashboard: React.FC = () => {
               </table>
             </div>
           </section>
-
         </main>
       </div>
     </>
   );
+};
+
+// Helper function to style point badges dynamically
+const getPointsClass = (points: string) => {
+  if (points.startsWith('+')) return 'badge-positive';
+  if (points.startsWith('-')) return 'badge-negative';
+  return 'badge-neutral';
 };
 
 export default Dashboard;
