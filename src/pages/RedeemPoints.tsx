@@ -1,4 +1,4 @@
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import DashboardSidebar from './Sidebar';
 import Snackbar, { type SnackbarType } from '../theme/Snackbar';
 
@@ -97,28 +97,38 @@ export default function RedeemPoints() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
         :root {
-          --bg-body: #FAFAFA;
+          /* Modern SaaS Palette */
+          --bg-body: #F8FAFC;
           --surface: #FFFFFF;
-          --text-main: #09090B;
-          --text-soft: #71717A;
-          --text-faint: #A1A1AA;
-          --border-light: #F4F4F5;
-          --border-strong: #E4E4E7;
-          --accent-black: #09090B;
-          --accent-hover: #27272A;
-          --danger: #E11D48;
-          --success: #10B981;
-          --radius-sm: 8px;
+          --primary: #4F46E5;
+          --primary-hover: #4338CA;
+          --primary-light: #EEF2FF;
+          --text-main: #0F172A;
+          --text-muted: #64748B;
+          --text-faint: #94A3B8;
+          --border-light: #F1F5F9;
+          --border-strong: #E2E8F0;
+          --danger: #EF4444;
+          --success-text: #166534;
+          --success-bg: #DCFCE7;
+          --warning-bg: #FEF9C3;
+          --warning-text: #854D0E;
+          
+          --radius-sm: 6px;
           --radius-md: 12px;
-          --radius-full: 99px;
+          --radius-lg: 16px;
+          
+          --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+          --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+          --shadow-focus: 0 0 0 3px rgba(79, 70, 229, 0.2);
         }
 
         * {
           box-sizing: border-box;
-          font-family: 'Outfit', -apple-system, sans-serif;
+          font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }
 
         body, html {
@@ -131,9 +141,6 @@ export default function RedeemPoints() {
         .app-container {
           display: flex;
           min-height: 100vh;
-          padding: clamp(12px, 2vw, 24px);
-          gap: clamp(12px, 2vw, 24px);
-          align-items: flex-start;
           max-width: 1600px;
           margin: 0 auto;
         }
@@ -142,114 +149,180 @@ export default function RedeemPoints() {
           flex: 1;
           display: flex;
           flex-direction: column;
-          padding: 48px;
+          padding: 40px 48px;
           min-width: 0;
         }
 
+        /* --- SaaS Header --- */
         .header-section {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-end;
-          margin-bottom: 40px;
+          margin-bottom: 32px;
         }
 
         .header-titles h1 {
-          font-size: 32px;
-          font-weight: 500;
-          letter-spacing: -0.04em;
-          margin: 0 0 8px 0;
+          font-size: 28px;
+          font-weight: 600;
+          letter-spacing: -0.02em;
+          margin: 0 0 4px 0;
           color: var(--text-main);
         }
 
         .header-titles p {
-          font-size: 15px;
-          color: var(--text-soft);
+          font-size: 14px;
+          color: var(--text-muted);
           margin: 0;
-          font-weight: 300;
+        }
+
+        /* --- Panel & Form --- */
+        .content-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          max-width: 540px;
         }
 
         .data-panel {
           background: var(--surface);
           border: 1px solid var(--border-strong);
-          border-radius: var(--radius-md);
-          overflow: hidden;
-          max-width: 560px;
-          padding: 40px;
+          border-radius: var(--radius-lg);
+          box-shadow: var(--shadow-md);
+          padding: 32px;
         }
 
         .form-flow { 
           display: flex; 
           flex-direction: column; 
-          gap: 32px; 
+          gap: 24px; 
         }
 
         .form-block { 
           display: flex; 
           flex-direction: column; 
           gap: 8px; 
-          position: relative;
         }
 
         .form-block label { 
           font-size: 13px; 
-          color: var(--text-soft); 
-          font-weight: 400; 
+          color: var(--text-muted); 
+          font-weight: 500; 
         }
         
-        .sleek-input {
-          padding: 14px 0;
-          border: none;
-          border-bottom: 1px solid var(--border-strong);
-          font-size: 16px;
-          background: transparent;
+        .saas-input {
+          padding: 12px 16px;
+          border: 1px solid var(--border-strong);
+          border-radius: var(--radius-md);
+          font-size: 15px;
+          background: var(--surface);
           color: var(--text-main);
-          transition: border-color 0.2s;
+          transition: all 0.2s;
+          box-shadow: var(--shadow-sm);
         }
         
-        .sleek-input:focus { 
+        .saas-input:focus { 
           outline: none; 
-          border-bottom-color: var(--text-main); 
+          border-color: var(--primary); 
+          box-shadow: var(--shadow-focus); 
         }
 
-        .sleek-input::placeholder { 
+        .saas-input::placeholder { 
           color: var(--text-faint); 
-          font-weight: 300; 
         }
 
-        .sleek-input:disabled { 
-          color: var(--text-faint); 
-          border-bottom-style: dashed; 
-          cursor: not-allowed;
+        .saas-input:disabled { 
+          background: var(--border-light); 
+          color: var(--text-muted); 
+          cursor: not-allowed; 
         }
 
-        .btn-sleek {
-          background: var(--accent-black);
-          color: var(--surface);
+        /* Customer Info Card */
+        .customer-info-box {
+          background: #F8FAFC;
+          border: 1px solid var(--border-strong);
+          border-radius: var(--radius-md);
+          padding: 16px;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+          animation: slideDown 0.3s ease;
+        }
+
+        .info-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .info-label {
+          font-size: 13px;
+          color: var(--text-muted);
+          font-weight: 500;
+        }
+
+        .info-value {
+          font-size: 14px;
+          font-weight: 600;
+          color: var(--text-main);
+        }
+
+        .points-badge {
+          background: var(--primary-light);
+          color: var(--primary);
+          padding: 4px 10px;
+          border-radius: 99px;
+          font-size: 13px;
+        }
+
+        .insufficient-badge {
+          background: var(--warning-bg);
+          color: var(--warning-text);
+          font-size: 12px;
+          padding: 4px 8px;
+          border-radius: 6px;
+          margin-top: 4px;
+          display: inline-block;
+        }
+
+        /* Primary Button */
+        .btn-primary {
+          background: var(--primary);
+          color: white;
           border: none;
-          padding: 16px 24px;
-          border-radius: var(--radius-full);
+          padding: 14px 24px;
+          border-radius: var(--radius-md);
           font-size: 15px;
           font-weight: 500;
-          display: inline-flex;
+          display: flex;
           align-items: center;
           justify-content: center;
           gap: 8px;
           cursor: pointer;
           transition: all 0.2s ease;
+          box-shadow: var(--shadow-sm);
           width: 100%;
           margin-top: 8px;
         }
 
-        .btn-sleek:hover:not(:disabled) {
-          background: var(--accent-hover);
+        .btn-primary:hover:not(:disabled) {
+          background: var(--primary-hover);
           transform: translateY(-1px);
+          box-shadow: var(--shadow-md);
         }
 
-        .btn-sleek:disabled {
+        .btn-primary:disabled {
           background: var(--border-strong);
-          color: var(--text-soft);
+          color: var(--text-muted);
           cursor: not-allowed;
-          transform: none;
+          box-shadow: none;
+        }
+
+        /* Animations */
+        @keyframes slideDown {
+          from { opacity: 0; transform: translateY(-8px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) { 
+          .main-view { padding: 24px; } 
+          .data-panel { padding: 24px; }
         }
       `}</style>
 
@@ -260,49 +333,83 @@ export default function RedeemPoints() {
           <header className="header-section">
             <div className="header-titles">
               <h1>Redeem Points</h1>
-              <p>Search by mobile number to validate and redeem points.</p>
+              <p>Process customer rewards and deduct points seamlessly.</p>
             </div>
           </header>
 
-          <div className="data-panel">
-            <form className="form-flow" onSubmit={(e) => e.preventDefault()}>
-              <div className="form-block">
-                <label>Customer Mobile Number</label>
-                <input
-                  className="sleek-input"
-                  type="text"
-                  placeholder="e.g. 9876543210"
-                  value={mobileNumber}
-                  disabled={isLoading || isFetching}
-                  onChange={(e) => setMobileNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                />
-              </div>
+          <div className="content-grid">
+            <div className="data-panel">
+              <form className="form-flow" onSubmit={(e) => e.preventDefault()}>
+                
+                <div className="form-block">
+                  <label>Customer Mobile Number</label>
+                  <input
+                    className="saas-input"
+                    type="text"
+                    placeholder="e.g. 9876543210"
+                    value={mobileNumber}
+                    disabled={isLoading || isFetching}
+                    onChange={(e) => setMobileNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                  />
+                </div>
 
-              <div className="form-block">
-                <label>Points to Redeem</label>
-                <input
-                  className="sleek-input"
-                  type="number"
-                  placeholder="0"
-                  value={points}
-                  disabled={!customer || isLoading}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (value === '') return setPoints('');
-                    const num = Number(value);
-                    if (num >= 0) setPoints(num);
-                  }}
-                />
-              </div>
+                {customer && (
+                  <div className="customer-info-box">
+                    <div className="info-row">
+                      <span className="info-label">Customer Name</span>
+                      <span className="info-value">{customer.CustomerName || 'N/A'}</span>
+                    </div>
+                    <div className="info-row">
+                      <span className="info-label">Available Balance</span>
+                      <span className="info-value points-badge">{currentPoints} pts</span>
+                    </div>
+                  </div>
+                )}
 
-              <button
-                className="btn-sleek"
-                onClick={handleRedeem}
-                disabled={!customer || !points || Number(points) <= 0 || isLoading}
-              >
-                {isLoading ? 'Processing...' : 'Confirm & Redeem Points'}
-              </button>
-            </form>
+                <div className="form-block">
+                  <label>Points to Redeem</label>
+                  <input
+                    className="saas-input"
+                    type="number"
+                    placeholder="Enter amount (e.g. 50)"
+                    value={points}
+                    disabled={!customer || isLoading}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (value === '') return setPoints('');
+                      const num = Number(value);
+                      if (num >= 0) setPoints(num);
+                    }}
+                  />
+                  {customer && Number(points) > currentPoints && (
+                    <span className="insufficient-badge">
+                      Insufficient balance for this transaction.
+                    </span>
+                  )}
+                </div>
+
+                <button
+                  className="btn-primary"
+                  onClick={handleRedeem}
+                  disabled={
+                    !customer || 
+                    !points || 
+                    Number(points) <= 0 || 
+                    Number(points) > currentPoints || 
+                    isLoading
+                  }
+                >
+                  {isLoading ? (
+                    'Processing Transaction...'
+                  ) : (
+                    <>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                      Confirm & Redeem Points
+                    </>
+                  )}
+                </button>
+              </form>
+            </div>
           </div>
         </main>
       </div>
