@@ -41,28 +41,29 @@ const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap');
 
         :root {
-          /* SaaS Palette */
+          /* Industrial SaaS Palette */
+          --bg-body: #F1F5F9;
           --surface: #FFFFFF;
-          --primary: #4F46E5;
-          --primary-hover: #4338CA;
-          --primary-light: #EEF2FF;
-          --text-main: #0F172A;
-          --text-muted: #64748B;
+          --primary: #F97316; /* Action Orange */
+          --primary-hover: #EA580C;
+          --primary-light: #FFEDD5;
+          --text-main: #0F172A; /* Petrol Navy */
+          --text-muted: #475569;
           --text-faint: #94A3B8;
-          --border-light: #F1F5F9;
-          --border-strong: #E2E8F0;
-          --danger: #EF4444;
-          --danger-light: #FEF2F2;
+          --border-light: #E2E8F0;
+          --border-strong: #0F172A; /* High contrast */
           
-          --radius-md: 12px;
-          --radius-lg: 16px;
+          /* Status Colors */
+          --danger-text: #991B1B;
+          --danger-bg: #FEE2E2;
           
-          --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-          --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-          --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+          --radius-none: 0px; /* Brutalist sharp edges */
+          
+          --shadow-hard: 4px 4px 0px 0px rgba(15, 23, 42, 1);
+          --shadow-hard-sm: 2px 2px 0px 0px rgba(15, 23, 42, 1);
         }
 
         /* --- Mobile Hamburger Button --- */
@@ -73,8 +74,8 @@ const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
           left: 16px;
           z-index: 1001;
           background: var(--surface);
-          border: 1px solid var(--border-strong);
-          border-radius: var(--radius-md);
+          border: 2px solid var(--border-strong);
+          border-radius: var(--radius-none);
           width: 44px;
           height: 44px;
           padding: 0;
@@ -83,19 +84,20 @@ const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
           align-items: center;
           justify-content: center;
           gap: 5px;
-          transition: all 0.2s ease;
-          box-shadow: var(--shadow-sm);
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+          box-shadow: var(--shadow-hard-sm);
         }
 
-        .hamburger-btn:hover {
-          background-color: var(--border-light);
+        .hamburger-btn:active {
+          transform: translate(2px, 2px);
+          box-shadow: none;
         }
 
         .hamburger-btn span {
           width: 20px;
           height: 2px;
           background-color: var(--text-main);
-          border-radius: 2px;
+          border-radius: 0;
           transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -116,7 +118,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
           display: none;
           position: fixed;
           top: 0; left: 0; right: 0; bottom: 0;
-          background: rgba(15, 23, 42, 0.4);
+          background: rgba(15, 23, 42, 0.6);
           backdrop-filter: blur(4px);
           -webkit-backdrop-filter: blur(4px);
           z-index: 999;
@@ -133,27 +135,27 @@ const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
         .sidebar-drawer {
           flex: 0 0 280px;
           background-color: var(--surface);
-          border-radius: var(--radius-lg);
+          border-radius: var(--radius-none);
           display: flex;
           flex-direction: column;
-          border: 1px solid var(--border-strong);
-          box-shadow: var(--shadow-md);
+          border: 2px solid var(--border-strong);
+          box-shadow: var(--shadow-hard);
           position: sticky;
-          top: 24px;
-          height: calc(100vh - 48px);
+          top: 48px;
+          height: calc(100vh - 96px);
           transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
           z-index: 1000;
-          overflow: hidden; /* Hide main scroll, allow inner scroll */
+          overflow: hidden;
         }
 
         /* --- Brand Header --- */
         .brand {
           display: flex;
           align-items: center;
-          gap: 12px;
-          padding: 28px 24px;
-          border-bottom: 1px solid var(--border-light);
-          margin-bottom: 16px;
+          gap: 16px;
+          padding: 24px;
+          border-bottom: 2px solid var(--border-strong);
+          background-color: var(--bg-body);
         }
 
         .brand-icon-wrapper {
@@ -161,23 +163,24 @@ const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
           align-items: center;
           justify-content: center;
           background: var(--primary);
-          color: white;
-          width: 36px;
-          height: 36px;
-          border-radius: 10px;
-          box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+          color: var(--text-main);
+          width: 40px;
+          height: 40px;
+          border: 2px solid var(--border-strong);
+          box-shadow: var(--shadow-hard-sm);
         }
 
         .brand-icon {
-          width: 20px;
-          height: 20px;
+          width: 24px;
+          height: 24px;
         }
 
         .brand-title {
-          font-family: 'Inter', sans-serif;
-          font-size: 18px;
+          font-family: 'Space Grotesk', sans-serif;
+          font-size: 20px;
           font-weight: 700;
           color: var(--text-main);
+          text-transform: uppercase;
           letter-spacing: -0.02em;
         }
 
@@ -186,11 +189,11 @@ const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
           display: flex;
           flex-direction: column;
           flex: 1;
-          padding: 0 16px 24px 16px;
+          padding: 24px 16px;
           overflow-y: auto;
+          background-color: var(--surface);
         }
 
-        /* Hide scrollbar */
         .sidebar-nav-container::-webkit-scrollbar { display: none; }
         .sidebar-nav-container { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -206,20 +209,20 @@ const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
         }
 
         .menu-label {
-          font-family: 'Inter', sans-serif;
-          font-size: 12px;
-          font-weight: 600;
-          color: var(--text-faint);
-          margin-bottom: 8px;
+          font-family: 'Space Grotesk', sans-serif;
+          font-size: 13px;
+          font-weight: 700;
+          color: var(--text-main);
+          margin-bottom: 12px;
           padding: 0 12px;
           text-transform: uppercase;
-          letter-spacing: 0.06em;
+          letter-spacing: 0.1em;
         }
 
         .nav-menu {
           display: flex;
           flex-direction: column;
-          gap: 4px;
+          gap: 8px;
         }
 
         /* --- Navigation Items --- */
@@ -228,17 +231,16 @@ const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
           display: flex;
           align-items: center;
           gap: 12px;
-          padding: 10px 14px;
-          border-radius: 10px;
+          padding: 12px 14px;
+          border-radius: var(--radius-none);
           color: var(--text-muted);
           text-decoration: none;
           font-size: 14px;
-          font-weight: 500;
-          transition: all 0.2s ease;
-          border: none;
+          font-weight: 600;
+          border: 2px solid transparent;
           background: transparent;
           cursor: pointer;
-          position: relative;
+          transition: all 0.15s ease;
         }
 
         .nav-item svg {
@@ -246,44 +248,49 @@ const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
           height: 20px;
           stroke-width: 2;
           flex-shrink: 0;
-          transition: color 0.2s ease;
-          color: var(--text-faint);
+          color: var(--text-muted);
+          transition: color 0.15s ease;
         }
 
+        /* Hover State */
         .nav-item:hover {
-          background-color: var(--border-light);
+          background-color: var(--bg-body);
           color: var(--text-main);
+          border: 2px solid var(--border-strong);
+          transform: translate(-2px, -2px);
+          box-shadow: var(--shadow-hard-sm);
         }
 
         .nav-item:hover svg {
-          color: var(--text-muted);
+          color: var(--text-main);
         }
 
         /* Active State */
         .nav-item.active {
-          color: var(--primary);
-          font-weight: 600;
+          color: var(--primary-hover);
           background-color: var(--primary-light);
+          border: 2px solid var(--border-strong);
+          box-shadow: var(--shadow-hard-sm);
         }
 
         .nav-item.active svg {
-          color: var(--primary);
+          color: var(--primary-hover);
         }
 
         /* Distinct Logout/Danger Styling */
         .nav-item.logout {
-          margin-top: 8px;
+          margin-top: 16px;
           color: var(--text-main);
-          background-color: transparent;
         }
 
         .nav-item.logout:hover {
-          background-color: var(--danger-light);
-          color: var(--danger);
+          background-color: var(--danger-bg);
+          color: var(--danger-text);
+          border-color: var(--border-strong);
         }
         
         .nav-item.logout:hover svg {
-          color: var(--danger);
+          color: var(--danger-text);
         }
 
         /* --- Mobile Responsiveness --- */
@@ -298,17 +305,20 @@ const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
             left: 0;
             height: 100vh;
             width: 280px;
-            border-radius: 0;
             border: none;
-            border-right: 1px solid var(--border-strong);
+            border-right: 2px solid var(--border-strong);
             transform: translateX(-100%);
-            padding-top: 64px; /* Space for hamburger */
             box-shadow: none;
+            z-index: 1000;
           }
 
           .sidebar-drawer.open {
             transform: translateX(0);
-            box-shadow: var(--shadow-lg);
+            box-shadow: var(--shadow-hard);
+          }
+          
+          .brand {
+             padding-top: 72px; /* Extra space for the floating hamburger */
           }
         }
       `}</style>
