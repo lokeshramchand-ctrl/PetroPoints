@@ -13,7 +13,6 @@ export default function LoyaltyAdminDashboard() {
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
   
-  // Replaced inline error/success with the Snackbar system
   const [snackbar, setSnackbar] = useState<{ message: string; type: SnackbarType } | null>(null);
 
   const showSnackbar = (message: string, type: SnackbarType) => setSnackbar({ message, type });
@@ -101,29 +100,37 @@ export default function LoyaltyAdminDashboard() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
         :root {
-          /* Ultra-Minimalist Palette (Matching Inspiration) */
-          --bg-body: #FAFAFA;
+          /* Modern SaaS Palette */
+          --bg-body: #F8FAFC;
           --surface: #FFFFFF;
-          --text-main: #09090B;
-          --text-soft: #71717A;
-          --text-faint: #A1A1AA;
-          --border-light: #F4F4F5;
-          --border-strong: #E4E4E7;
-          --accent-black: #09090B;
-          --accent-hover: #27272A;
-          --danger: #E11D48;
+          --primary: #4F46E5;
+          --primary-hover: #4338CA;
+          --primary-light: #EEF2FF;
+          --text-main: #0F172A;
+          --text-muted: #64748B;
+          --text-faint: #94A3B8;
+          --border-light: #F1F5F9;
+          --border-strong: #E2E8F0;
+          --danger: #EF4444;
           --success: #10B981;
-          --radius-sm: 8px;
+          --success-text: #166534;
+          --success-bg: #DCFCE7;
+          
+          --radius-sm: 6px;
           --radius-md: 12px;
-          --radius-full: 99px;
+          --radius-lg: 16px;
+          
+          --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+          --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+          --shadow-focus: 0 0 0 3px rgba(79, 70, 229, 0.2);
         }
 
         * {
           box-sizing: border-box;
-          font-family: 'Outfit', -apple-system, sans-serif;
+          font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }
 
         body, html {
@@ -136,9 +143,6 @@ export default function LoyaltyAdminDashboard() {
         .app-container {
           display: flex;
           min-height: 100vh;
-          padding: clamp(12px, 2vw, 24px);
-          gap: clamp(12px, 2vw, 24px);
-          align-items: flex-start;
           max-width: 1600px;
           margin: 0 auto;
         }
@@ -147,47 +151,48 @@ export default function LoyaltyAdminDashboard() {
           flex: 1;
           display: flex;
           flex-direction: column;
-          padding: 48px;
+          padding: 40px 48px;
           min-width: 0;
         }
 
-        /* --- Minimalist Header --- */
+        /* --- SaaS Header --- */
         .header-section {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-end;
-          margin-bottom: 40px;
+          margin-bottom: 32px;
         }
 
         .header-titles h1 {
-          font-size: 32px;
-          font-weight: 500;
-          letter-spacing: -0.04em;
-          margin: 0 0 8px 0;
+          font-size: 28px;
+          font-weight: 600;
+          letter-spacing: -0.02em;
+          margin: 0 0 4px 0;
           color: var(--text-main);
         }
 
         .header-titles p {
-          font-size: 15px;
-          color: var(--text-soft);
+          font-size: 14px;
+          color: var(--text-muted);
           margin: 0;
-          font-weight: 300;
         }
 
-        /* --- Flat Data Panel (Form Container) --- */
+        /* --- Panel & Form --- */
+        .content-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          max-width: 540px;
+        }
+
         .data-panel {
           background: var(--surface);
           border: 1px solid var(--border-strong);
-          border-radius: var(--radius-md);
-          overflow: hidden;
-          max-width: 560px;
-          padding: 40px;
+          border-radius: var(--radius-lg);
+          box-shadow: var(--shadow-md);
+          padding: 32px;
         }
 
         .form-flow { 
           display: flex; 
           flex-direction: column; 
-          gap: 32px; 
+          gap: 24px; 
         }
 
         .form-block { 
@@ -199,34 +204,35 @@ export default function LoyaltyAdminDashboard() {
 
         .form-block label { 
           font-size: 13px; 
-          color: var(--text-soft); 
-          font-weight: 400; 
+          color: var(--text-muted); 
+          font-weight: 500; 
         }
         
-        .sleek-input {
-          padding: 14px 0;
-          border: none;
-          border-bottom: 1px solid var(--border-strong);
-          font-size: 16px;
-          background: transparent;
+        .saas-input {
+          padding: 12px 16px;
+          border: 1px solid var(--border-strong);
+          border-radius: var(--radius-md);
+          font-size: 15px;
+          background: var(--surface);
           color: var(--text-main);
-          transition: border-color 0.2s;
+          transition: all 0.2s;
+          box-shadow: var(--shadow-sm);
         }
         
-        .sleek-input:focus { 
+        .saas-input:focus { 
           outline: none; 
-          border-bottom-color: var(--text-main); 
+          border-color: var(--primary); 
+          box-shadow: var(--shadow-focus); 
         }
 
-        .sleek-input::placeholder { 
+        .saas-input::placeholder { 
           color: var(--text-faint); 
-          font-weight: 300; 
         }
 
-        .sleek-input:disabled { 
-          color: var(--text-faint); 
-          border-bottom-style: dashed; 
-          cursor: not-allowed;
+        .saas-input:disabled { 
+          background: var(--border-light); 
+          color: var(--text-muted); 
+          cursor: not-allowed; 
         }
 
         /* Input Status Hints */
@@ -235,88 +241,114 @@ export default function LoyaltyAdminDashboard() {
           margin-top: 4px;
           display: flex;
           align-items: center;
-          gap: 4px;
+          gap: 6px;
+          font-weight: 500;
         }
-        .hint-loading { color: var(--text-faint); }
+        .hint-loading { color: var(--text-muted); }
         .hint-error { color: var(--danger); }
         .hint-success { color: var(--success); }
 
-        /* Sleek Button */
-        .btn-sleek {
-          background: var(--accent-black);
-          color: var(--surface);
+        /* Customer Preview Box */
+        .customer-info-box {
+          background: #F8FAFC;
+          border: 1px solid var(--border-strong);
+          border-radius: var(--radius-md);
+          padding: 16px;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+          animation: slideDown 0.3s ease;
+        }
+
+        .info-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .info-row.divider {
+          border-bottom: 1px solid var(--border-strong);
+          padding-bottom: 12px;
+          margin-bottom: 4px;
+        }
+
+        .info-label {
+          font-size: 13px;
+          color: var(--text-muted);
+          font-weight: 500;
+        }
+
+        .info-value {
+          font-size: 14px;
+          font-weight: 600;
+          color: var(--text-main);
+        }
+
+        .points-badge {
+          background: var(--border-strong);
+          color: var(--text-main);
+          padding: 4px 10px;
+          border-radius: 99px;
+          font-size: 13px;
+          font-weight: 600;
+        }
+
+        .points-addition {
+          color: var(--success-text);
+          background: var(--success-bg);
+          padding: 4px 10px;
+          border-radius: 99px;
+          font-size: 13px;
+          font-weight: 600;
+        }
+
+        .points-total {
+          color: var(--primary);
+          background: var(--primary-light);
+          padding: 4px 10px;
+          border-radius: 99px;
+          font-size: 13px;
+          font-weight: 600;
+        }
+
+        /* Primary Button */
+        .btn-primary {
+          background: var(--primary);
+          color: white;
           border: none;
-          padding: 16px 24px;
-          border-radius: var(--radius-full);
+          padding: 14px 24px;
+          border-radius: var(--radius-md);
           font-size: 15px;
           font-weight: 500;
-          display: inline-flex;
+          display: flex;
           align-items: center;
           justify-content: center;
           gap: 8px;
           cursor: pointer;
           transition: all 0.2s ease;
+          box-shadow: var(--shadow-sm);
           width: 100%;
           margin-top: 8px;
         }
 
-        .btn-sleek:hover:not(:disabled) {
-          background: var(--accent-hover);
+        .btn-primary:hover:not(:disabled) {
+          background: var(--primary-hover);
           transform: translateY(-1px);
+          box-shadow: var(--shadow-md);
         }
 
-        .btn-sleek:disabled {
+        .btn-primary:disabled {
           background: var(--border-strong);
-          color: var(--text-soft);
+          color: var(--text-muted);
           cursor: not-allowed;
-          transform: none;
+          box-shadow: none;
         }
-
-        /* Customer Preview Box */
-        .preview-box {
-          background: var(--bg-body);
-          border: 1px solid var(--border-light);
-          border-radius: var(--radius-sm);
-          padding: 16px 20px;
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-          animation: fade 0.3s ease;
-        }
-
-        .preview-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding-bottom: 12px;
-          border-bottom: 1px solid var(--border-strong);
-        }
-
-        .preview-name {
-          font-weight: 500;
-          font-size: 15px;
-          color: var(--text-main);
-          margin: 0;
-        }
-
-        .preview-id {
-          font-family: 'SFMono-Regular', monospace;
-          font-size: 12px;
-          color: var(--text-soft);
-        }
-
-        .preview-math {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          font-size: 14px;
-        }
-
-        .math-calc { color: var(--text-soft); }
-        .math-total { font-weight: 600; color: var(--text-main); }
 
         /* Animations */
-        @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideDown {
+          from { opacity: 0; transform: translateY(-8px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
         
         .spinner {
           animation: spin 1s linear infinite;
@@ -328,9 +360,8 @@ export default function LoyaltyAdminDashboard() {
 
         /* Responsive */
         @media (max-width: 768px) { 
-          .app-container { flex-direction: column; } 
           .main-view { padding: 24px; } 
-          .data-panel { max-width: 100%; padding: 24px; }
+          .data-panel { padding: 24px; }
         }
       `}</style>
 
@@ -345,101 +376,122 @@ export default function LoyaltyAdminDashboard() {
             </div>
           </header>
 
-          <div className="data-panel">
-            <form className="form-flow" onSubmit={(e) => e.preventDefault()}>
-              
-              {/* Mobile Input Group */}
-              <div className="form-block">
-                <label>Customer Mobile Number</label>
-                <input
-                  className="sleek-input"
-                  type="text"
-                  placeholder="e.g. 9876543210"
-                  value={mobileNumber}
-                  disabled={isLoading || isFetching}
-                  onChange={(e) => setMobileNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                />
+          <div className="content-grid">
+            <div className="data-panel">
+              <form className="form-flow" onSubmit={(e) => e.preventDefault()}>
                 
-                {/* Minimalist Inline Status Validation */}
-                <div className="input-hint">
-                  {isFetching ? (
-                     <span className="hint-loading">Loading database...</span>
-                  ) : mobileNumber.length > 0 && mobileNumber.length < 10 ? (
-                    <span className="hint-loading">Requires 10 digits</span>
-                  ) : mobileNumber.length === 10 ? (
-                    customer ? (
-                      <span className="hint-success">✓ Customer verified</span>
-                    ) : (
-                      <span className="hint-error">✕ Customer not found</span>
-                    )
-                  ) : null}
-                </div>
-              </div>
-
-              {/* Points Input Group */}
-              <div className="form-block">
-                <label>Points to Award</label>
-                <input
-                  className="sleek-input"
-                  type="number"
-                  placeholder="0"
-                  value={points}
-                  disabled={!customer || isLoading}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (value === '') return setPoints('');
-                    const num = Number(value);
-                    if (num >= 0) setPoints(num);
-                  }}
-                />
-              </div>
-
-              {/* Customer Validation Preview Box */}
-              {customer && (
-                <div className="preview-box">
-                  <div className="preview-header">
-                    <h3 className="preview-name">{customer.CustomerName}</h3>
-                    <span className="preview-id">#CUST-{customer.CustomerID}</span>
-                  </div>
+                {/* Mobile Input Group */}
+                <div className="form-block">
+                  <label>Customer Mobile Number</label>
+                  <input
+                    className="saas-input"
+                    type="text"
+                    placeholder="e.g. 9876543210"
+                    value={mobileNumber}
+                    disabled={isLoading || isFetching}
+                    onChange={(e) => setMobileNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                  />
                   
-                  {Number(points) > 0 ? (
-                    <div className="preview-math">
-                      <span className="math-calc">{currentPoints} + {Number(points)}</span>
-                      <span className="math-total">New Balance: {(currentPoints + Number(points)).toLocaleString()}</span>
-                    </div>
-                  ) : (
-                    <div className="preview-math">
-                      <span className="math-calc">Current Balance</span>
-                      <span className="math-total">{currentPoints.toLocaleString()}</span>
-                    </div>
-                  )}
+                  {/* Modern Validation Hint */}
+                  <div className="input-hint">
+                    {isFetching ? (
+                       <span className="hint-loading">Loading database...</span>
+                    ) : mobileNumber.length > 0 && mobileNumber.length < 10 ? (
+                      <span className="hint-loading">Requires 10 digits</span>
+                    ) : mobileNumber.length === 10 ? (
+                      customer ? (
+                        <span className="hint-success">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: 4, verticalAlign: 'middle'}}><polyline points="20 6 9 17 4 12"></polyline></svg>
+                          Customer verified
+                        </span>
+                      ) : (
+                        <span className="hint-error">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: 4, verticalAlign: 'middle'}}><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                          Customer not found
+                        </span>
+                      )
+                    ) : null}
+                  </div>
                 </div>
-              )}
 
-              {/* Submit CTA */}
-              <button
-                className="btn-sleek"
-                onClick={handleAward}
-                disabled={!customer || !points || Number(points) <= 0 || isLoading}
-              >
-                {isLoading ? (
-                  <>
-                    <svg className="spinner" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <circle cx="12" cy="12" r="10" strokeOpacity="0.25" />
-                      <path d="M12 2a10 10 0 0 1 10 10" />
-                    </svg>
-                    Processing...
-                  </>
-                ) : (
-                  'Confirm & Award Points'
+                {/* Points Input Group */}
+                <div className="form-block">
+                  <label>Points to Award</label>
+                  <input
+                    className="saas-input"
+                    type="number"
+                    placeholder="Enter amount (e.g. 50)"
+                    value={points}
+                    disabled={!customer || isLoading}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (value === '') return setPoints('');
+                      const num = Number(value);
+                      if (num >= 0) setPoints(num);
+                    }}
+                  />
+                </div>
+
+                {/* Customer Validation & Math Preview Box */}
+                {customer && (
+                  <div className="customer-info-box">
+                    <div className="info-row divider">
+                      <span className="info-label">{customer.CustomerName}</span>
+                      <span className="info-value" style={{fontFamily: 'monospace', color: 'var(--text-muted)'}}>
+                        #CUST-{customer.CustomerID}
+                      </span>
+                    </div>
+                    
+                    {Number(points) > 0 ? (
+                      <>
+                        <div className="info-row">
+                          <span className="info-label">Calculation</span>
+                          <div>
+                            <span className="points-badge">{currentPoints} pts</span>
+                            <span className="points-addition">+ {Number(points)} pts</span>
+                          </div>
+                        </div>
+                        <div className="info-row">
+                          <span className="info-label">New Balance</span>
+                          <span className="points-total">{(currentPoints + Number(points)).toLocaleString()} pts</span>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="info-row">
+                        <span className="info-label">Current Balance</span>
+                        <span className="points-badge">{currentPoints.toLocaleString()} pts</span>
+                      </div>
+                    )}
+                  </div>
                 )}
-              </button>
-            </form>
+
+                {/* Submit CTA */}
+                <button
+                  className="btn-primary"
+                  onClick={handleAward}
+                  disabled={!customer || !points || Number(points) <= 0 || isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <svg className="spinner" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <circle cx="12" cy="12" r="10" strokeOpacity="0.25" />
+                        <path d="M12 2a10 10 0 0 1 10 10" />
+                      </svg>
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                      Confirm & Award Points
+                    </>
+                  )}
+                </button>
+              </form>
+            </div>
           </div>
         </main>
       </div>
 
-      {/* Reused Snackbar component from the CustomersList architecture */}
       {snackbar && (
         <Snackbar 
           message={snackbar.message} 

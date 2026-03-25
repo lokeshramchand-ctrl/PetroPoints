@@ -342,20 +342,19 @@ export default function UberLandingPage() {
         {/* ================= LEFT SIDE: Content & Form ================= */}
         <div className="left-section">
           
-          <div className="logo">Uber</div>
+          <div className="logo">PetroPoints</div>
 
           <div className={`anim-fade-up ${isMounted ? 'visible' : ''}`}>
-            <h1 className="headline">
+            {/* <h1 className="headline">
               <span className="text-black">Go Anywhere</span>
               <span className="text-gray">With Uber</span>
-            </h1>
-            
+            </h1> */}
+{/*             
             <p className="subheadline">
               Request A Ride, Hop In, And Go.
-            </p>
+            </p> */}
 
             <form className="form-container" onSubmit={handleSubmit}>
-              {/* Location Input */}
               <div className="input-group">
                 <div className="input-icon-left">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20">
@@ -365,7 +364,7 @@ export default function UberLandingPage() {
                 </div>
                 <input 
                   type="text" 
-                  placeholder="Enter Location" 
+                  placeholder="Login" 
                   className="custom-input"
                 />
                 <button type="button" className="input-icon-right">
@@ -385,15 +384,15 @@ export default function UberLandingPage() {
                   </svg>
                 </div>
                 <input 
-                  type="text" 
-                  placeholder="Enter Destination" 
+                  type="password" 
+                  placeholder="Password" 
                   className="custom-input"
                 />
               </div>
 
               {/* Submit Button */}
               <button type="submit" className="btn-primary">
-                <span>See Prices</span>
+                <span>Login</span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16">
                   <line x1="5" y1="12" x2="19" y2="12" />
                   <polyline points="12 5 19 12 12 19" />

@@ -87,362 +87,330 @@ const Dashboard: React.FC = () => {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
         :root {
-          /* Fluid Spacing Variables */
-          --space-sm: clamp(8px, 1vw, 12px);
-          --space-md: clamp(12px, 2vw, 16px);
-          --space-lg: clamp(16px, 3vw, 24px);
-          --space-xl: clamp(24px, 4vw, 32px);
+          /* Modern SaaS Palette */
+          --bg-body: #F8FAFC;
+          --surface: #FFFFFF;
+          --primary: #4F46E5;
+          --primary-hover: #4338CA;
+          --primary-light: #EEF2FF;
+          --text-main: #0F172A;
+          --text-muted: #64748B;
+          --text-faint: #94A3B8;
+          --border-light: #F1F5F9;
+          --border-strong: #E2E8F0;
           
-          /* Panel specific fluid padding for perfect edge bleeding */
-          --panel-pad-x: clamp(16px, 4vw, 24px);
-          --panel-pad-y: clamp(20px, 4vw, 24px);
+          /* Status Colors */
+          --success-text: #166534;
+          --success-bg: #DCFCE7;
+          --danger-text: #991B1B;
+          --danger-bg: #FEE2E2;
+          --neutral-text: #475569;
+          --neutral-bg: #F1F5F9;
+          
+          --radius-sm: 6px;
+          --radius-md: 12px;
+          --radius-lg: 16px;
+          --radius-full: 9999px;
+          
+          --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+          --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
         }
 
         * {
           box-sizing: border-box;
-          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+          font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }
 
         body, html {
-          margin: 0;
-          padding: 0;
-          background-color: var(--bg-main, #f8fafc);
-          color: var(--text-main, #0f172a);
+          margin: 0; padding: 0;
+          background-color: var(--bg-body);
+          color: var(--text-main);
           -webkit-font-smoothing: antialiased;
         }
 
-        /* --- Layout --- */
         .app-container {
           display: flex;
           min-height: 100vh;
-          padding: var(--space-lg);
-          gap: var(--space-lg);
-          align-items: flex-start;
           max-width: 1600px;
           margin: 0 auto;
         }
 
-        /* Sidebar container styles handled by the imported Sidebar component's CSS, 
-           but we ensure the flex-basis is fluid here */
-        .sidebar {
-          flex: 0 0 clamp(220px, 20vw, 280px);
-        }
-
-        .main-content {
+        .main-view {
           flex: 1;
           display: flex;
           flex-direction: column;
-          min-width: 0; /* Prevents flex children from blowing out container width */
-          width: 100%;
+          padding: 40px 48px;
+          min-width: 0;
+          gap: 32px;
         }
 
-        .page-container {
-          display: flex;
-          flex-direction: column;
-          gap: var(--space-xl);
-        }
-
-        /* --- Header --- */
-        .page-header {
+        /* --- SaaS Header --- */
+        .header-section {
           display: flex;
           justify-content: space-between;
           align-items: flex-start;
           flex-wrap: wrap;
-          gap: var(--space-md);
+          gap: 16px;
         }
 
-        .page-title {
-          font-size: clamp(24px, 4vw, 32px);
-          font-weight: 700;
-          color: var(--text-main, #0f172a);
+        .header-titles h1 {
+          font-size: 28px;
+          font-weight: 600;
+          letter-spacing: -0.02em;
+          margin: 0 0 4px 0;
+          color: var(--text-main);
+        }
+
+        .header-titles p {
+          font-size: 14px;
+          color: var(--text-muted);
           margin: 0;
-          letter-spacing: -0.04em;
-        }
-
-        .page-subtitle {
-          margin: clamp(4px, 1vw, 8px) 0 0;
-          font-size: clamp(13px, 2vw, 15px);
-          color: var(--text-muted, #64748b);
-          font-weight: 400;
         }
 
         .header-actions {
           display: flex;
           align-items: center;
-          gap: var(--space-sm);
-          background: var(--surface-main, #ffffff);
-          padding: var(--space-sm) var(--space-md);
-          border-radius: 100px;
-          border: 1px solid var(--border-color, #e2e8f0);
-          box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+          gap: 12px;
+          background: var(--surface);
+          padding: 8px 16px;
+          border-radius: var(--radius-full);
+          border: 1px solid var(--border-strong);
+          box-shadow: var(--shadow-sm);
+        }
+
+        .header-actions span {
+          font-size: 13px;
+          font-weight: 500;
+          color: var(--text-muted);
         }
 
         /* --- Stats Grid --- */
         .stats-grid {
           display: grid;
-          /* min(100%, 220px) ensures cards don't break on ultra-small screens < 220px */
-          grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
-          gap: var(--space-lg);
+          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          gap: 20px;
         }
 
         .stat-card {
-          background: var(--surface-main, #ffffff);
-          border: 1px solid var(--border-color, #e2e8f0);
-          border-radius: clamp(16px, 2vw, 20px);
-          padding: var(--panel-pad-x);
-          box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.02);
+          background: var(--surface);
+          border: 1px solid var(--border-strong);
+          border-radius: var(--radius-lg);
+          padding: 24px;
+          box-shadow: var(--shadow-sm);
           transition: transform 0.2s ease, box-shadow 0.2s ease;
           display: flex;
           flex-direction: column;
-          justify-content: space-between;
+          gap: 12px;
         }
 
         .stat-card:hover {
           transform: translateY(-2px);
-          box-shadow: 0 4px 6px rgba(0,0,0,0.02), 0 10px 24px rgba(0,0,0,0.04);
+          box-shadow: var(--shadow-md);
         }
 
         .stat-label {
           margin: 0;
-          font-size: clamp(12px, 1.5vw, 13px);
+          font-size: 13px;
           font-weight: 600;
-          color: var(--text-soft, #64748b);
+          color: var(--text-muted);
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
         }
 
         .stat-value {
-          margin: clamp(12px, 2vw, 16px) 0;
-          font-size: clamp(28px, 5vw, 36px);
-          font-weight: 700;
+          margin: 0;
+          font-size: 32px;
+          font-weight: 600;
           line-height: 1;
-          letter-spacing: -0.04em;
-          color: var(--text-main, #0f172a);
+          letter-spacing: -0.03em;
+          color: var(--text-main);
         }
 
         .stat-trend {
           display: inline-flex;
           align-items: center;
           gap: 6px;
-          font-size: clamp(11px, 1.5vw, 13px);
-          font-weight: 600;
+          font-size: 13px;
+          font-weight: 500;
           padding: 4px 10px;
-          border-radius: 100px;
-          background: var(--surface-soft, #f1f5f9);
-          color: var(--text-muted, #475569);
+          border-radius: var(--radius-full);
+          background: var(--neutral-bg);
+          color: var(--neutral-text);
           width: fit-content;
         }
 
         .trend-positive {
-          background: #ecfdf5;
-          color: #059669;
+          background: var(--success-bg);
+          color: var(--success-text);
         }
 
         /* --- Table Panel --- */
-        .panel {
-          background: var(--surface-main, #ffffff);
-          border: 1px solid var(--border-color, #e2e8f0);
-          border-radius: clamp(16px, 2vw, 24px);
-          box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.02);
-          padding: var(--panel-pad-y) var(--panel-pad-x);
+        .data-panel {
+          background: var(--surface);
+          border: 1px solid var(--border-strong);
+          border-radius: var(--radius-lg);
+          box-shadow: var(--shadow-md);
           overflow: hidden;
         }
 
         .panel-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: var(--space-lg);
+          padding: 20px 24px;
+          border-bottom: 1px solid var(--border-strong);
         }
 
         .panel-title {
           margin: 0;
-          font-size: clamp(18px, 3vw, 20px);
-          font-weight: 700;
-          color: var(--text-main, #0f172a);
-          letter-spacing: -0.03em;
-        }
-
-        .activity-table-wrapper {
-          overflow-x: auto;
-          -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
-          /* Dynamically bleed edges based on the fluid padding variables */
-          margin: 0 calc(-1 * var(--panel-pad-x)) calc(-1 * var(--panel-pad-y)) calc(-1 * var(--panel-pad-x));
-        }
-
-        .activity-table {
-          width: 100%;
-          min-width: 650px; /* Forces scroll on mobile to protect layout */
-          border-collapse: separate;
-          border-spacing: 0;
-          text-align: left;
-        }
-
-        .activity-table th {
-          padding: clamp(12px, 2vw, 16px) var(--panel-pad-x);
-          font-size: clamp(11px, 1.5vw, 12px);
+          font-size: 18px;
           font-weight: 600;
+          color: var(--text-main);
+        }
+
+        .table-container {
+          overflow-x: auto;
+        }
+
+        .data-table {
+          width: 100%;
+          border-collapse: collapse;
+          text-align: left;
+          white-space: nowrap;
+        }
+
+        .data-table th {
+          padding: 16px 24px;
+          font-size: 12px;
+          font-weight: 600;
+          color: var(--text-muted);
           text-transform: uppercase;
           letter-spacing: 0.05em;
-          color: var(--text-soft, #64748b);
-          border-bottom: 1px solid var(--border-color, #e2e8f0);
-          background: var(--bg-main, #f8fafc);
+          border-bottom: 1px solid var(--border-strong);
+          background: #F8FAFC;
         }
 
-        .activity-table td {
-          padding: clamp(16px, 2.5vw, 20px) var(--panel-pad-x);
-          font-size: clamp(13px, 2vw, 14px);
-          font-weight: 500;
-          color: var(--text-main, #334155);
-          border-bottom: 1px solid var(--border-color, #f1f5f9);
-          transition: background 0.15s ease;
+        .data-table td {
+          padding: 16px 24px;
+          font-size: 14px;
+          color: var(--text-main);
+          border-bottom: 1px solid var(--border-light);
+          vertical-align: middle;
         }
 
-        .activity-table tbody tr:last-child td {
-          border-bottom: none;
-        }
+        .data-table tr:last-child td { border-bottom: none; }
+        
+        .data-table tbody tr { transition: background 0.15s ease; }
+        .data-table tbody tr:hover { background: var(--bg-body); }
 
-        .activity-table tbody tr:hover td {
-          background: var(--bg-main, #f8fafc);
-        }
+        /* Typography & Badges */
+        .cell-action { font-weight: 500; color: var(--text-main); }
+        .cell-sub { color: var(--text-muted); }
+        .cell-mono { font-family: 'SFMono-Regular', Consolas, monospace; font-size: 13px; color: var(--text-muted); background: var(--border-light); padding: 4px 8px; border-radius: var(--radius-sm); }
 
-        /* --- Badges --- */
         .badge {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          padding: 4px 12px;
-          border-radius: 100px;
-          font-size: clamp(11px, 1.5vw, 13px);
+          padding: 4px 10px;
+          border-radius: var(--radius-full);
+          font-size: 13px;
           font-weight: 600;
         }
         
         .badge-positive {
-          background-color: rgba(16, 185, 129, 0.1);
-          color: #059669;
+          background-color: var(--success-bg);
+          color: var(--success-text);
         }
         
         .badge-negative {
-          background-color: rgba(239, 68, 68, 0.1);
-          color: #dc2626;
+          background-color: var(--danger-bg);
+          color: var(--danger-text);
         }
 
         .badge-neutral {
-          background-color: var(--surface-soft, #f1f5f9);
-          color: var(--text-muted, #64748b);
-        }
-
-        .customer-name {
-          font-weight: 600;
-          color: var(--text-main, #0f172a);
-        }
-
-        .time-text {
-          color: var(--text-soft, #94a3b8);
-          font-size: clamp(12px, 1.5vw, 13px);
+          background-color: var(--neutral-bg);
+          color: var(--neutral-text);
         }
 
         /* --- Global Responsiveness --- */
         @media (max-width: 1024px) {
-          .app-container {
-            flex-direction: column;
-            /* Account for fixed mobile header from Sidebar */
-            padding-top: 80px; 
-          }
+          .main-view { padding: 32px 24px; }
         }
 
-        @media (max-width: 640px) {
-          .page-header {
-            flex-direction: column;
-            align-items: stretch;
-          }
-          
-          .header-actions {
-            justify-content: space-between;
-          }
-        }
-
-        .visually-hidden {
-          position: absolute;
-          width: 1px;
-          height: 1px;
-          padding: 0;
-          margin: -1px;
-          overflow: hidden;
-          clip: rect(0, 0, 0, 0);
-          border: 0;
+        @media (max-width: 768px) {
+          .header-section { flex-direction: column; align-items: stretch; }
+          .header-actions { justify-content: space-between; }
         }
       `}</style>
 
       <div className="app-container">
         <DashboardSidebar />
 
-        <main className="main-content">
-          <div className="page-container">
-            {/* Header section */}
-            <header className="page-header">
-              <div>
-                <h1 className="page-title">Dashboard</h1>
-                <p className="page-subtitle">Plan, monitor, and track customer loyalty activity.</p>
-              </div>
-              <div className="header-actions">
-                <span style={{ fontSize: 'clamp(13px, 2vw, 14px)', fontWeight: 500 }}>Theme</span>
-                <ThemeToggle variant="inline" />
-              </div>
-            </header>
+        <main className="main-view">
+          
+          {/* Header section */}
+          <header className="header-section">
+            <div className="header-titles">
+              <h1>Dashboard</h1>
+              <p>Plan, monitor, and track customer loyalty activity.</p>
+            </div>
+            <div className="header-actions">
+              <span>Theme</span>
+              <ThemeToggle variant="inline" />
+            </div>
+          </header>
 
-            {/* Stats Grid */}
-            <div className="stats-grid">
-              {stats.map((stat) => (
-                <article key={stat.id} className="stat-card">
-                  <p className="stat-label">{stat.title}</p>
-                  <h2 className="stat-value">{stat.value}</h2>
-                  <div className={`stat-trend ${stat.isPositive ? 'trend-positive' : ''}`}>
-                    {stat.isPositive && <TrendUpIcon width="14" height="14" aria-hidden="true" />}
-                    <span>{stat.trend}</span>
-                  </div>
-                </article>
-              ))}
+          {/* Stats Grid */}
+          <div className="stats-grid">
+            {stats.map((stat) => (
+              <article key={stat.id} className="stat-card">
+                <p className="stat-label">{stat.title}</p>
+                <h2 className="stat-value">{stat.value}</h2>
+                <div className={`stat-trend ${stat.isPositive ? 'trend-positive' : ''}`}>
+                  {stat.isPositive && <TrendUpIcon width="14" height="14" aria-hidden="true" />}
+                  <span>{stat.trend}</span>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          {/* Recent Activity Table */}
+          <section className="data-panel" aria-labelledby="recent-activity-title">
+            <div className="panel-header">
+              <h2 id="recent-activity-title" className="panel-title">Recent Activity</h2>
             </div>
 
-            {/* Recent Activity Table */}
-            <section className="panel" aria-labelledby="recent-activity-title">
-              <div className="panel-header">
-                <h2 id="recent-activity-title" className="panel-title">Recent Activity</h2>
-              </div>
-
-              <div className="activity-table-wrapper">
-                <table className="activity-table">
-                  <caption className="visually-hidden">Latest dashboard activities</caption>
-                  <thead>
-                    <tr>
-                      <th>Action</th>
-                      <th>Customer</th>
-                      <th>Vehicle</th>
-                      <th>Points</th>
-                      <th>Time</th>
+            <div className="table-container">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Action</th>
+                    <th>Customer</th>
+                    <th>Vehicle</th>
+                    <th>Points</th>
+                    <th>Time</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {activity.map((entry) => (
+                    <tr key={entry.id}>
+                      <td className="cell-action">{entry.action}</td>
+                      <td>{entry.customer}</td>
+                      <td><span className="cell-mono">{entry.vehicle}</span></td>
+                      <td>
+                        <span className={`badge ${getPointsClass(entry.points)}`}>
+                          {entry.points}
+                        </span>
+                      </td>
+                      <td className="cell-sub">{entry.time}</td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {activity.map((entry) => (
-                      <tr key={entry.id}>
-                        <td style={{ fontWeight: 600 }}>{entry.action}</td>
-                        <td className="customer-name">{entry.customer}</td>
-                        <td style={{ fontFamily: 'monospace', fontSize: 'clamp(12px, 1.5vw, 13px)' }}>{entry.vehicle}</td>
-                        <td>
-                          <span className={`badge ${getPointsClass(entry.points)}`}>
-                            {entry.points}
-                          </span>
-                        </td>
-                        <td className="time-text">{entry.time}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </section>
-          </div>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+
         </main>
       </div>
     </>

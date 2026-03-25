@@ -8,7 +8,7 @@ type Customer = {
   city: string;
   mobile: string;
   aadhaar: string;
-  points: number; // Added points
+  points: number;
 };
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://petropoints-backend.deploy.splsystems.in/api';
@@ -43,9 +43,9 @@ export default function CustomersList() {
         id: `#CUST-${item.CustomerID}`,
         name: item.CustomerName || '',
         city: item.CustomerCity || '',
-        mobile: item.CustomerMobile?.toString().padStart(10, '0') || '', // Pad invalid mobile numbers
+        mobile: item.CustomerMobile?.toString().padStart(10, '0') || '',
         aadhaar: item.CustomerAadhaar || '',
-        points: Number(item.CustomerPoints || 0), // Added points mapping
+        points: Number(item.CustomerPoints || 0),
       }));
       setCustomers(formattedData);
     } catch (error) {
@@ -132,28 +132,40 @@ export default function CustomersList() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
         :root {
-          /* Ultra-Minimalist Palette */
-          --bg-body: #FAFAFA;
+          /* Modern SaaS Palette */
+          --bg-body: #F8FAFC;
           --surface: #FFFFFF;
-          --text-main: #09090B;
-          --text-soft: #71717A;
-          --text-faint: #A1A1AA;
-          --border-light: #F4F4F5;
-          --border-strong: #E4E4E7;
-          --accent-black: #09090B;
-          --accent-hover: #27272A;
-          --danger: #E11D48;
-          --radius-sm: 8px;
+          --primary: #4F46E5;
+          --primary-hover: #4338CA;
+          --primary-light: #EEF2FF;
+          --text-main: #0F172A;
+          --text-muted: #64748B;
+          --text-faint: #94A3B8;
+          --border-light: #F1F5F9;
+          --border-strong: #E2E8F0;
+          --danger: #EF4444;
+          --danger-hover: #DC2626;
+          --danger-bg: #FEF2F2;
+          --success-text: #166534;
+          --success-bg: #DCFCE7;
+          
+          --radius-sm: 6px;
           --radius-md: 12px;
-          --radius-full: 99px;
+          --radius-lg: 16px;
+          --radius-full: 9999px;
+          
+          --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+          --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+          --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
+          --shadow-focus: 0 0 0 3px rgba(79, 70, 229, 0.2);
         }
 
         * {
           box-sizing: border-box;
-          font-family: 'Outfit', -apple-system, sans-serif;
+          font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }
 
         body, html {
@@ -166,9 +178,6 @@ export default function CustomersList() {
         .app-container {
           display: flex;
           min-height: 100vh;
-          padding: clamp(12px, 2vw, 24px);
-          gap: clamp(12px, 2vw, 24px);
-          align-items: flex-start;
           max-width: 1600px;
           margin: 0 auto;
         }
@@ -177,31 +186,30 @@ export default function CustomersList() {
           flex: 1;
           display: flex;
           flex-direction: column;
-          padding: 48px;
+          padding: 40px 48px;
           min-width: 0;
         }
 
-        /* --- Minimalist Header --- */
+        /* --- SaaS Header --- */
         .header-section {
           display: flex;
           justify-content: space-between;
-          align-items: flex-end;
-          margin-bottom: 40px;
+          align-items: center;
+          margin-bottom: 32px;
         }
 
         .header-titles h1 {
-          font-size: 32px;
-          font-weight: 500;
-          letter-spacing: -0.04em;
-          margin: 0 0 8px 0;
+          font-size: 28px;
+          font-weight: 600;
+          letter-spacing: -0.02em;
+          margin: 0 0 4px 0;
           color: var(--text-main);
         }
 
         .header-titles p {
-          font-size: 15px;
-          color: var(--text-soft);
+          font-size: 14px;
+          color: var(--text-muted);
           margin: 0;
-          font-weight: 300;
         }
 
         .header-controls {
@@ -210,42 +218,48 @@ export default function CustomersList() {
           align-items: center;
         }
 
-        /* Borderless Search Pill */
-        .search-pill {
+        /* Search Input */
+        .search-wrapper {
+          position: relative;
           display: flex;
           align-items: center;
+        }
+        
+        .search-icon {
+          position: absolute;
+          left: 14px;
+          color: var(--text-faint);
+          width: 18px;
+          height: 18px;
+        }
+
+        .search-input {
           background: var(--surface);
           border: 1px solid var(--border-strong);
-          border-radius: var(--radius-full);
-          padding: 8px 16px;
-          width: 280px;
-          transition: all 0.3s ease;
-        }
-
-        .search-pill:focus-within {
-          border-color: var(--text-main);
-          box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-        }
-
-        .search-pill input {
-          border: none;
-          background: transparent;
-          outline: none;
+          border-radius: var(--radius-md);
+          padding: 10px 16px 10px 40px;
+          width: 300px;
           font-size: 14px;
-          width: 100%;
-          margin-left: 10px;
           color: var(--text-main);
+          transition: all 0.2s ease;
+          box-shadow: var(--shadow-sm);
         }
 
-        .search-pill input::placeholder { color: var(--text-faint); }
+        .search-input:focus {
+          outline: none;
+          border-color: var(--primary);
+          box-shadow: var(--shadow-focus);
+        }
 
-        /* Sleek Buttons */
-        .btn-sleek {
-          background: var(--accent-black);
-          color: var(--surface);
+        .search-input::placeholder { color: var(--text-faint); }
+
+        /* Primary Button */
+        .btn-primary {
+          background: var(--primary);
+          color: white;
           border: none;
-          padding: 12px 24px;
-          border-radius: var(--radius-full);
+          padding: 10px 20px;
+          border-radius: var(--radius-md);
           font-size: 14px;
           font-weight: 500;
           display: inline-flex;
@@ -253,40 +267,48 @@ export default function CustomersList() {
           gap: 8px;
           cursor: pointer;
           transition: all 0.2s ease;
+          box-shadow: var(--shadow-sm);
         }
 
-        .btn-sleek:hover:not(:disabled) {
-          background: var(--accent-hover);
+        .btn-primary:hover:not(:disabled) {
+          background: var(--primary-hover);
           transform: translateY(-1px);
+          box-shadow: var(--shadow-md);
         }
 
-        /* --- Flat Data Table --- */
+        /* --- Premium Data Table --- */
         .data-panel {
           background: var(--surface);
           border: 1px solid var(--border-strong);
-          border-radius: var(--radius-md);
+          border-radius: var(--radius-lg);
+          box-shadow: var(--shadow-md);
           overflow: hidden;
+        }
+
+        .table-container {
+          overflow-x: auto;
         }
 
         .data-table {
           width: 100%;
           border-collapse: collapse;
           text-align: left;
+          white-space: nowrap;
         }
 
         .data-table th {
-          padding: 20px 24px;
+          padding: 16px 24px;
           font-size: 12px;
-          font-weight: 500;
-          color: var(--text-soft);
+          font-weight: 600;
+          color: var(--text-muted);
           text-transform: uppercase;
-          letter-spacing: 0.08em;
-          border-bottom: 1px solid var(--border-light);
-          background: #FCFCFC;
+          letter-spacing: 0.05em;
+          border-bottom: 1px solid var(--border-strong);
+          background: #F8FAFC;
         }
 
         .data-table td {
-          padding: 24px;
+          padding: 16px 24px;
           font-size: 14px;
           color: var(--text-main);
           border-bottom: 1px solid var(--border-light);
@@ -295,117 +317,171 @@ export default function CustomersList() {
 
         .data-table tr:last-child td { border-bottom: none; }
         
-        .data-table tbody tr {
-          transition: background 0.2s ease;
-        }
-        
-        .data-table tbody tr:hover {
-          background: #FAFAFA;
+        .data-table tbody tr { transition: background 0.15s ease; }
+        .data-table tbody tr:hover { background: var(--bg-body); }
+
+        /* Typography & Badges */
+        .cell-id { font-family: 'SFMono-Regular', Consolas, monospace; font-size: 13px; color: var(--text-muted); background: var(--border-light); padding: 4px 8px; border-radius: var(--radius-sm); }
+        .cell-name { font-weight: 500; color: var(--text-main); }
+        .cell-sub { color: var(--text-muted); font-size: 13px; }
+
+        .points-badge {
+          display: inline-flex;
+          align-items: center;
+          background: var(--border-light);
+          color: var(--text-main);
+          font-weight: 600;
+          padding: 4px 10px;
+          border-radius: var(--radius-full);
+          font-size: 13px;
         }
 
-        /* Typography Treatments in Table */
-        .cell-id { font-family: 'SFMono-Regular', monospace; font-size: 13px; color: var(--text-soft); }
-        .cell-name { font-weight: 500; font-size: 15px; }
-        .cell-secondary { color: var(--text-soft); }
+        .top-badge {
+          background: var(--success-bg);
+          color: var(--success-text);
+          font-size: 12px;
+          font-weight: 500;
+          padding: 2px 8px;
+          border-radius: var(--radius-full);
+          margin-left: 8px;
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+        }
+
+        /* Action Buttons in Table */
+        .actions-cell {
+          text-align: right;
+        }
 
         .action-links {
-          display: flex;
-          gap: 16px;
+          display: inline-flex;
+          gap: 8px;
           opacity: 0;
-          transition: opacity 0.2s;
+          transition: opacity 0.2s ease;
         }
 
         .data-table tr:hover .action-links { opacity: 1; }
 
-        .link-btn {
-          background: none; border: none; padding: 0;
-          color: var(--text-soft); cursor: pointer;
-          display: flex; align-items: center;
-          transition: 0.2s;
+        .icon-btn {
+          background: transparent;
+          border: none;
+          padding: 8px;
+          border-radius: var(--radius-sm);
+          color: var(--text-faint);
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.2s;
         }
-        .link-btn:hover { color: var(--text-main); }
-        .link-btn.danger:hover { color: var(--danger); }
+        
+        .icon-btn:hover { background: var(--border-light); color: var(--text-main); }
+        .icon-btn.edit:hover { color: var(--primary); background: var(--primary-light); }
+        .icon-btn.delete:hover { color: var(--danger); background: var(--danger-bg); }
 
-        /* --- Minimalist Modals --- */
+        /* --- Glassmorphism Modals --- */
         .overlay {
           position: fixed; inset: 0;
-          background: rgba(255, 255, 255, 0.8);
-          backdrop-filter: blur(16px);
-          -webkit-backdrop-filter: blur(16px);
+          background: rgba(15, 23, 42, 0.4);
+          backdrop-filter: blur(4px);
+          -webkit-backdrop-filter: blur(4px);
           display: flex; align-items: center; justify-content: center;
           z-index: 1000;
-          animation: fade 0.3s ease;
+          animation: fadeIn 0.2s ease;
         }
 
         .modal-sheet {
           background: var(--surface);
-          border: 1px solid var(--border-strong);
-          border-radius: var(--radius-md);
+          border-radius: var(--radius-lg);
           width: 100%;
-          max-width: 480px;
-          box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+          max-width: 500px;
+          box-shadow: var(--shadow-lg);
           padding: 32px;
-          animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .sheet-header {
           display: flex; justify-content: space-between; align-items: center;
-          margin-bottom: 32px;
+          margin-bottom: 24px;
         }
 
-        .sheet-header h2 { margin: 0; font-size: 20px; font-weight: 500; }
+        .sheet-header h2 { margin: 0; font-size: 20px; font-weight: 600; color: var(--text-main); }
         
         .close-btn {
-          background: none; border: none; color: var(--text-faint);
-          cursor: pointer; padding: 4px; transition: 0.2s;
+          background: var(--border-light); border: none; color: var(--text-muted);
+          cursor: pointer; padding: 6px; border-radius: var(--radius-full); transition: 0.2s;
+          display: flex; align-items: center; justify-content: center;
         }
-        .close-btn:hover { color: var(--text-main); }
+        .close-btn:hover { background: var(--border-strong); color: var(--text-main); }
 
-        .form-flow { display: flex; flex-direction: column; gap: 24px; }
+        .form-flow { display: flex; flex-direction: column; gap: 20px; }
         .form-row { display: flex; gap: 16px; }
-        .form-block { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+        .form-block { flex: 1; display: flex; flex-direction: column; gap: 6px; }
 
-        .form-block label { font-size: 13px; color: var(--text-soft); font-weight: 400; }
+        .form-block label { font-size: 13px; color: var(--text-muted); font-weight: 500; }
         
-        .sleek-input {
-          padding: 14px 0;
-          border: none;
-          border-bottom: 1px solid var(--border-strong);
-          font-size: 15px;
-          background: transparent;
+        .saas-input {
+          padding: 10px 14px;
+          border: 1px solid var(--border-strong);
+          border-radius: var(--radius-md);
+          font-size: 14px;
+          background: var(--surface);
           color: var(--text-main);
-          transition: border-color 0.2s;
+          transition: all 0.2s;
+          box-shadow: var(--shadow-sm);
         }
         
-        .sleek-input:focus { outline: none; border-bottom-color: var(--text-main); }
-        .sleek-input::placeholder { color: var(--text-faint); font-weight: 300; }
-        .sleek-input:disabled { color: var(--text-faint); border-bottom-style: dashed; }
+        .saas-input:focus { outline: none; border-color: var(--primary); box-shadow: var(--shadow-focus); }
+        .saas-input::placeholder { color: var(--text-faint); }
+        .saas-input:disabled { background: var(--border-light); color: var(--text-muted); cursor: not-allowed; }
 
         .sheet-actions {
           display: flex; justify-content: flex-end; gap: 12px;
-          margin-top: 40px;
+          margin-top: 32px;
+          padding-top: 24px;
+          border-top: 1px solid var(--border-light);
         }
 
-        .btn-text {
-          background: none; border: none; color: var(--text-soft);
-          font-size: 14px; font-weight: 500; padding: 10px 16px; cursor: pointer;
+        .btn-ghost {
+          background: transparent; border: 1px solid var(--border-strong); color: var(--text-main);
+          font-size: 14px; font-weight: 500; padding: 10px 20px; border-radius: var(--radius-md); cursor: pointer;
+          transition: 0.2s; box-shadow: var(--shadow-sm);
         }
-        .btn-text:hover { color: var(--text-main); }
+        .btn-ghost:hover { background: var(--border-light); }
+        
+        .btn-danger {
+          background: var(--danger); color: white; border: none;
+          font-size: 14px; font-weight: 500; padding: 10px 20px; border-radius: var(--radius-md); cursor: pointer;
+          transition: 0.2s; box-shadow: var(--shadow-sm);
+        }
+        .btn-danger:hover { background: var(--danger-hover); box-shadow: var(--shadow-md); }
 
         /* Skeletons & Empty State */
-        .skel-row { height: 72px; border-bottom: 1px solid var(--border-light); background: linear-gradient(90deg, #F4F4F5 25%, #FAFAFA 50%, #F4F4F5 75%); background-size: 200% 100%; animation: pulse 1.5s infinite; }
+        .skel-row { height: 20px; border-radius: 4px; background: linear-gradient(90deg, #F1F5F9 25%, #F8FAFC 50%, #F1F5F9 75%); background-size: 200% 100%; animation: pulse 1.5s infinite; }
         
-        .empty-view { padding: 80px 0; text-align: center; color: var(--text-soft); }
-        .empty-view svg { stroke-width: 1; color: var(--text-faint); margin-bottom: 16px; }
+        .empty-view { padding: 80px 0; text-align: center; color: var(--text-muted); }
+        .empty-icon { width: 48px; height: 48px; color: var(--border-strong); margin-bottom: 16px; }
+        .empty-view p { font-size: 15px; margin: 0; }
 
         /* Animations */
-        @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scaleUp { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
         @keyframes pulse { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
         /* Responsive */
-        @media (max-width: 1024px) { .header-section { flex-direction: column; align-items: flex-start; gap: 24px; } .search-pill { width: 100%; } }
-        @media (max-width: 768px) { .app-layout { flex-direction: column; } .main-view { padding: 24px; } .form-row { flex-direction: column; gap: 24px; } .data-table tr:hover .action-links { opacity: 1; } }
+        @media (max-width: 1024px) { 
+          .header-section { flex-direction: column; align-items: flex-start; gap: 20px; } 
+          .search-wrapper, .search-input { width: 100%; } 
+          .header-controls { width: 100%; flex-direction: column; align-items: stretch; }
+          .btn-primary { justify-content: center; }
+        }
+        @media (max-width: 768px) { 
+          .main-view { padding: 24px; } 
+          .form-row { flex-direction: column; gap: 20px; } 
+          .data-table tr:hover .action-links { opacity: 1; } 
+          .action-links { opacity: 1; }
+        }
       `}</style>
 
       <div className="app-container">
@@ -415,76 +491,114 @@ export default function CustomersList() {
           <header className="header-section">
             <div className="header-titles">
               <h1>Customers</h1>
-              <p>Manage directory and client records</p>
+              <p>Manage your client directory and records</p>
             </div>
 
             <div className="header-controls">
-              <div className="search-pill">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                <input placeholder="Search records..." value={search} onChange={(e) => setSearch(e.target.value)} />
+              <div className="search-wrapper">
+                <svg className="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input className="search-input" placeholder="Search by name or mobile..." value={search} onChange={(e) => setSearch(e.target.value)} />
               </div>
-              <button className="btn-sleek" onClick={openAddModal}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                New Client
+              <button className="btn-primary" onClick={openAddModal}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Add Customer
               </button>
             </div>
           </header>
 
           <div className="data-panel">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Name</th>
-                  <th>City</th>
-                  <th>Mobile</th>
-                  <th>Aadhaar</th>
-                  <th>Points</th> {/* Added Points header */}
-                </tr>
-              </thead>
-              <tbody>
-                {isLoadingData ? (
-                  Array.from({ length: 5 }).map((_, i) => <tr key={i}><td colSpan={6} style={{ padding: 0 }}><div className="skel-row" /></td></tr>)
-                ) : filteredCustomers.length === 0 ? (
+            <div className="table-container">
+              <table className="data-table">
+                <thead>
                   <tr>
-                    <td colSpan={6}>
-                      <div className="empty-view">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                        <p>No customer records found.</p>
-                      </div>
-                    </td>
+                    <th>Customer ID</th>
+                    <th>Full Name</th>
+                    <th>City</th>
+                    <th>Mobile</th>
+                    <th>Aadhaar</th>
+                    <th>Points</th>
+                    <th style={{ textAlign: 'right' }}>Actions</th>
                   </tr>
-                ) : (
-                  sortedCustomers.map((customer) => (
-                    <tr key={customer.id}>
-                      <td>{customer.id}</td>
-                      <td>{customer.name}</td>
-                      <td>{customer.city}</td>
-                      <td>{customer.mobile}</td>
-                      <td>{maskAadhaar(customer.aadhaar)}</td>
-                      <td>
-                        <span className="badge">{customer.points}</span> {/* Styled points */}
-                        {customer.points > 100 && (
-                          <span style={{ color: 'green', fontSize: '12px' }}>⭐ Top</span>
-                        )}
+                </thead>
+                <tbody>
+                  {isLoadingData ? (
+                    Array.from({ length: 5 }).map((_, i) => (
+                      <tr key={i}>
+                        <td colSpan={7}><div className="skel-row" /></td>
+                      </tr>
+                    ))
+                  ) : filteredCustomers.length === 0 ? (
+                    <tr>
+                      <td colSpan={7}>
+                        <div className="empty-view">
+                          <svg className="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                          <p>No customer records found.</p>
+                        </div>
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ) : (
+                    sortedCustomers.map((customer) => (
+                      <tr key={customer.id}>
+                        <td><span className="cell-id">{customer.id}</span></td>
+                        <td className="cell-name">{customer.name}</td>
+                        <td className="cell-sub">{customer.city}</td>
+                        <td className="cell-sub">{customer.mobile}</td>
+                        <td className="cell-sub">{maskAadhaar(customer.aadhaar)}</td>
+                        <td>
+                          <span className="points-badge">{customer.points}</span>
+                          {customer.points > 100 && (
+                            <span className="top-badge">
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                              Top
+                            </span>
+                          )}
+                        </td>
+                        <td className="actions-cell">
+                          <div className="action-links">
+                            <button 
+                              className="icon-btn edit" 
+                              title="Edit Customer"
+                              onClick={() => {
+                                setTargetCustomerId(parseId(customer.id));
+                                setName(customer.name);
+                                setCity(customer.city);
+                                setMobile(customer.mobile);
+                                setAadhaar(customer.aadhaar);
+                                setModalMode('edit');
+                              }}
+                            >
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                            </button>
+                            <button 
+                              className="icon-btn delete" 
+                              title="Delete Customer"
+                              onClick={() => {
+                                setTargetCustomerId(parseId(customer.id));
+                                setIsDeleteModalOpen(true);
+                              }}
+                            >
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </main>
       </div>
 
-      {/* --- ADD/EDIT SHEET --- */}
+      {/* --- ADD/EDIT MODAL --- */}
       {modalMode !== null && (
         <div className="overlay" onClick={closeFormModal}>
           <div className="modal-sheet" onClick={(e) => e.stopPropagation()}>
             <div className="sheet-header">
-              <h2>{modalMode === 'add' ? 'New Customer' : 'Edit Customer'}</h2>
+              <h2>{modalMode === 'add' ? 'Add New Customer' : 'Edit Customer Details'}</h2>
               <button className="close-btn" onClick={closeFormModal}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
               </button>
             </div>
 
@@ -492,35 +606,35 @@ export default function CustomersList() {
               {modalMode === 'edit' && (
                 <div className="form-block">
                   <label>System Identifier</label>
-                  <input className="sleek-input" value={`#CUST-${targetCustomerId}`} disabled />
+                  <input className="saas-input" value={`#CUST-${targetCustomerId}`} disabled />
                 </div>
               )}
 
               <div className="form-block">
                 <label>Full Legal Name</label>
-                <input className="sleek-input" placeholder="e.g. Jane Doe" value={name} onChange={(e) => setName(e.target.value)} required />
+                <input className="saas-input" placeholder="e.g. Jane Doe" value={name} onChange={(e) => setName(e.target.value)} required />
               </div>
 
               <div className="form-row">
                 <div className="form-block">
                   <label>City / Location</label>
-                  <input className="sleek-input" placeholder="e.g. Hyderabad" value={city} onChange={(e) => setCity(e.target.value)} required />
+                  <input className="saas-input" placeholder="e.g. Hyderabad" value={city} onChange={(e) => setCity(e.target.value)} required />
                 </div>
                 <div className="form-block">
                   <label>Mobile Number</label>
-                  <input className="sleek-input" placeholder="10 digits" value={mobile} onChange={(e) => setMobile(e.target.value.replace(/\D/g, '').slice(0, 10))} maxLength={10} required />
+                  <input className="saas-input" placeholder="10-digit number" value={mobile} onChange={(e) => setMobile(e.target.value.replace(/\D/g, '').slice(0, 10))} maxLength={10} required />
                 </div>
               </div>
 
               <div className="form-block">
                 <label>Aadhaar Identity</label>
-                <input className="sleek-input" placeholder="12 digits" value={aadhaar} onChange={(e) => setAadhaar(e.target.value.replace(/\D/g, '').slice(0, 12))} maxLength={12} required />
+                <input className="saas-input" placeholder="12-digit number" value={aadhaar} onChange={(e) => setAadhaar(e.target.value.replace(/\D/g, '').slice(0, 12))} maxLength={12} required />
               </div>
 
               <div className="sheet-actions">
-                <button type="button" className="btn-text" onClick={closeFormModal}>Cancel</button>
-                <button type="submit" className="btn-sleek" disabled={isSubmitting}>
-                  {isSubmitting ? 'Processing...' : 'Save Record'}
+                <button type="button" className="btn-ghost" onClick={closeFormModal}>Cancel</button>
+                <button type="submit" className="btn-primary" disabled={isSubmitting}>
+                  {isSubmitting ? 'Saving...' : 'Save Customer'}
                 </button>
               </div>
             </form>
@@ -528,19 +642,22 @@ export default function CustomersList() {
         </div>
       )}
 
-      {/* --- DELETE SHEET --- */}
+      {/* --- DELETE CONFIRMATION MODAL --- */}
       {isDeleteModalOpen && (
         <div className="overlay" onClick={closeDeleteModal}>
           <div className="modal-sheet" onClick={(e) => e.stopPropagation()}>
             <div className="sheet-header" style={{ marginBottom: 16 }}>
-              <h2>Delete Record</h2>
+              <h2>Delete Customer</h2>
+              <button className="close-btn" onClick={closeDeleteModal}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
             </div>
-            <p style={{ color: 'var(--text-soft)', lineHeight: 1.5, margin: 0 }}>
-              This will permanently remove <strong>#CUST-{targetCustomerId}</strong> from the database. This action cannot be undone.
+            <p style={{ color: 'var(--text-muted)', lineHeight: 1.5, margin: 0 }}>
+              Are you sure you want to permanently delete customer <strong>#CUST-{targetCustomerId}</strong>? All associated data will be removed. This action cannot be undone.
             </p>
             <div className="sheet-actions">
-              <button type="button" className="btn-text" onClick={closeDeleteModal}>Cancel</button>
-              <button type="button" className="btn-sleek" style={{ background: 'var(--danger)' }} onClick={handleDeleteConfirm} disabled={isSubmitting}>
+              <button type="button" className="btn-ghost" onClick={closeDeleteModal}>Cancel</button>
+              <button type="button" className="btn-danger" onClick={handleDeleteConfirm} disabled={isSubmitting}>
                 {isSubmitting ? 'Deleting...' : 'Delete Permanently'}
               </button>
             </div>
