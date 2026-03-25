@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import DashboardSidebar from './Sidebar';
 import Snackbar, { type SnackbarType } from '../theme/Snackbar';
 
