@@ -97,33 +97,35 @@ export default function RedeemPoints() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap');
 
         :root {
-          /* Modern SaaS Palette */
-          --bg-body: #F8FAFC;
+          /* Industrial SaaS Palette */
+          --bg-body: #F1F5F9;
           --surface: #FFFFFF;
-          --primary: #4F46E5;
-          --primary-hover: #4338CA;
-          --primary-light: #EEF2FF;
+          --primary: #F97316;
+          --primary-hover: #EA580C;
+          --primary-light: #FFEDD5;
           --text-main: #0F172A;
-          --text-muted: #64748B;
+          --text-muted: #475569;
           --text-faint: #94A3B8;
-          --border-light: #F1F5F9;
-          --border-strong: #E2E8F0;
-          --danger: #EF4444;
+          --border-light: #E2E8F0;
+          --border-strong: #0F172A;
+          --danger: #DC2626;
+          --danger-hover: #B91C1C;
           --success-text: #166534;
           --success-bg: #DCFCE7;
           --warning-bg: #FEF9C3;
           --warning-text: #854D0E;
           
-          --radius-sm: 6px;
-          --radius-md: 12px;
-          --radius-lg: 16px;
+          --radius-sm: 0px;
+          --radius-md: 0px;
+          --radius-lg: 0px;
           
-          --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-          --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-          --shadow-focus: 0 0 0 3px rgba(79, 70, 229, 0.2);
+          --shadow-sm: none;
+          --shadow-hard: 4px 4px 0px 0px rgba(15, 23, 42, 1);
+          --shadow-hard-hover: 6px 6px 0px 0px rgba(15, 23, 42, 1);
+          --shadow-focus: 0 0 0 3px rgba(249, 115, 22, 0.4);
         }
 
         * {
@@ -149,25 +151,29 @@ export default function RedeemPoints() {
           flex: 1;
           display: flex;
           flex-direction: column;
-          padding: 40px 48px;
+          padding: 48px;
           min-width: 0;
+          gap: 48px;
         }
 
         /* --- SaaS Header --- */
         .header-section {
-          margin-bottom: 32px;
+          border-bottom: 3px solid var(--border-strong);
+          padding-bottom: 24px;
         }
 
         .header-titles h1 {
-          font-size: 28px;
-          font-weight: 600;
-          letter-spacing: -0.02em;
-          margin: 0 0 4px 0;
+          font-family: 'Space Grotesk', sans-serif;
+          font-size: 40px;
+          font-weight: 700;
+          letter-spacing: -0.03em;
+          margin: 0 0 8px 0;
           color: var(--text-main);
+          text-transform: uppercase;
         }
 
         .header-titles p {
-          font-size: 14px;
+          font-size: 16px;
           color: var(--text-muted);
           margin: 0;
         }
@@ -181,16 +187,15 @@ export default function RedeemPoints() {
 
         .data-panel {
           background: var(--surface);
-          border: 1px solid var(--border-strong);
-          border-radius: var(--radius-lg);
-          box-shadow: var(--shadow-md);
+          border: 2px solid var(--border-strong);
+          box-shadow: var(--shadow-hard);
           padding: 32px;
         }
 
         .form-flow { 
           display: flex; 
           flex-direction: column; 
-          gap: 24px; 
+          gap: 32px; 
         }
 
         .form-block { 
@@ -200,26 +205,27 @@ export default function RedeemPoints() {
         }
 
         .form-block label { 
+          font-family: 'Space Grotesk', sans-serif;
           font-size: 13px; 
-          color: var(--text-muted); 
-          font-weight: 500; 
+          color: var(--text-main); 
+          font-weight: 700; 
+          text-transform: uppercase;
         }
         
         .saas-input {
           padding: 12px 16px;
-          border: 1px solid var(--border-strong);
-          border-radius: var(--radius-md);
+          border: 2px solid var(--border-strong);
           font-size: 15px;
           background: var(--surface);
           color: var(--text-main);
           transition: all 0.2s;
-          box-shadow: var(--shadow-sm);
+          box-shadow: 2px 2px 0px 0px rgba(15, 23, 42, 1);
         }
         
         .saas-input:focus { 
           outline: none; 
           border-color: var(--primary); 
-          box-shadow: var(--shadow-focus); 
+          box-shadow: 4px 4px 0px 0px rgba(249, 115, 22, 1); 
         }
 
         .saas-input::placeholder { 
@@ -234,13 +240,12 @@ export default function RedeemPoints() {
 
         /* Customer Info Card */
         .customer-info-box {
-          background: #F8FAFC;
-          border: 1px solid var(--border-strong);
-          border-radius: var(--radius-md);
-          padding: 16px;
+          background: var(--bg-body);
+          border: 2px solid var(--border-strong);
+          padding: 24px;
           display: flex;
           flex-direction: column;
-          gap: 12px;
+          gap: 16px;
           animation: slideDown 0.3s ease;
         }
 
@@ -251,63 +256,73 @@ export default function RedeemPoints() {
         }
 
         .info-label {
+          font-family: 'Space Grotesk', sans-serif;
           font-size: 13px;
           color: var(--text-muted);
-          font-weight: 500;
+          font-weight: 700;
+          text-transform: uppercase;
         }
 
         .info-value {
-          font-size: 14px;
+          font-size: 15px;
           font-weight: 600;
           color: var(--text-main);
         }
 
         .points-badge {
-          background: var(--primary-light);
-          color: var(--primary);
-          padding: 4px 10px;
-          border-radius: 99px;
-          font-size: 13px;
+          background: var(--surface);
+          border: 2px solid var(--border-strong);
+          color: var(--text-main);
+          padding: 6px 12px;
+          font-family: 'Space Grotesk', sans-serif;
+          font-size: 14px;
+          font-weight: 700;
+          box-shadow: 2px 2px 0px 0px rgba(15, 23, 42, 1);
         }
 
         .insufficient-badge {
-          background: var(--warning-bg);
-          color: var(--warning-text);
-          font-size: 12px;
-          padding: 4px 8px;
-          border-radius: 6px;
-          margin-top: 4px;
+          background: var(--danger-bg);
+          color: var(--danger);
+          border: 1px solid var(--danger);
+          font-family: 'Space Grotesk', sans-serif;
+          font-size: 13px;
+          font-weight: 700;
+          padding: 6px 12px;
+          margin-top: 8px;
           display: inline-block;
+          text-transform: uppercase;
         }
 
         /* Primary Button */
         .btn-primary {
           background: var(--primary);
           color: white;
-          border: none;
-          padding: 14px 24px;
-          border-radius: var(--radius-md);
+          border: 2px solid var(--border-strong);
+          padding: 16px 24px;
+          font-family: 'Space Grotesk', sans-serif;
           font-size: 15px;
-          font-weight: 500;
+          font-weight: 700;
+          text-transform: uppercase;
           display: flex;
           align-items: center;
           justify-content: center;
           gap: 8px;
           cursor: pointer;
           transition: all 0.2s ease;
-          box-shadow: var(--shadow-sm);
+          box-shadow: var(--shadow-hard);
           width: 100%;
-          margin-top: 8px;
+          margin-top: 16px;
         }
 
         .btn-primary:hover:not(:disabled) {
           background: var(--primary-hover);
-          transform: translateY(-1px);
-          box-shadow: var(--shadow-md);
+          transform: translate(-2px, -2px);
+          box-shadow: var(--shadow-hard-hover);
         }
 
         .btn-primary:disabled {
-          background: var(--border-strong);
+          background: var(--border-light);
+          border-color: var(--border-light);
           color: var(--text-muted);
           cursor: not-allowed;
           box-shadow: none;
@@ -320,8 +335,11 @@ export default function RedeemPoints() {
         }
 
         /* Responsive */
+        @media (max-width: 1024px) { 
+          .main-view { padding: 32px 24px; gap: 32px; } 
+        }
+
         @media (max-width: 768px) { 
-          .main-view { padding: 24px; } 
           .data-panel { padding: 24px; }
         }
       `}</style>

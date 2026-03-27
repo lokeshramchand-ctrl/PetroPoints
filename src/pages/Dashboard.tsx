@@ -1,106 +1,109 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import DashboardSidebar from './Sidebar';
 import { TrendUpIcon } from '../assets/icons/DashboardIcons';
 import { ThemeToggle } from '../theme/ThemeToggle';
 
 const Dashboard: React.FC = () => {
+  const [customers, setCustomers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://petropoints-backend.deploy.splsystems.in/api';
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+
+        const res = await fetch(`${API_BASE_URL}/read`);
+        const data = await res.json();
+
+        setCustomers(data);
+      } catch (err) {
+        console.error("Failed to fetch dashboard data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const totalCustomers = customers.length;
+  const totalPoints = customers.reduce(
+    (sum, c) => sum + Number(c.CustomerPoints || 0),
+    0
+  );
+  const activeCustomers = customers.filter(
+    (c) => Number(c.CustomerPoints || 0) > 0
+  ).length;
+  const zeroCustomers = customers.filter(
+    (c) => Number(c.CustomerPoints || 0) === 0
+  ).length;
+
   const stats = [
     {
       id: 1,
       title: 'Total Customers',
-      value: '12,480',
-      trend: '+12% this month',
+      value: totalCustomers.toLocaleString(),
+      trend: 'Live data',
       isPositive: true,
     },
     {
       id: 2,
-      title: 'Total Vehicles',
-      value: '8,234',
-      trend: '+5% this month',
+      title: 'Active Customers',
+      value: activeCustomers,
+      trend: 'Have points',
       isPositive: true,
     },
     {
       id: 3,
-      title: 'Total Points Awarded',
-      value: '1.2M',
-      trend: '+18% this month',
+      title: 'Total Points',
+      value: totalPoints.toLocaleString(),
+      trend: 'Accumulated',
       isPositive: true,
     },
     {
       id: 4,
-      title: 'Today Customers',
-      value: '142',
-      trend: 'Updated just now',
-      isPositive: null,
-    },
-    {
-      id: 5,
-      title: 'Today Points',
-      value: '4,550',
-      trend: 'Updated just now',
+      title: 'Zero Points',
+      value: zeroCustomers,
+      trend: 'No activity',
       isPositive: null,
     },
   ];
 
-  const activity = [
-    {
-      id: 1,
-      action: 'Awarded Points',
-      customer: 'Jane Cooper',
-      vehicle: 'TS 09 EU 1234',
-      points: '+120',
-      time: '2 min ago',
-    },
-    {
-      id: 2,
-      action: 'Redeemed Points',
-      customer: 'Guy Hawkins',
-      vehicle: 'MH 01 ZA 5555',
-      points: '-80',
-      time: '14 min ago',
-    },
-    {
-      id: 3,
-      action: 'New Customer Added',
-      customer: 'Laura Kinney',
-      vehicle: 'TS 10 AQ 7281',
-      points: '--',
-      time: '36 min ago',
-    },
-    {
-      id: 4,
-      action: 'Awarded Points',
-      customer: 'Robert Fox',
-      vehicle: 'AP 16 DK 9932',
-      points: '+60',
-      time: '1 hr ago',
-    },
-  ];
+  const dynamicActivity = customers.slice(0, 5).map((c) => ({
+    id: c.CustomerID,
+    action: Number(c.CustomerPoints || 0) > 0
+      ? 'Points Updated'
+      : 'New Customer Added',
+    customer: c.CustomerName,
+    vehicle: '--',
+    points: Number(c.CustomerPoints || 0) > 0
+      ? `+${c.CustomerPoints}`
+      : '--',
+    time: 'Recently',
+  }));
 
-  // Helper function to style point badges dynamically
-  const getPointsClass = (points: string) => {
-    if (points.startsWith('+')) return 'badge-positive';
-    if (points.startsWith('-')) return 'badge-negative';
-    return 'badge-neutral';
-  };
+  if (loading) {
+    return <p style={{ padding: "40px" }}>Loading dashboard...</p>;
+  }
 
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap');
 
         :root {
-          /* Modern SaaS Palette */
-          --bg-body: #F8FAFC;
+          /* Industrial SaaS Palette */
+          --bg-body: #F1F5F9;
           --surface: #FFFFFF;
-          --primary: #4F46E5;
-          --primary-hover: #4338CA;
-          --primary-light: #EEF2FF;
-          --text-main: #0F172A;
-          --text-muted: #64748B;
+          --primary: #F97316; /* Action Orange */
+          --primary-hover: #EA580C;
+          --primary-light: #FFEDD5;
+          --text-main: #0F172A; /* Petrol Navy */
+          --text-muted: #475569;
           --text-faint: #94A3B8;
-          --border-light: #F1F5F9;
-          --border-strong: #E2E8F0;
+          --border-light: #E2E8F0;
+          --border-strong: #0F172A; /* High contrast */
           
           /* Status Colors */
           --success-text: #166534;
@@ -108,15 +111,16 @@ const Dashboard: React.FC = () => {
           --danger-text: #991B1B;
           --danger-bg: #FEE2E2;
           --neutral-text: #475569;
-          --neutral-bg: #F1F5F9;
+          --neutral-bg: #E2E8F0;
           
-          --radius-sm: 6px;
-          --radius-md: 12px;
-          --radius-lg: 16px;
+          --radius-sm: 0px; /* Brutalist sharp edges */
+          --radius-md: 0px;
+          --radius-lg: 0px;
           --radius-full: 9999px;
           
-          --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-          --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+          --shadow-sm: none;
+          --shadow-hard: 4px 4px 0px 0px rgba(15, 23, 42, 1);
+          --shadow-hard-hover: 6px 6px 0px 0px rgba(15, 23, 42, 1);
         }
 
         * {
@@ -142,30 +146,34 @@ const Dashboard: React.FC = () => {
           flex: 1;
           display: flex;
           flex-direction: column;
-          padding: 40px 48px;
+          padding: 48px;
           min-width: 0;
-          gap: 32px;
+          gap: 48px; /* Generous separation between sections */
         }
 
         /* --- SaaS Header --- */
         .header-section {
           display: flex;
           justify-content: space-between;
-          align-items: flex-start;
+          align-items: flex-end;
           flex-wrap: wrap;
           gap: 16px;
+          border-bottom: 3px solid var(--border-strong);
+          padding-bottom: 24px;
         }
 
         .header-titles h1 {
-          font-size: 28px;
-          font-weight: 600;
-          letter-spacing: -0.02em;
-          margin: 0 0 4px 0;
+          font-family: 'Space Grotesk', sans-serif;
+          font-size: 40px;
+          font-weight: 700;
+          letter-spacing: -0.03em;
+          margin: 0 0 8px 0;
           color: var(--text-main);
+          text-transform: uppercase;
         }
 
         .header-titles p {
-          font-size: 14px;
+          font-size: 16px;
           color: var(--text-muted);
           margin: 0;
         }
@@ -176,39 +184,39 @@ const Dashboard: React.FC = () => {
           gap: 12px;
           background: var(--surface);
           padding: 8px 16px;
-          border-radius: var(--radius-full);
-          border: 1px solid var(--border-strong);
-          box-shadow: var(--shadow-sm);
+          border: 2px solid var(--border-strong);
+          box-shadow: 2px 2px 0px 0px rgba(15, 23, 42, 1);
         }
 
         .header-actions span {
-          font-size: 13px;
-          font-weight: 500;
-          color: var(--text-muted);
+          font-size: 14px;
+          font-weight: 600;
+          color: var(--text-main);
+          font-family: 'Space Grotesk', sans-serif;
+          text-transform: uppercase;
         }
 
         /* --- Stats Grid --- */
         .stats-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-          gap: 20px;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 24px;
         }
 
         .stat-card {
           background: var(--surface);
-          border: 1px solid var(--border-strong);
-          border-radius: var(--radius-lg);
+          border: 2px solid var(--border-strong);
           padding: 24px;
-          box-shadow: var(--shadow-sm);
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
+          box-shadow: var(--shadow-hard);
+          transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
           display: flex;
           flex-direction: column;
-          gap: 12px;
+          gap: 16px;
         }
 
         .stat-card:hover {
-          transform: translateY(-2px);
-          box-shadow: var(--shadow-md);
+          transform: translate(-2px, -2px);
+          box-shadow: var(--shadow-hard-hover);
         }
 
         .stat-label {
@@ -217,15 +225,16 @@ const Dashboard: React.FC = () => {
           font-weight: 600;
           color: var(--text-muted);
           text-transform: uppercase;
-          letter-spacing: 0.05em;
+          letter-spacing: 0.1em;
         }
 
         .stat-value {
           margin: 0;
-          font-size: 32px;
-          font-weight: 600;
+          font-family: 'Space Grotesk', sans-serif;
+          font-size: 48px;
+          font-weight: 700;
           line-height: 1;
-          letter-spacing: -0.03em;
+          letter-spacing: -0.04em;
           color: var(--text-main);
         }
 
@@ -233,39 +242,45 @@ const Dashboard: React.FC = () => {
           display: inline-flex;
           align-items: center;
           gap: 6px;
+          font-family: 'Space Grotesk', sans-serif;
           font-size: 13px;
-          font-weight: 500;
-          padding: 4px 10px;
-          border-radius: var(--radius-full);
+          font-weight: 600;
+          padding: 6px 12px;
           background: var(--neutral-bg);
-          color: var(--neutral-text);
+          color: var(--text-main);
           width: fit-content;
+          border: 1px solid var(--border-strong);
+          text-transform: uppercase;
         }
 
         .trend-positive {
-          background: var(--success-bg);
-          color: var(--success-text);
+          background: var(--primary-light);
+          color: var(--primary-hover);
+          border-color: var(--primary);
         }
 
         /* --- Table Panel --- */
         .data-panel {
           background: var(--surface);
-          border: 1px solid var(--border-strong);
-          border-radius: var(--radius-lg);
-          box-shadow: var(--shadow-md);
+          border: 2px solid var(--border-strong);
+          box-shadow: var(--shadow-hard);
           overflow: hidden;
         }
 
         .panel-header {
-          padding: 20px 24px;
-          border-bottom: 1px solid var(--border-strong);
+          padding: 24px;
+          border-bottom: 2px solid var(--border-strong);
+          background: var(--bg-body);
         }
 
         .panel-title {
           margin: 0;
-          font-size: 18px;
-          font-weight: 600;
+          font-family: 'Space Grotesk', sans-serif;
+          font-size: 20px;
+          font-weight: 700;
           color: var(--text-main);
+          text-transform: uppercase;
+          letter-spacing: 0.02em;
         }
 
         .table-container {
@@ -281,18 +296,19 @@ const Dashboard: React.FC = () => {
 
         .data-table th {
           padding: 16px 24px;
-          font-size: 12px;
-          font-weight: 600;
-          color: var(--text-muted);
+          font-family: 'Space Grotesk', sans-serif;
+          font-size: 13px;
+          font-weight: 700;
+          color: var(--text-main);
           text-transform: uppercase;
           letter-spacing: 0.05em;
-          border-bottom: 1px solid var(--border-strong);
-          background: #F8FAFC;
+          border-bottom: 2px solid var(--border-strong);
+          background: #FFFFFF;
         }
 
         .data-table td {
           padding: 16px 24px;
-          font-size: 14px;
+          font-size: 15px;
           color: var(--text-main);
           border-bottom: 1px solid var(--border-light);
           vertical-align: middle;
@@ -304,18 +320,19 @@ const Dashboard: React.FC = () => {
         .data-table tbody tr:hover { background: var(--bg-body); }
 
         /* Typography & Badges */
-        .cell-action { font-weight: 500; color: var(--text-main); }
-        .cell-sub { color: var(--text-muted); }
-        .cell-mono { font-family: 'SFMono-Regular', Consolas, monospace; font-size: 13px; color: var(--text-muted); background: var(--border-light); padding: 4px 8px; border-radius: var(--radius-sm); }
+        .cell-action { font-weight: 600; color: var(--text-main); }
+        .cell-sub { color: var(--text-muted); font-size: 14px; }
+        .cell-mono { font-family: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace; font-size: 13px; font-weight: 600; color: var(--text-main); background: var(--bg-body); padding: 4px 8px; border: 1px solid var(--border-light); }
 
         .badge {
           display: inline-flex;
           align-items: center;
           justify-content: center;
           padding: 4px 10px;
-          border-radius: var(--radius-full);
-          font-size: 13px;
-          font-weight: 600;
+          font-family: 'Space Grotesk', sans-serif;
+          font-size: 14px;
+          font-weight: 700;
+          border: 1px solid var(--border-strong);
         }
         
         .badge-positive {
@@ -330,12 +347,12 @@ const Dashboard: React.FC = () => {
 
         .badge-neutral {
           background-color: var(--neutral-bg);
-          color: var(--neutral-text);
+          color: var(--text-main);
         }
 
         /* --- Global Responsiveness --- */
         @media (max-width: 1024px) {
-          .main-view { padding: 32px 24px; }
+          .main-view { padding: 32px 24px; gap: 32px; }
         }
 
         @media (max-width: 768px) {
@@ -348,7 +365,7 @@ const Dashboard: React.FC = () => {
         <DashboardSidebar />
 
         <main className="main-view">
-          
+
           {/* Header section */}
           <header className="header-section">
             <div className="header-titles">
@@ -393,7 +410,7 @@ const Dashboard: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {activity.map((entry) => (
+                  {dynamicActivity.map((entry) => (
                     <tr key={entry.id}>
                       <td className="cell-action">{entry.action}</td>
                       <td>{entry.customer}</td>
@@ -410,11 +427,17 @@ const Dashboard: React.FC = () => {
               </table>
             </div>
           </section>
-
         </main>
       </div>
     </>
   );
+};
+
+// Helper function to style point badges dynamically
+const getPointsClass = (points: string) => {
+  if (points.startsWith('+')) return 'badge-positive';
+  if (points.startsWith('-')) return 'badge-negative';
+  return 'badge-neutral';
 };
 
 export default Dashboard;
