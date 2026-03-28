@@ -372,10 +372,6 @@ const Dashboard: React.FC = () => {
               <h1>Dashboard</h1>
               <p>Plan, monitor, and track customer loyalty activity.</p>
             </div>
-            <div className="header-actions">
-              <span>Theme</span>
-              <ThemeToggle variant="inline" />
-            </div>
           </header>
 
           {/* Stats Grid */}
