@@ -136,7 +136,7 @@ export default function CustomersList() {
 
         :root {
           /* Industrial SaaS Palette */
-          --bg-body: #F1F5F9;
+          --bg-body: #0F172A;
           --surface: #FFFFFF;
           --primary: #F97316;
           --primary-hover: #EA580C;
@@ -170,8 +170,8 @@ export default function CustomersList() {
 
         body, html {
           margin: 0; padding: 0;
-          background-color: var(--bg-body);
-          color: var(--text-main);
+          background-color: #0F172A; /* Navy blue background */
+          color: #FFFFFF; /* White font */
           -webkit-font-smoothing: antialiased;
         }
 
@@ -180,6 +180,8 @@ export default function CustomersList() {
           min-height: 100vh;
           max-width: 1600px;
           margin: 0 auto;
+          background-color: #10274C;
+          color: #FFFFFF;
         }
 
         .main-view {
@@ -208,7 +210,7 @@ export default function CustomersList() {
           font-weight: 700;
           letter-spacing: -0.03em;
           margin: 0 0 8px 0;
-          color: var(--text-main);
+          color: #FFFFF;
           text-transform: uppercase;
         }
 
@@ -261,7 +263,7 @@ export default function CustomersList() {
 
         /* Primary Button */
         .btn-primary {
-          background: var(--primary);
+          background: #E8B84B ;
           color: white;
           border: 2px solid var(--border-strong);
           padding: 12px 24px;
@@ -278,7 +280,7 @@ export default function CustomersList() {
         }
 
         .btn-primary:hover:not(:disabled) {
-          background: var(--primary-hover);
+          background: #E8B84B ;
           transform: translate(-2px, -2px);
           box-shadow: var(--shadow-hard-hover);
         }
@@ -555,12 +557,7 @@ export default function CustomersList() {
                         <td className="cell-sub">{maskAadhaar(customer.aadhaar)}</td>
                         <td>
                           <span className="points-badge">{customer.points}</span>
-                          {customer.points > 100 && (
-                            <span className="top-badge">
-                              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                              Top
-                            </span>
-                          )}
+                          
                         </td>
                         <td className="actions-cell">
                           <div className="action-links">

@@ -392,14 +392,7 @@ const Sidebar: React.FC<SidebarProps> = ({ className = '' }) => {
           <div className="menu-group general">
             <div className="menu-label">System</div>
             <nav className="nav-menu">
-              <NavLink
-                to="/settings"
-                className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
-              >
-                <SettingsIcon />
-                Settings
-              </NavLink>
-
+              
               <NavLink
                 to="/login"
                 className="nav-item logout"
